@@ -16,7 +16,7 @@ server {
     ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
-        uwsgi_pass  backend;
+        uwsgi_pass  django_uwsgi;
         include     /etc/nginx/uwsgi_params;
         # add_header 'Access-Control-Allow-Origin' '*';
     }
