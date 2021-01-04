@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+
+  db:
+      image: mariadb:10.5.8
+      restart: always
+      command: ['--character-set-server=utf8', '--collation-server=utf8_unicode_ci']
+      environment:
+        MYSQL_DATABASE: my-db-name # 실제 데이터로 수정
+        MYSQL_USER: my-db-user # 실제 데이터로 수정
+        MYSQL_PASSWORD: my-db-password # 실제 데이터로 수정
+        MYSQL_ROOT_PASSWORD: my-db-root-password # 실제 데이터로 수정
+        TZ: Asia/Seoul
+      volumes:
+        - ./mariadb/mysql:/var/lib/mysql
+        - ./mariadb/sql:/docker-entrypoint-initdb.d
+
+  web:
+      build: ./python
+      image: dokube/drebs
+      command: uwsgi --socket :8000 --module app.wsgi --py-autoreload 1 --logto /tmp/mylog.log
+      volumes:
+        - ./src:/app
+      expose:
+        - "8000"
+      environment:
+        DB_NAME: my-db-name # 실제 데이터로 수정
+        DB_USER: my-db-user # 실제 데이터로 수정
+        DB_PASSWORD: my-db-password # 실제 데이터로 수정
+        DISQUS_API_KEY: disqus_api_key # 실제 데이터로 수정
+        DISQUS_API_SECRET: disqus_api_secret # 실제 데이터로 수정
+        AWS_ACCESS_KEY_ID: aws-access-key-id # 실제 데이터로 수정
+        AWS_SECRET_ACCESS_KEY: aws-secret-access-key # 실제 데이터로 수정
+        DJANGO_SETTINGS_MODULE: app.settings.prod # settings file 분리시 경로
+      depends_on:
+        - db
+
+  nginx:
+      build: ./nginx
+      image: dokube/nginx
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - ./nginx/ssl:/etc/letsencrypt/live
+        - ./src/static:/static
+      environment:
+        SERVER_NAME: example.com # 실제 데이터로 수정
+        BACKEND_HOST: web:8000
+        WORKER_PROCESSES: 1
+        WORKER_CONNECTIONS: 1024
+        KEEPALIVE_TIMEOUT: 65
+        BACKEND_MAX_FAILS: 3
+        BACKEND_MAX_TIMEOUT: 10s
+        LOG_STDOUT: "true"
+        ADMIN_EMAIL: example@site.com # 실제 데이터로 수정
+        # SSL_CERT: "true"
+      depends_on:
+        - web

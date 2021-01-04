@@ -1,0 +1,30 @@
+# python cache
+*/__pycache__/
+*/*/__pycache__/
+src/*/__pycache__/
+*.pyc
+*.pyo
+
+# django etc
+src/*/migrations/
+src/media/
+
+# mysql data
+*/mysql/
+mysql/*
+
+# ssl cert
+nginx/ssl/
+
+# ide
+.idea/
+.vscode/
+
+# virtualize
+venv/
+
+*/node_modules
+dist
+*/yarn.error.log
+
+docker-compose.yml

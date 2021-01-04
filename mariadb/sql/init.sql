@@ -1,0 +1,3 @@
+GRANT ALL PRIVILEGES ON test_rebs.* TO 'austin'@'%';
+
+FLUSH PRIVILEGES;
