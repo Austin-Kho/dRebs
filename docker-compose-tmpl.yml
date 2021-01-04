@@ -45,6 +45,7 @@ services:
         - "443:443"
       volumes:
         - ./nginx/ssl:/etc/letsencrypt/live
+        - ./nginx:/var/log/letsencrypt
         - ./src/static:/static
       environment:
         SERVER_NAME: example.com # 실제 데이터로 수정
