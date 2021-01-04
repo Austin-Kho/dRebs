@@ -188,7 +188,7 @@ MDEDITOR_CONFIGS = {
 SITE_ID = 1
 DISQUS_API_KEY = get_environment('DISQUS_API_KEY')
 DISQUS_API_SECRET = get_environment('DISQUS_API_SECRET')
-DISQUS_WEBSITE_SHORTNAME = 'django-rebs'
+DISQUS_WEBSITE_SHORTNAME = get_environment('DISQUS_WEBSITE_SHORTNAME')
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
