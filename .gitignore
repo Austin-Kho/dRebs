@@ -15,6 +15,7 @@ mysql/*
 
 # ssl cert
 nginx/ssl/
+nginx/log/
 
 # ide
 .idea/
