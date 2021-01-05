@@ -6,7 +6,7 @@ server {
 
 server {
     listen          443 ssl;
-    server_name     $host;
+    server_name     $host www.$host;
     charset         utf-8;
 
     ssl_certificate /etc/letsencrypt/live/{{ var "SERVER_NAME" }}/fullchain.pem;
