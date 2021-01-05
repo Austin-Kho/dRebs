@@ -23,8 +23,8 @@ class Book(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
-        verbose_name = '도서'
-        verbose_name_plural = '도서'
+        verbose_name = '1. 도서'
+        verbose_name_plural = '1. 도서'
 
     def __str__(self):
         return self.title
@@ -44,10 +44,14 @@ class Subject(models.Model):
         _5 = 5
 
     level = models.IntegerField('단원 레벨', choices=SubLevel.choices)
-    # content = models.TextField('단원 내용', blank=True)
     content = MDTextField('단원 내용', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('book', 'seq')
+        verbose_name = '2. 단원'
+        verbose_name_plural = '2. 단원'
 
     def __str__(self):
         return self.title

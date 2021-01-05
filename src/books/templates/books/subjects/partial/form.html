@@ -29,22 +29,5 @@
     <label for="{{ field.id_for_name }}" class="col-sm-2 col-form-label">{{ form.content.label }}</label>
     <div id="editormd_id" v-pre>{{ form.media }}{{ form.content }}</div>
 
-    {{ formset.management_form }}
-    <fieldset class="forms col-12 p-0">
-        {% for form in formset %}
-            <fieldset>
-                <div class="form-row col-12">
-                    <div class="col-12">
-                        {{ form.image }}
-                    </div>
-                </div>
-            </fieldset>
-        {% endfor %}
-    </fieldset>
-
-    <div class="form-group text-right">
-        <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
-            {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
-        </button>
-    </div>
+    <textarea name="md-imgUrl" id="md-imgUrl" rows="1" class="form-control" disabled></textarea>
 </div>

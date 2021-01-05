@@ -1,6 +1,6 @@
 {% extends 'books/layouts/base.html' %}
 
-
+{% load widget_tweaks %}
 {% block content %}
 
     <div style="height: 80px;"></div>
@@ -22,6 +22,24 @@
 
             {% include 'books/subjects/partial/form.html' %}
 
+            <div class="form-group form-row col-12 mt-2 pl-0">
+                <div class="col-6 mb-2">
+                    {{ formset.management_form }}
+                    <fieldset class="forms col-12">
+                        {% for form in formset %}
+                            <fieldset>
+                                {{ form.image|add_class:"form-control mb-2" }}
+                            </fieldset>
+                        {% endfor %}
+                    </fieldset>
+                </div>
+                <div class="col-6 mb-2 text-right">
+                    <button type="submit"
+                            class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                        {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
 
