@@ -8,6 +8,7 @@ src/*/__pycache__/
 # django etc
 src/*/migrations/
 src/media/
+src/app/settings/prod.py
 
 # mysql data
 */mysql/
