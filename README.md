@@ -7,12 +7,12 @@
 
 ### Usage
 
-###### Copy docker-compose.yml
+##### Copy docker-compose.yml
 ```bash
 cp docker-compose.tmpl.yml docker-compose.yml
 ```
 
-###### Write environments in docker-compose.yml
+##### Write environments in docker-compose.yml
 - required: 
   - MYSQL_DATABASE
   - MYSQL_ROOT_PASSWORD
@@ -24,25 +24,25 @@ cp docker-compose.tmpl.yml docker-compose.yml
   - DJANGO_SETTINGS_MODULE
   - SERVER_NAME
   
-###### Build and run
+##### Build and run
 ```bash
 docker-compose up -d --build
 ```
 
-###### Migrations & Migrate settings (After build to db & web)
+##### Migrations & Migrate settings (After build to db & web)
 
 ```bash
 docker-compose exec web python manage.py makemigrations
 docker-compose exec web python manage.py migrate
 ```
 
-###### Create Superuser => your username & email & password settings
+##### Create Superuser => your username & email & password settings
 
 ```bash
 docker-compose exec web python manage.py createsuperuser
 ```
 
-###### Data Seeding
+##### Data Seeding
 
 ```
 docker-compose exec web python manage.py loaddata rebs/fixtures/seeds-data.json 
