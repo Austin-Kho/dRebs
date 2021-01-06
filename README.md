@@ -9,6 +9,8 @@
 - nginx & uwsgi
 - mariadb & mysqlclient
 
+### Usage
+
 Static files Build and run :
 
 ```bash
@@ -28,12 +30,9 @@ write environments in docker-compose.yml
   
 ```bash
 docker-compose up -d --build
-docker-compose exec web python manage.py collectstatic
 ```
 
-### Usage
-
-Migrations & Migrate settings
+Migrations & Migrate settings (After build to db & web)
 
 ```bash
 docker-compose exec web python manage.py makemigrations
@@ -46,7 +45,7 @@ Create Superuser => your username & email & password settings
 docker-compose exec web python manage.py createsuperuser
 ```
 
-Data Seeding (After build to db & web)
+Data Seeding
 
 ```
 docker-compose exec web python manage.py loaddata rebs/fixtures/seeds-data.json 
