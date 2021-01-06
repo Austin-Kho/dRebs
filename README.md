@@ -4,27 +4,46 @@
 
 - docker
 - docker-compose
+  
+- django & etc library
+- nginx & uwsgi
+- mariadb & mysqlclient
 
 Static files Build and run :
 
+```bash
+cp docker-compose.tmpl.yml docker-compose.yml
 ```
-docker-compose run web ./manage.py collectstatic
-docker-compose up -d
+write environments in docker-compose.yml
+- required: 
+  - MYSQL_DATABASE
+  - MYSQL_ROOT_PASSWORD
+  - MYSQL_USER
+  - MYSQL_PASSWORD
+  - DATABASE_NAME 
+  - DATABASE_USER
+  - DATABASE_PASSWORD
+  - DJANGO_SETTINGS_MODULE
+  - SERVER_NAME
+  
+```bash
+docker-compose up -d --build
+docker-compose exec web python manage.py collectstatic
 ```
 
 ### Usage
 
 Migrations & Migrate settings
 
-```
-docker-compose run web ./manage.py makemigrations
-docker-compose run web ./manage.py migrate
+```bash
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
 ```
 
 Create Superuser => your username & email & password settings
 
-```
-docker-compose run web ./manage.py createsuperuser
+```bash
+docker-compose exec web python manage.py createsuperuser
 ```
 
 Data Seeding (After build to db & web)
