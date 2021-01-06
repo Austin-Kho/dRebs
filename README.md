@@ -1,13 +1,9 @@
 ## Django + Nginx + MariaDB in docker
 
-### Requirement
+### Requirement in your system
 
 - docker
 - docker-compose
-  
-- django & etc library
-- nginx & uwsgi
-- mariadb & mysqlclient
 
 ### Usage
 
