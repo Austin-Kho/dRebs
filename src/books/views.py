@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db import transaction
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -134,6 +135,8 @@ class SubjectsCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(SubjectsCreateView, self).get_context_data(**kwargs)
         context['book'] = Book.objects.get(id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=self.kwargs['book'])
+        context['last_level'] = subjects.last().level if subjects else 0
         context['formset'] = ImageFormSet(queryset=Images.objects.none())
         return context
 
@@ -158,14 +161,19 @@ class SubjectsUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(SubjectsUpdateView, self).get_context_data(**kwargs)
         context['book'] = Book.objects.get(id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=self.kwargs['book'])
+        context['last_level'] = subjects.last().level if subjects else 0
         context['formset'] = ImageFormSet(instance=self.object, queryset=Images.objects.filter(subject=self.object))
         return context
 
     def form_valid(self, form):
-        formset = ImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
-        form.instance.user = self.request.user
-        form.instance.book = Book.objects.get(id=self.kwargs['book'])
-        return super(SubjectsUpdateView, self).form_valid(form)
+        with transaction.atomic():
+            formset = ImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
+            # for img in formset:
+            #     img.save()
+            form.instance.user = self.request.user
+            form.instance.book = Book.objects.get(id=self.kwargs['book'])
+            return super(SubjectsUpdateView, self).form_valid(form)
 
 
 class SubjectsDeleteView(LoginRequiredMixin, DeleteView, Breadcrumb, SearchResult):

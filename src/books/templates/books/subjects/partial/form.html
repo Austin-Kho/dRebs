@@ -13,7 +13,7 @@
             <select name="level" required="required" id="id_level" class="form-control">
                 <option value="">---------</option>
                 {% for i in '12345' %}
-                    {% if object.level|add:1 >= forloop.counter %}
+                    {% if last_level|add:1 >= forloop.counter or forloop.first %}
                         <option value="{{ forloop.counter }}"
                                 {% if object.level == forloop.counter %}selected{% endif %}>
                             {{ forloop.counter }} 단계
