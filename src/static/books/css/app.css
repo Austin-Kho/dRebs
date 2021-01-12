@@ -112,7 +112,7 @@ ol ol, ol ul, ul ol, ul ul {
 }
 
 dt {
-    font-weight: 700
+    font-weight: 400;
 }
 
 dd {
@@ -398,7 +398,7 @@ hr {
 
 .small, small {
     font-size: 80%;
-    font-weight: 400
+    font-weight: 400;
 }
 
 .mark, mark {
@@ -486,7 +486,7 @@ kbd {
 kbd kbd {
     padding: 0;
     font-size: 100%;
-    font-weight: 700
+    font-weight: 400;
 }
 
 pre {
@@ -4789,7 +4789,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
     display: inline-block;
     padding: .25em .4em;
     font-size: 75%;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1;
     text-align: center;
     white-space: nowrap;
@@ -4977,7 +4977,7 @@ a.badge-dark.focus, a.badge-dark:focus {
 }
 
 .alert-link {
-    font-weight: 700
+    font-weight: 400;
 }
 
 .alert-dismissible {
@@ -5524,7 +5524,7 @@ a.badge-dark.focus, a.badge-dark:focus {
 .close {
     float: right;
     font-size: 1.35rem;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1;
     color: #000;
     text-shadow: 0 1px 0 #fff;
@@ -9808,11 +9808,11 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
 }
 
 .font-weight-normal {
-    font-weight: 400 !important
+    font-weight: 300 !important
 }
 
 .font-weight-bold {
-    font-weight: 700 !important
+    font-weight: 400 !important
 }
 
 .font-weight-bolder {
@@ -13391,7 +13391,7 @@ a.text-dark:focus, a.text-dark:hover {
 }
 
 #docs-app .sidebar .nav-link {
-    font-weight: 500;
+    font-weight: 400;
     color: #333
 }
 
@@ -13569,7 +13569,7 @@ a.text-dark:focus, a.text-dark:hover {
 
 #docs-app h1, #docs-app h2, #docs-app h3, #docs-app h4, #docs-app h5, #docs-app h6 {
     padding: 0;
-    font-weight: 700;
+    font-weight: 500;
     -webkit-font-smoothing: antialiased;
     cursor: text;
     color: #000
@@ -13655,7 +13655,7 @@ a.text-dark:focus, a.text-dark:hover {
 }
 
 #docs-app table tr th {
-    font-weight: 700
+    font-weight: 400;
 }
 
 #docs-app table tr td, #docs-app table tr th {
