@@ -169,7 +169,7 @@ a:not([href]):not([tabindex]):focus {
 
 code, kbd, pre, samp {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: .9em
+    font-size: 1em
 }
 
 pre {
@@ -466,7 +466,7 @@ hr {
 }
 
 code {
-    font-size: 95.5%;
+    font-size: 100%;
     color: #f66d9b;
     word-break: break-word
 }
@@ -496,7 +496,7 @@ pre {
 }
 
 pre code {
-    font-size: inherit;
+    font-size: .9rem;
     color: inherit;
     word-break: normal
 }
