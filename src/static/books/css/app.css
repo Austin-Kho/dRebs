@@ -13362,6 +13362,7 @@ a.text-dark:focus, a.text-dark:hover {
 }
 
 #docs-app .sidebar {
+    font-size: .9rem;
     position: fixed;
     top: 50px;
     bottom: 0;
