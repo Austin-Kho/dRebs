@@ -56,6 +56,5 @@ services:
         BACKEND_MAX_FAILS: 3
         BACKEND_MAX_TIMEOUT: 10s
         LOG_STDOUT: "true"
-        # SSL_CERT: "true"
       depends_on:
         - web
