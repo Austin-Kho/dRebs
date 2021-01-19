@@ -20,7 +20,7 @@ cp docker-compose.tmpl.yml docker-compose.yml
   - MYSQL_PASSWORD
   - DATABASE_NAME 
   - DATABASE_USER
-  - DATABASE_PASSWOR``D
+  - DATABASE_PASSWORD
   - DJANGO_SETTINGS_MODULE
   - SERVER_NAME
   
