@@ -11,6 +11,7 @@ RUN entrykit --symlink
 RUN rm /etc/nginx/conf.d/*
 COPY etc/nginx/nginx.conf.tmpl /etc/nginx/
 COPY etc/nginx/conf.d/ /etc/nginx/conf.d/
+COPY ./cert-create.sh /usr/local/bin/
 
 ENTRYPOINT [ \
   "render", \
