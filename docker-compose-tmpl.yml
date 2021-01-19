@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  db:
+  master:
       image: mariadb:10.5.8
       restart: always
       command: ['--character-set-server=utf8', '--collation-server=utf8_unicode_ci']
@@ -21,7 +21,7 @@ services:
       image: dokube/drebs
       command: uwsgi --socket :8000 --module app.wsgi --py-autoreload 1 --logto /tmp/mylog.log
       volumes:
-        - ./src:/app
+        - ./django:/django
       expose:
         - "8000"
       environment:
@@ -35,7 +35,7 @@ services:
         AWS_SECRET_ACCESS_KEY: aws-secret-access-key # 실제 데이터로 수정
         DJANGO_SETTINGS_MODULE: app.settings.prod # settings file 분리시 경로
       depends_on:
-        - db
+        - master
 
   nginx:
       build: ./nginx

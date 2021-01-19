@@ -1,8 +1,8 @@
 FROM python:3.9
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /app
-WORKDIR /app
-ADD requirements.txt /app/
+RUN mkdir /django
+WORKDIR /django
+ADD requirements.txt /django/
 RUN apt update \
     && apt install default-libmysqlclient-dev build-essential -y \
     && pip install --upgrade pip \
