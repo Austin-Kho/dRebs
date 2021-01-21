@@ -42,7 +42,7 @@
                                         </div>
                                         <div style="width:{{ w }}px; height:{{ h }}px; text-align:center; font-size:{{ f }}px;"
                                              data-toggle="tooltip" title=""
-                                             class="border {% if unit.contract_unit.contract.contractor.status == 1 %}bg-success-lighten{% endif %} {% if unit.contract_unit.contract.contractor.status == 2 %}bg-primary-lighten{% endif %}">
+                                             class="border {% if unit.contract_unit.contract.contractor.status == '1' %}bg-success-lighten{% endif %} {% if unit.contract_unit.contract.contractor.status == '2' %}bg-primary-lighten{% endif %}">
                                             {{ unit.contract_unit.contract.contractor.name }}
                                         </div>
                                     </div>
