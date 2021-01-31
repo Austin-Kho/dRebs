@@ -11,36 +11,23 @@
     </tr>
 </table>
 
-<table style="width:100%; font-size:11px;" cellpadding=0; cellspacing=0;>
-    <td width="1" style="border-top: 2px solid #000; padding: 8px 15px 2px;">문서 번호 :</td>
-    <td width="99" style="border-top: 2px solid #000; padding: 8px 15px 2px; text-align: right;"
-        colspan="8">{{ issue_date }}</td>
+<table style="width:100%; font-size:12px;">
+    <tr>
+        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px;">문서 번호 :</td>
+        <td style="border-top: 2px solid #000;"></td>
+        <td style="border-top: 2px solid #000; width: 60px; padding: 8px 15px 2px; text-align: right;">{{ issue_date }}</td>
     </tr>
     <tr>
         <td style="padding: 5px 15px 2px;">수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;신 :</td>
-        <td style="padding: 5px 0 2px; font-size:13px;"><strong>{{ data.contract.contractor.name }} 님</strong></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td style="padding: 5px 0 2px; font-size:13px;" colspan="2"><strong>{{ data.contract.contractor.name }} 님</strong></td>
     </tr>
     <tr>
         <td style="padding: 5px 15px 2px;">참 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;조 :</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="2"></td>
     </tr>
     <tr>
-        <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :
-        </td>
-        <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="8">{{ bill.title }}</td>
+        <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :</td>
+        <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="2">{{ bill.title }}</td>
     </tr>
 </table>
 
@@ -133,11 +120,13 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_due_payment|default:"-"|intcomma }}</td>
     </tr>
 </table>
+
 <table style="margin-top: 10px;">
     <tr>
         <td style="font-size: 12px;">■ 계좌번호 안내</td>
     </tr>
 </table>
+
 <table style="width:100%; font-size:11px; border-collapse:collapse;" cellpadding=0; cellspacing=0;>
     <tr>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" width="20%;">구 분</td>
@@ -256,6 +245,7 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
     </tr>
 </table>
+
 <table style="width:100%; font-size:10px;" cellpadding=0; cellspacing=0;>
     <tr>
         <td colspan="{% if bill.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px;">
