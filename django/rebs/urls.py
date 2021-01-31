@@ -30,4 +30,5 @@ urlpatterns = [
 
     # pdf url
     path('pdf-bill/', ExportPdfBill.as_view(), name='pdf-bill'),
+    path('pdf-payments/', PaymentList.as_view(), name='pdf-payments'),
 ]
