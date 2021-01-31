@@ -15,7 +15,9 @@
             </thead>
             <tbody>
             {% for pay in cont_payments %}
-                <tr style="background: #F9FAD9;" class="{% if request.GET.delete == 'ok' and pay.id|stringformat:"s" == request.GET.payment_id %}bg-danger-lighten{% endif %}">
+                <tr style="background: #F9FAD9;"
+                    class="{% if not request.GET.delete and pay.id|stringformat:"s" == request.GET.payment_id %}bg-warning-lighten
+                            {% elif request.GET.delete and pay.id|stringformat:"s" == request.GET.payment_id %}bg-danger-lighten{% endif %}">
                     <td class="text-center">{{ pay.deal_date|date:"Y-m-d"|default:"-" }}</td>
                     <td class="text-center">{{ pay.installment_order|default:"-" }}</td>
                     <td class="text-right">
