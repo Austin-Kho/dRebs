@@ -9,41 +9,50 @@
     <style>
       @page {
         size: Letter; /* Change from the default size of A4 */
-        margin: 1cm 1.5cm 0.5cm; /* Set margin on each page */
+        margin: 2.5cm 2.5cm 2.5cm; /* Set margin on each page */
       }
-
       body {
         font-family: 'Nanum Gothic', sans-serif;
+      }
+      td {
+        padding: 5px;
+      }
+      .bo_all {
+        border: 1px solid black;
+      }
+      .bo_all2 {
+        border: 2px solid black;
+      }
+      .bo_top {
+        border-top: 1px solid black;
+      }
+      .bo_right {
+        border-right: 1px solid black;
+      }
+      .bo_left {
+        border-left: 1px solid black;
+      }
+      .bo_bottom {
+        border-bottom: 1px solid black;
+      }
+      .bo_top2 {
+        border-top: 2px solid black;
+      }
+      .bo_right2 {
+        border-right: 2px solid black;
+      }
+      .bo_left2 {
+        border-left: 2px solid black;
+      }
+      .bo_bottom2 {
+        border-bottom: 2px solid black;
+      }
+      .title {
+        background: #eee;
       }
     </style>
 </head>
 <body>
-<table style="width: 100%; border-collapse:collapse;">
-    <tr>
-        <td style="border:1px solid black; text-align: center; height: 50px;" colspan="20"><h2>분양대금납부확인서</h2></td>
-    </tr>
-    <tr>
-        <td style="border:1px solid black;">&nbsp;</td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-        <td style="border:1px solid black;"></td>
-    </tr>
-</table>
+{% include 'pdf/partials/payment_page.html' %}
 </body>
 </html>
