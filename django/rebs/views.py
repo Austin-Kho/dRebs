@@ -121,3 +121,22 @@ class ExportPdfBill(View):
 
         return response
 
+
+class PaymentList(View):
+
+    def get(self, request):
+        context = {}
+        project = request.GET.get('project')
+
+        html_string = render_to_string('pdf/payments_by_contractor.html', context)
+
+        html = HTML(string=html_string)
+        html.write_pdf(target='/tmp/mypdf.pdf')
+
+        fs = FileSystemStorage('/tmp')
+        with fs.open('mypdf.pdf') as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
+            return response
+
+        return response
