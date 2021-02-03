@@ -128,7 +128,8 @@ class PaymentList(View):
         context = {}
         project = request.GET.get('project')
         contract = request.GET.get('contract')
-
+        context['contract'] = Contract.objects.get(pk=contract)
+        context['second_pay'] = context['contract'].contractor.contract_date + timedelta(days=30) if context['contract'] else None
         context['ip_orders'] = InstallmentPaymentOrder.objects.filter(project=project)
         context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
 

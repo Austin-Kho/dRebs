@@ -21,30 +21,30 @@
     <table>
         <tr>
             <td class="title bl bt2 br2 bb" colspan="4">사업명</td>
-            <td class="bt2 bb" colspan="18">{{ ip_orders.first.project }}</td>
+            <td class="bt2 bb" colspan="18">{{ contract.project }}</td>
         </tr>
         <tr>
             <td class="title bl br2 bb" colspan="4">동호수</td>
-            <td class="bb" colspan="7">901-101</td>
+            <td class="bb" colspan="7">{{ contract.contractunit.unitnumber }}</td>
             <td class="title bl2 br2 bb" colspan="4">계약일</td>
-            <td class="bb" colspan="7">2015년 11월 27일</td>
+            <td class="bb" colspan="7">{{ contract.contractor.contract_date }}</td>
         </tr>
         <tr>
             <td class="title bl br2 bb" colspan="4">계약자</td>
-            <td class="bb" colspan="18">홍길동</td>
+            <td class="bb" colspan="18">{{ contract.contractor }}</td>
         </tr>
-        <tr>
-            <td class="title bl br2 bb" colspan="4">사업자</td>
-            <td class="bb" colspan="7"></td>
-            <td class="title bl2 br2 bb" colspan="4">사업자번호</td>
-            <td class="bb" colspan="7"></td>
-        </tr>
-        <tr>
-            <td class="title bl br2 bb" colspan="4">업태</td>
-            <td class="bb" colspan="7"></td>
-            <td class="title bl2 br2 bb" colspan="4">종목</td>
-            <td class="bb" colspan="7"></td>
-        </tr>
+{#        <tr>#}
+{#            <td class="title bl br2 bb" colspan="4">사업자</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#            <td class="title bl2 br2 bb" colspan="4">사업자번호</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td class="title bl br2 bb" colspan="4">업태</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#            <td class="title bl2 br2 bb" colspan="4">종목</td>#}
+{#            <td class="bb" colspan="7"></td>#}
+{#        </tr>#}
         <tr>
             <td class="title bl br2 bb" colspan="4">분양금</td>
             <td class="bb" colspan="7">400,000,000</td>
@@ -103,8 +103,16 @@
                 </tr>
                 {% for order in ip_orders %}
                     <tr>
-                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.alias_name | default:order.pay_name }}</td>
-                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">2021/01/21</td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.alias_name|default:order.pay_name }}</td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">
+                            {% if order.pay_code == 1 %}
+                                {{ contract.contractor.contract_date|date:"Y/m/d" }}
+                            {% elif order.pay_code == 2 %}
+                                {{ second_pay|date:"Y/m/d" }}
+                            {% else %}
+                                {{ order.pay_due_date|date:"Y-m-d"|default:"추후지정" }}
+                            {% endif %}
+                        </td>
                         <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">10,000,000</td>
                     </tr>
                 {% endfor %}
