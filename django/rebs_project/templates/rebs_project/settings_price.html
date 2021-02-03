@@ -120,10 +120,13 @@
                                            class="table table-bordered table-centered table-condensed table-sm w-100 m-0 nowrap">
                                         <thead>
                                         <tr class="bg-nav-pills">
-                                            <th class="text-center" style="width: 20%">차수</th>
-                                            <th class="text-center" style="width: 15%">타입</th>
-                                            <th class="text-center" style="width: 20%">층별 조건</th>
-                                            <th class="text-center" style="width: 45%">분양가격(단위:원)</th>
+                                            <th class="text-center" style="width: 15%">차수</th>
+                                            <th class="text-center" style="width: 10%">타입</th>
+                                            <th class="text-center" style="width: 15%">층별 조건</th>
+                                            <th class="text-center" style="width: 15%">건물가(단위:원)</th>
+                                            <th class="text-center" style="width: 15%">대지가(단위:원)</th>
+                                            <th class="text-center" style="width: 15%">부가세(단위:원)</th>
+                                            <th class="text-center" style="width: 15%">분양가격(단위:원)</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -131,16 +134,53 @@
                                             {% for floor_type in floor_types %}
                                                 <tr>
                                                     {% if forloop.parentloop.first and forloop.first %}
-                                                        <td class="text-center"
-                                                            rowspan="{{ types.count|mul:floor_types.count }}">
+                                                        <td class="text-center" rowspan="{{ types.count|mul:floor_types.count }}">
                                                             {{ order_group }}
                                                         </td>
                                                     {% endif %}
                                                     {% if forloop.first %}
-                                                        <td class="text-center"
-                                                            rowspan="{{ floor_types.count }}">{{ type }}</td>
+                                                        <td class="text-center" rowspan="{{ floor_types.count }}">{{ type }}</td>
                                                     {% endif %}
                                                     <td class="text-center">{{ floor_type }}</td>
+                                                    <td class="text-center">
+                                                        <input type="number"
+                                                               name="sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_bu"
+                                                               id="id_sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_bu"
+                                                               min="0"
+                                                                {% for pr in prices %}
+                                                                    {% if pr.order_group.id == order_group.id and pr.unit_type.id == type.id and pr.unit_floor_type.id == floor_type.id %}
+                                                                        value="{{ pr.price_build }}"
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                               class="form-control text-right text-primary"
+                                                               placeholder="타입별 건물가">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <input type="number"
+                                                               name="sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_la"
+                                                               id="id_sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_la"
+                                                               min="0"
+                                                                {% for pr in prices %}
+                                                                    {% if pr.order_group.id == order_group.id and pr.unit_type.id == type.id and pr.unit_floor_type.id == floor_type.id %}
+                                                                        value="{{ pr.price_land }}"
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                               class="form-control text-right text-primary"
+                                                               placeholder="타입별 대지가">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <input type="number"
+                                                               name="sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_ta"
+                                                               id="id_sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_ta"
+                                                               min="0"
+                                                                {% for pr in prices %}
+                                                                    {% if pr.order_group.id == order_group.id and pr.unit_type.id == type.id and pr.unit_floor_type.id == floor_type.id %}
+                                                                        value="{{ pr.price_tax }}"
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                               class="form-control text-right text-primary"
+                                                               placeholder="타입별 부가세">
+                                                    </td>
                                                     <td class="text-center">
                                                         <input type="number"
                                                                name="sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}"
@@ -148,7 +188,7 @@
                                                                min="0"
                                                                 {% for pr in prices %}
                                                                     {% if pr.order_group.id == order_group.id and pr.unit_type.id == type.id and pr.unit_floor_type.id == floor_type.id %}
-                                                               value="{{ pr.price }}"
+                                                                        value="{{ pr.price }}"
                                                                     {% endif %}
                                                                 {% endfor %}
                                                                class="form-control text-right text-primary"
@@ -157,18 +197,9 @@
                                                                name="sp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}_id"
                                                                 {% for pr in prices %}
                                                                     {% if pr.order_group.id == order_group.id and pr.unit_type.id == type.id and pr.unit_floor_type.id == floor_type.id %}
-                                                               value="{{ pr.id }}"
+                                                                        value="{{ pr.id }}"
                                                                     {% endif %}
                                                                 {% endfor %}>
-{#                                                        <input type="hidden"#}
-{#                                                               name="or_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}"#}
-{#                                                               value="{{ order_group.id }}">#}
-{#                                                        <input type="hidden"#}
-{#                                                               name="tp_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}"#}
-{#                                                               value="{{ type.id }}">#}
-{#                                                        <input type="hidden"#}
-{#                                                               name="ft_{{ order_group.id }}_{{ type.id }}_{{ floor_type.id }}"#}
-{#                                                               value="{{ floor_type.id }}">#}
                                                     </td>
                                                 </tr>
                                             {% endfor %}

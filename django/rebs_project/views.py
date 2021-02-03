@@ -172,6 +172,9 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
 
         for tp in types:
             for ft in floor_types:
+                price_build_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_bu')  # 입력된 건물가 데이터
+                price_land_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_la')  # 입력된 대지가 데이터
+                price_tax_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_ta')  # 입력된 부가세 데이터
                 price_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id)) # 입력된 분양가격 데이터
                 if price_data:
                     price_id = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_id') # 기 등록 분양가격 데이터 아이디
@@ -181,12 +184,18 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
                         sales_price.order_group = og
                         sales_price.unit_type = tp
                         sales_price.unit_floor_type = ft
+                        sales_price.price_build = price_build_data
+                        sales_price.price_land = price_land_data
+                        sales_price.price_tax = price_tax_data
                         sales_price.price = price_data
                     else:
                         sales_price = SalesPriceByGT(project=self.get_project(),
                                                      order_group=og,
                                                      unit_type=tp,
                                                      unit_floor_type=ft,
+                                                     price_build=price_build_data,
+                                                     price_land=price_land_data,
+                                                     price_tax=price_tax_data,
                                                      price=price_data)
                     sales_price.save()
 
