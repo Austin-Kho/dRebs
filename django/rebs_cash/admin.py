@@ -59,7 +59,7 @@ class InstallmentPaymentAmountInline(ImportExportMixin, admin.TabularInline):
 class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'order_group', 'unit_type', 'unit_floor_type', 'price')
     list_display_links = ('project', 'unit_type', 'unit_floor_type')
-    list_editable = ('price',)
+    list_editable = ('price_build', 'price_land', 'price_tax', 'price')
     list_filter = ('project', 'order_group', 'unit_type')
     inlines = (InstallmentPaymentAmountInline,)
 
