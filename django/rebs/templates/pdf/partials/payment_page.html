@@ -21,7 +21,7 @@
     <table>
         <tr>
             <td class="title bl bt2 br2 bb" colspan="4">사업명</td>
-            <td class="bt2 bb" colspan="18">송도센트럴자이 아파트</td>
+            <td class="bt2 bb" colspan="18">{{ ip_orders.first.project }}</td>
         </tr>
         <tr>
             <td class="title bl br2 bb" colspan="4">동호수</td>
@@ -101,9 +101,9 @@
                     <td class="title center bt2 br">약정일자</td>
                     <td class="title center bt2 br2">약정금액</td>
                 </tr>
-                {% for i in 'aaaaaaaaaaa' %}
+                {% for order in ip_orders %}
                     <tr>
-                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">계약{{ forloop.counter }}</td>
+                        <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.alias_name | default:order.pay_name }}</td>
                         <td class="bt br center {% if forloop.last %}bb2{% endif %}">2021/01/21</td>
                         <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">10,000,000</td>
                     </tr>

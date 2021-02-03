@@ -127,6 +127,10 @@ class PaymentList(View):
     def get(self, request):
         context = {}
         project = request.GET.get('project')
+        contract = request.GET.get('contract')
+
+        context['ip_orders'] = InstallmentPaymentOrder.objects.filter(project=project)
+        context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
 
