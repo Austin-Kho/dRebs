@@ -120,9 +120,9 @@ class SalesPriceByGT(models.Model):  # 차수별 타입별 분양가격
     order_group = models.ForeignKey('rebs_contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수')
     unit_type = models.ForeignKey('rebs_project.UnitType', on_delete=models.CASCADE, verbose_name='타입')
     unit_floor_type = models.ForeignKey('rebs_project.UnitFloorType', on_delete=models.CASCADE, verbose_name='층별타입')
-    price_build = models.PositiveIntegerField('건물가', null=True, default=0)
-    price_land = models.PositiveIntegerField('대지가', null=True, default=0)
-    price_tax = models.PositiveIntegerField('부가세', null=True, default=0)
+    price_build = models.PositiveIntegerField('건물가', null=True, blank=True)
+    price_land = models.PositiveIntegerField('대지가', null=True, blank=True)
+    price_tax = models.PositiveIntegerField('부가세', null=True, blank=True)
     price = models.PositiveIntegerField('분양가격', null=True)
 
     def __str__(self):

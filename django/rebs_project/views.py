@@ -172,11 +172,16 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
 
         for tp in types:
             for ft in floor_types:
-                price_build_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_bu')  # 입력된 건물가 데이터
-                price_land_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_la')  # 입력된 대지가 데이터
-                price_tax_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_ta')  # 입력된 부가세 데이터
-                price_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id)) # 입력된 분양가격 데이터
-                if price_data:
+                build_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_bu')  # 입력된 건물가 데이터
+                land_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_la')  # 입력된 대지가 데이터
+                tax_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_ta')  # 입력된 부가세 데이터
+                price_data = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id))  # 입력된 분양가격 데이터
+                price_build_data = build_data if build_data else None
+                price_land_data = land_data if land_data else None
+                price_tax_data = tax_data if tax_data else None
+                price_data = price_data if price_data else None
+
+                if price_build_data or price_land_data or price_tax_data or price_data:
                     price_id = request.POST.get('sp_' + str(og.id) + '_' + str(tp.id) + '_' + str(ft.id) + '_id') # 기 등록 분양가격 데이터 아이디
                     if price_id:
                         sales_price = SalesPriceByGT(pk=price_id)
