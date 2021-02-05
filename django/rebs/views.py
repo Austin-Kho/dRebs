@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from django.db.models import Sum
+from rebs_project.models import Project
 from rebs_contract.models import Contract
 from rebs_notice.models import SalesBillIssue
 from rebs_cash.models import SalesPriceByGT, ProjectCashBook, InstallmentPaymentOrder
@@ -132,6 +133,23 @@ class PaymentList(View):
         context['second_pay'] = context['contract'].contractor.contract_date + timedelta(days=30) if context['contract'] else None
         context['ip_orders'] = InstallmentPaymentOrder.objects.filter(project=project)
         context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
+
+        # 해당 세대 분양가
+        try:
+            unit = context['contract'].contractunit.unitnumber
+        except:
+            unit = None
+        project = Project.objects.get(pk=project)
+        unit_set = project.is_unit_set and unit
+        this_price = 0
+        sales_price = SalesPriceByGT.objects.filter(project=project,
+                                                    order_group=context['contract'].order_group,
+                                                    unit_type=context['contract'].contractunit.unit_type)
+        this_price = sales_price.get(unit_floor_type=context['contract'].contractunit.unitnumber.floor_type) \
+                     if unit_set else None
+        context['this_price'] = this_price
+        context['now_payments'] = 40000000
+        context['due_payments'] = 40000000
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
 

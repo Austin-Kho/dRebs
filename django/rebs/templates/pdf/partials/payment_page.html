@@ -1,3 +1,4 @@
+{% load humanize mathfilters %}
 <div class="ba2">
     <table>
         <tr>
@@ -47,15 +48,15 @@
 {#        </tr>#}
         <tr>
             <td class="title bl br2 bb" colspan="4">분양금</td>
-            <td class="bb" colspan="7">400,000,000</td>
+            <td class="bb" colspan="7">{{ this_price|default:"추후지정"|intcomma }}</td>
             <td class="title bl2 br2 bb" colspan="4">건물가</td>
-            <td class="bb" colspan="7">300,000,000</td>
+            <td class="bb" colspan="7">{{ this_price.price_build|default:"-"|intcomma }}</td>
         </tr>
         <tr>
             <td class="title bl br2 bb2" colspan="4">대지가</td>
-            <td class="bb2" colspan="7">100,000,000</td>
+            <td class="bb2" colspan="7">{{ this_price.price_land|default:"-"|intcomma }}</td>
             <td class="title bl2 br2 bb2" colspan="4">부가세</td>
-            <td class="bb2" colspan="7">0</td>
+            <td class="bb2" colspan="7">{{ this_price.price_tax|default:"-"|intcomma }}</td>
         </tr>
         <tr>
             <td colspan="22">&nbsp;</td>
@@ -73,21 +74,21 @@
         </tr>
         <tr>
             <td class="title center bl br bb">분양금</td>
-            <td class="right br bb">400,000,000</td>
-            <td class="right br bb">40,000,000</td>
-            <td class="right br bb">40,000,000</td>
-            <td class="right br bb">360,000,000</td>
-            <td class="right br bb">-</td>
-            <td class="right br bb">-</td>
+            <td class="right br bb">{{ this_price|default:"추후지정"|intcomma }}</td>
+            <td class="right br bb" style="background: yellow;">40,000,000</td>
+            <td class="right br bb" style="background: yellow;">40,000,000</td>
+            <td class="right br bb">{{ this_price.price|sub:now_payments|intcomma|default:"-" }}</td>
+            <td class="right br bb" style="background: yellow;">-</td>
+            <td class="right br bb" style="background: yellow;">-</td>
         </tr>
         <tr>
             <td class="title center bl br bb2">추가납부</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
-            <td class="right br bb2">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2" style="background: yellow;">-</td>
         </tr>
         <tr>
             <td colspan="7">&nbsp;</td>
@@ -113,7 +114,7 @@
                                 {{ order.pay_due_date|date:"Y-m-d"|default:"추후지정" }}
                             {% endif %}
                         </td>
-                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">10,000,000</td>
+                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}" style="background: yellow;">10,000,000</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -133,15 +134,15 @@
                 </tr>
                 {% for i in 'aa' %}
                     <tr>
-                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">계약{{ forloop.counter }}</td>
-                        <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">2021/01/21</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">10,000,000</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">10,000,000</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">-</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">-</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">-</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">-</td>
-                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}">-</td>
+                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">계약{{ forloop.counter }}</td>
+                        <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">2021/01/21</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">10,000,000</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">10,000,000</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">-</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">-</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">-</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">-</td>
+                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}" style="background: yellow;">-</td>
                     </tr>
                 {% endfor %}
             </table>
