@@ -621,11 +621,19 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             # 1. 계약금
             down_order = payment_orders.filter(pay_sort='1')
             total_down = 0
-            down_payment = DownPayment.objects.get(project=self.get_project(),
-                                                   order_group=contract.order_group,
-                                                   unit_type=contract.contractunit.unit_type)
+            try:
+                dp = DownPayment.objects.get(project=self.get_project(),
+                                             order_group=contract.order_group,
+                                             unit_type=contract.contractunit.unit_type)
+                pay_num = dp.number_payments
+                down_payment = dp.payment_amount
+            except:
+                pay_num = payment_orders.filter(pay_sort='1').count()
+                pn = pay_num if pay_num <= 2 else pay_num / 2
+                down_payment = int(this_price*0.1/pn)
+
             for i, do in enumerate(down_order):
-                down_amount = down_payment.payment_amount if i < down_payment.number_payments else 0
+                down_amount = down_payment if i < pay_num else 0
                 payment_list.append(down_amount)
                 total_down += down_amount
 
