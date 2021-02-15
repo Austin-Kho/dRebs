@@ -247,24 +247,22 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
         return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
 
 
-# Todo 회차별 납입금 등록 페이지 -> 타입별 계약금 등록 페이지로 변경 작업
-class SettingsPaymentAmount(LoginRequiredMixin, TemplateView):
-    pass
-    """회차별 납입금 등록"""
-    # template_name = 'rebs_project/settings_installment_amount.html'
+class SettingsDownPayment(LoginRequiredMixin, TemplateView):
+    """차수/타입별 계약금 등록"""
+    template_name = 'rebs_project/settings_down_payment.html'
 
-    # def get_project(self):
-    #     try:
-    #         project = self.request.user.staffauth.assigned_project
-    #     except:
-    #         project = Project.objects.first()
-    #     gp = self.request.GET.get('project')
-    #     project = Project.objects.get(pk=gp) if gp else project
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
 
-    #     return project
+        return project
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(SettingsPaymentAmount, self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(SettingsDownPayment, self).get_context_data(**kwargs)
     #     context['project_list'] = self.request.user.staffauth.allowed_projects.all()
     #     context['this_project'] = self.get_project()
     #     context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
