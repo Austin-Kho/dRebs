@@ -629,7 +629,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
                 down_payment = dp.payment_amount
             except:
                 pay_num = payment_orders.filter(pay_sort='1').count()
-                pn = pay_num if pay_num <= 2 else pay_num / 2
+                pn = round(pay_num / 2)
                 down_payment = int(this_price*0.1/pn)
 
             for i, do in enumerate(down_order):
