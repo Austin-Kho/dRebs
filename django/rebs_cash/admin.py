@@ -67,10 +67,10 @@ class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class DownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'payment_amount')
-    list_display_links = ('project',)
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'payment_amount')
+    list_display_links = ('project', 'order_group', 'unit_type')
     list_editable = ('payment_amount',)
-    list_filter = ('unit_type',)
+    list_filter = ('order_group', 'unit_type')
 
 
 admin.site.register(CompanyBankAccount, CompanyBankAccountAdmin)
