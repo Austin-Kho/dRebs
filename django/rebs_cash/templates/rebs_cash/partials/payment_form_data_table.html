@@ -22,7 +22,7 @@
                         {% elif po.pay_code == 2 %}
                             {{ second_pay|date:"Y-m-d" }}
                         {% else %}
-                            {{ po.pay_due_date|date:"Y-m-d"|default:"0000-00-00" }}
+                            {{ po.pay_due_date|date:"Y-m-d"|default:"-" }}
                         {% endif %}
                     </td>
                     <td class="text-center">{{ po.pay_name }}</td>
