@@ -39,100 +39,70 @@
                                     <!-- Button Group -->
                                     <div class="btn-group mb-2">
                                         <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-ordergroup' %}'">차수 분류
-                                            등록
-                                        </button>
+                                                onclick="location.href='{% url 'rebs:project:set-ordergroup' %}'">차수 분류 등록</button>
                                         <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-unit-type' %}'">타입 정보
-                                            등록
-                                        </button>
+                                                onclick="location.href='{% url 'rebs:project:set-unit-type' %}'">타입 정보 등록</button>
                                         <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-floor-type' %}'">층별 조건
-                                            등록
-                                        </button>
+                                                onclick="location.href='{% url 'rebs:project:set-floor-type' %}'">층별 조건 등록</button>
                                         <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-sales-price' %}'">분양 가격
-                                            등록
-                                        </button>
+                                                onclick="location.href='{% url 'rebs:project:set-sales-price' %}'">분양 가격 등록</button>
                                         <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-payment-order' %}'">납부
-                                            회차 등록
-                                        </button>
+                                                onclick="location.href='{% url 'rebs:project:set-payment-order' %}'">납부 회차 등록</button>
                                         <button type="button" class="btn btn-primary">계약 금액 등록</button>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-lg-4">
-                                    <div class="form-group row mb-3">
-                                        <label for="id_group"
-                                               class="col-4 col-form-label text-center bg-info-lighten">차수선택</label>
-                                        <div class="col-8">
-                                            <select name="group" id="id_group" class="form-control select2"
-                                                    data-toggle="select2">
-                                                {% for order in order_groups %}
-                                                    <option value="{{ order.id }}"
-                                                            {% if order.id|stringformat:"s" is request.GET.group %}
-                                                            selected
-                                                            {% endif %}>
-                                                        {{ order }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-lg-4">
-                                    <div class="form-group row mb-3">
-                                        <label for="id_type"
-                                               class="col-4 col-form-label text-center bg-info-lighten">타입선택</label>
-                                        <div class="col-8">
-                                            <select name="type" id="id_type" class="form-control select2"
-                                                    data-toggle="select2">
-                                                <option value="">전체타입</option>
-                                                {% for type in types_sel %}
-                                                    <option value="{{ type.id }}"
-                                                            {% if type.id|stringformat:"s" is request.GET.type %}selected{% endif %}>{{ type }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-lg-4">
-                                    <div class="form-group row mb-3">
-                                        <label for="id_sort"
-                                               class="col-4 col-form-label text-center bg-info-lighten">납부구분</label>
-                                        <div class="col-8">
-                                            <select name="sort" id="id_sort" class="form-control select2"
-                                                    data-toggle="select2">
-                                                <option value="1" {% if request.GET.sort == '1' %}selected{% endif %}>
-                                                    계약금
-                                                </option>
-                                                <option value="2" {% if request.GET.sort == '2' %}selected{% endif %}>
-                                                    중도금
-                                                </option>
-                                                <option value="3" {% if request.GET.sort == '3' %}selected{% endif %}>
-                                                    잔금
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{#                                <div class="col-12 col-md-6 col-lg-4">#}
+{#                                    <div class="form-group row mb-3">#}
+{#                                        <label for="id_group"#}
+{#                                               class="col-4 col-form-label text-center bg-info-lighten">차수선택</label>#}
+{#                                        <div class="col-8">#}
+{#                                            <select name="group" id="id_group" class="form-control select2"#}
+{#                                                    data-toggle="select2">#}
+{#                                                <option value="">---------</option>#}
+{#                                                {% for order in order_groups %}#}
+{#                                                    <option value="{{ order.id }}"#}
+{#                                                            {% if order.id|stringformat:"s" is request.GET.group %}#}
+{#                                                            selected#}
+{#                                                            {% endif %}>#}
+{#                                                        {{ order }}#}
+{#                                                    </option>#}
+{#                                                {% endfor %}#}
+{#                                            </select>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{##}
+{#                                <div class="col-12 col-md-6 col-lg-4">#}
+{#                                    <div class="form-group row mb-3">#}
+{#                                        <label for="id_type"#}
+{#                                               class="col-4 col-form-label text-center bg-info-lighten">타입선택</label>#}
+{#                                        <div class="col-8">#}
+{#                                            <select name="type" id="id_type" class="form-control select2"#}
+{#                                                    data-toggle="select2">#}
+{#                                                <option value="">---------</option>#}
+{#                                                {% for type in types_sel %}#}
+{#                                                    <option value="{{ type.id }}"#}
+{#                                                            {% if type.id|stringformat:"s" is request.GET.type %}selected{% endif %}>{{ type }}</option>#}
+{#                                                {% endfor %}#}
+{#                                            </select>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
             </form>
 
             <form method="post" class="col-12 p-0 needs-validation" novalidate>
                 {% csrf_token %}
-                <input type="hidden" name="project" value="{{ this_project.id }}">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body pb-1">
-                            <div class="row">
+                {{ formset.management_form }}
+{#                <div class="col-lg-12">#}
+{#                    <div class="card">#}
+{#                        <div class="card-body pb-1">#}
+{#                            <div class="row">#}
                                 <div class="col-12 table-responsive">
                                     <table id="scroll-horizontal-datatable"
                                            class="table table-bordered table-centered table-condensed table-sm w-100 m-0 nowrap">
@@ -140,61 +110,33 @@
                                         <tr class="bg-nav-pills">
                                             <th class="text-center" style="width: 5%">차수</th>
                                             <th class="text-center" style="width: 5%">타입</th>
-                                            <th class="text-center" style="width: 6%">층별 조건</th>
-                                            <th class="text-center" style="width: 6%">타입별 분양가</th>
-                                            {% for pay_order in pay_orders %}
-                                                <th class="text-center"
-                                                    style="width: 7%">{{ pay_order.alias_name|default:pay_order.pay_name }}</th>
-                                            {% endfor %}
+                                            <th class="text-center" style="width: 6%">분할 납부회수</th>
+                                            <th class="text-center" style="width: 6%">납부 계약금액</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for type in types %}
-                                            {% for floor_type in floor_types %}
-                                                <tr>
-                                                    {% if forloop.parentloop.first and forloop.first %}
-                                                        <td class="text-center"
-                                                            rowspan="{{ types.count|mul:floor_types.count }}">
-                                                            {{ order_group }}
-                                                        </td>
-                                                    {% endif %}
-                                                    {% if forloop.first %}
-                                                        <td class="text-center"
-                                                            rowspan="{{ floor_types.count }}">{{ type }}</td>
-                                                    {% endif %}
-                                                    <td class="text-center">{{ floor_type }}</td>
-                                                    {% for price in prices %}
-                                                        {% if price.order_group == order_group and price.unit_type == type and price.unit_floor_type == floor_type %}
-                                                            <td class="text-right">
-                                                                {{ price.price|intcomma|default:"-" }}
-                                                            </td>
-                                                            {% for pay_order in pay_orders %}
-                                                                <td class="text-center">
-                                                                    <input type="number"
-                                                                       name="pa_{{ price.id }}_{{ pay_order.id }}"
-                                                                       id="id_pa_{{ price.id }}_{{ pay_order.id }}"
-                                                                       min="0"
-                                                                       {% for pa in pay_amounts %}
-                                                                            {% if pa.sales_price.id == price.id and pa.payment_order.id == pay_order.id %}
-                                                                            value="{{ pa.payment_amount }}"
-                                                                            {% endif %}
-                                                                        {% endfor %}
-                                                                       class="form-control text-right text-primary"
-                                                                       placeholder="회차별 납부금액">
-                                                                    <input type="hidden" name="pa_{{ price.id }}_{{ pay_order.id }}_id"
-                                                                           {% for pa in pay_amounts %}
-                                                                                {% if pa.sales_price.id == price.id and pa.payment_order.id == pay_order.id %}
-                                                                                value="{{ pa.id }}"
-                                                                                {% endif %}
-                                                                            {% endfor %}>
-                                                                    <input type="hidden" name="pr_{{ price.id }}_{{ pay_order.id }}" value="{{ price.id }}">
-                                                                    <input type="hidden" name="po_{{ price.id }}_{{ pay_order.id }}" value="{{ pay_order.id }}">
-                                                                </td>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </tr>
+                                        {% for form in formset %}
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
                                             {% endfor %}
+                                            <tr>
+                                                <td class="text-center">
+                                                    {{ form.order_group|add_class:"form-control select2"|attr:"data-toggle:select2" }}
+                                                    <span class="text-danger">{{ form.order_group.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ form.unit_type|add_class:"form-control select2"|attr:"data-toggle:select2" }}
+                                                    <span class="text-danger">{{ form.unit_type.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ form.number_payments|add_class:"form-control text-right"|attr:"placeholder:분할 납부회수" }}
+                                                    <span class="text-danger">{{ form.number_payments.errors }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ form.payment_amount|add_class:"form-control text-right"|attr:"placeholder:납부 계약금액" }}
+                                                    <span class="text-danger">{{ form.payment_amount.errors }}</span>
+                                                </td>
+                                            </tr>
                                         {% endfor %}
                                         </tbody>
                                     </table>
@@ -243,7 +185,6 @@
         document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
         document.getElementById('id_group').setAttribute('onchange', 'submit()')
         document.getElementById('id_type').setAttribute('onchange', 'submit()')
-        document.getElementById('id_sort').setAttribute('onchange', 'submit()')
       }
     </script>
 {% endblock %}

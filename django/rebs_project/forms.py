@@ -3,7 +3,7 @@ from django.forms.models import modelformset_factory
 from django.forms.widgets import TextInput
 from .models import UnitType, UnitFloorType, Site, SiteOwner, SiteContract
 from rebs_contract.models import OrderGroup
-from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder
+from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 OrderGroupFormSet = modelformset_factory(OrderGroup, exclude=('project',))
@@ -35,6 +35,9 @@ SalesPriceByGTFormSet = modelformset_factory(SalesPriceByGT,
 
 InstallmentPaymentOrderFormSet = modelformset_factory(InstallmentPaymentOrder,
                                                       exclude=('project',))
+
+
+DownPaymentFormSet = modelformset_factory(DownPayment, exclude=('project',))
 
 
 class SiteForm(forms.ModelForm):

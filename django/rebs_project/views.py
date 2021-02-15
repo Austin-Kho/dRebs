@@ -7,12 +7,12 @@ from django.core.paginator import Paginator
 from django.views.generic import ListView, FormView, TemplateView
 
 from rebs_project.forms import (OrderGroupFormSet, UnitTypeFormSet, UnitFloorTypeFormSet,
-                                SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet,
+                                SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                                 SiteForm, SiteOwnerForm, SiteContractForm)
 from rebs_project.models import (Project, UnitType, UnitFloorType, Site,
                                  SiteOwner, SiteContract, SiteOwnshipRelationship)
 from rebs_contract.models import OrderGroup
-from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder
+from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -258,60 +258,36 @@ class SettingsDownPayment(LoginRequiredMixin, TemplateView):
             project = Project.objects.first()
         gp = self.request.GET.get('project')
         project = Project.objects.get(pk=gp) if gp else project
-
         return project
 
     def get_context_data(self, **kwargs):
         context = super(SettingsDownPayment, self).get_context_data(**kwargs)
-    #     context['project_list'] = self.request.user.staffauth.allowed_projects.all()
-    #     context['this_project'] = self.get_project()
-    #     context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
-    #     context['order_group'] = OrderGroup.objects.get(pk=self.request.GET.get('group')) \
-    #         if self.request.GET.get('group') else OrderGroup.objects.first()
-    #     context['types_sel'] = UnitType.objects.filter(project=self.get_project())
-    #     if self.request.GET.get('type'):
-    #         context['types'] = context['types_sel'].filter(pk=self.request.GET.get('type'))
-    #     else:
-    #         context['types'] = context['types_sel']
-    #     context['floor_types'] = UnitFloorType.objects.filter(project=self.get_project())
-    #     context['prices'] = SalesPriceByGT.objects.filter(project=self.get_project())
-    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
-    #     context['pay_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
-        # context['pay_amounts'] = InstallmentPaymentAmount.objects.filter(sales_price__project=self.get_project()).order_by('sales_price', 'payment_order')
+        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
+        context['types_sel'] = UnitType.objects.filter(project=self.get_project())
+        context['formset'] = DownPaymentFormSet(queryset=DownPayment.objects.filter(project=self.get_project()))
 
-    #     return context
+        return context
 
-    # def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        formset = DownPaymentFormSet(request.POST)
 
-    #     prices = SalesPriceByGT.objects.filter(project=self.get_project())
-    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
-    #     pay_orders = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
+        if formset.is_valid():
 
-        # for price in prices:
-        #     for po in pay_orders:
-                # pay_amount = request.POST.get('pa_' + str(price.id) + '_' + str(po.id))
-                # if pay_amount:
-                #     amount_id = request.POST.get('pa_' + str(price.id) + '_' + str(po.id) + '_id')
-                #     price = SalesPriceByGT.objects.get(pk=request.POST.get('pr_' + str(price.id) + '_' + str(po.id)))
-                #     order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('po_' + str(price.id) + '_' + str(po.id)))
-                #     if amount_id:
-                        # amount = InstallmentPaymentAmount(pk=amount_id)
-                #         amount.sales_price = price
-                #         amount.payment_order = order
-                #         amount.payment_amount = pay_amount
-                #     else:
-                        # amount = InstallmentPaymentAmount(sales_price = price,
-                        #                                   payment_order = order,
-                        #                                   payment_amount = pay_amount)
-                #     amount.save()
+            for form in formset:
+                try:
+                    instance = form.save(commit=False)
+                    instance.project = self.get_project()
+                    instance.save()
+                except IntegrityError:
+                    pass
 
-    #     project = str(self.get_project().id)
-    #     order_group = self.request.GET.get('group') \
-    #         if self.request.GET.get('group') else str(OrderGroup.objects.first().id)
-    #     type = self.request.GET.get('type') if self.request.GET.get('type') else ''
-    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else ''
-    #     query_string = '?project='+ project +'&group=' + order_group + '&type=' + type + '&sort=' + sort
-    #     return redirect(reverse_lazy('rebs:project:set-payment-amount') + query_string)
+        project = str(self.get_project().id)
+        order_group = self.request.GET.get('group') if self.request.GET.get('group') else ''
+        type = self.request.GET.get('type') if self.request.GET.get('type') else ''
+        query_string = '?project='+ project +'&group=' + order_group + '&type=' + type
+        return redirect(reverse_lazy('rebs:project:set-down-payment') + query_string)
 
 
 class SiteManage(LoginRequiredMixin, ListView, FormView):
