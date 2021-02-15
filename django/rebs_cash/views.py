@@ -10,8 +10,8 @@ from django.db.models import Q, Sum
 from .forms import (CashSearchForm, ProjectCashSearchForm, PaymentSearchForm, PaymentForm,
                     CashBookFormSet, ProjectCashBookFormSet)
 
-from .models import (CompanyBankAccount, ProjectBankAccount, CashBook,
-                     ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder)
+from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook,
+                     SalesPriceByGT, InstallmentPaymentOrder, DownPayment)
 from rebs.models import AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD1, ProjectAccountD2
 from rebs_company.models import Company
 from rebs_project.models import Project, UnitType, ContractUnit, ProjectBudget
@@ -196,7 +196,6 @@ class CashInoutUV(LoginRequiredMixin, UpdateView):
     model = CashBook
 
 
-# Project cashbook classes
 class ProjectCashReport(LoginRequiredMixin, TemplateView):
     template_name = 'rebs_cash/projectcashbook_report.html'
 
@@ -433,7 +432,6 @@ class ProjectCashInoutUV(LoginRequiredMixin, UpdateView):
     model = ProjectCashBook
 
 
-# sales income classes
 class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
     template_name = 'rebs_cash/project_payment_list.html'
     form_class = PaymentSearchForm
@@ -586,7 +584,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
 
         context['cont_payments'] = payments.order_by('deal_date', 'bank_account', 'trader', 'id')
         context['payment_sum'] = payments.aggregate(Sum('income')) if self.request.GET.get('contract') else None
-        context['payment_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project())
+        context['payment_orders'] = payment_orders = InstallmentPaymentOrder.objects.filter(project=self.get_project())
         if self.request.GET.get('payment_id'):
             context['this_payment'] = ProjectCashBook.objects.get(pk=self.request.GET.get('payment_id'))
         context['today'] = TODAY
@@ -619,31 +617,43 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
                                                         unit_type=contract.contractunit.unit_type) \
                 if contract else None
             this_price = sales_price.get(unit_floor_type=contract.contractunit.unitnumber.floor_type) \
-                if unit_set else sales_price.last()
-            if unit_set:
-                context['this_price'] = this_price
+                if unit_set else contract.contractunit.unit_type.average_price
 
-                # Todo 회차별 납부금액 로직 변경
-                for ia in this_price.installmentpaymentamount_set.all():
-                    payment_list.append(ia.payment_amount)
-                    if ia.payment_order.pay_code <= 2 or \
-                            (ia.payment_order.pay_due_date and
-                             ia.payment_order.pay_due_date < datetime.today().date()):
-                        unpaid -= ia.payment_amount
-            else:
-                context['this_price'] = contract.contractunit.unit_type.average_price
+            # Todo 회차별 납부금액 로직 변경
+            # 1. 계약금
+            down_order = payment_orders.filter(pay_sort='1')
+            total_down = 0
+            down_payment = DownPayment.objects.get(project=self.get_project(),
+                                                   order_group=contract.order_group,
+                                                   unit_type=contract.contractunit.unit_type)
+            for i, do in enumerate(down_order):
+                down_amount = down_payment.payment_amount if i < down_payment.number_payments else 0
+                payment_list.append(down_amount)
+                total_down += down_amount
 
-                for ia in this_price.installmentpaymentamount_set.all():
-                    if ia.payment_order.pay_sort == '1':
-                        payment_list.append(ia.payment_amount)
-                        if ia.payment_order.pay_code <= 2 or \
-                                (ia.payment_order.pay_due_date and
-                                 ia.payment_order.pay_due_date < datetime.today().date()):
-                            unpaid -= ia.payment_amount
-                    else:
-                        payment_list.append(0)
+                if i < 2 or (do.pay_due_date and do.pay_due_date < datetime.today().date()):
+                    unpaid -= down_amount
+
+            # 2. 중도금
+            medium_order = payment_orders.filter(pay_sort='2')
+            total_medium = 0
+            for mo in medium_order:
+                medium_amount = int(this_price*0.1)
+                payment_list.append(medium_amount)
+                total_medium += medium_amount
+
+                if mo.pay_due_date and mo.pay_due_date < datetime.today().date():
+                    unpaid -= medium_amount
+            # 3. 잔금
+            balance_order = payment_orders.filter(pay_sort='3')
+            for bo in balance_order:
+                balance_amount = int((this_price - total_down - total_medium) / balance_order.count())
+                payment_list.append(balance_amount)
+
+                if bo.pay_due_date and bo.pay_due_date < datetime.today().date():
+                    unpaid -= balance_amount
         else:
-            for i in context['payment_orders']:
+            for po in context['payment_orders']:
                 payment_list.append(0)
 
         context['payment_list'] = list(reversed(payment_list))

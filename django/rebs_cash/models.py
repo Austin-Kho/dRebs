@@ -159,6 +159,7 @@ class DownPayment(models.Model):
     project = models.ForeignKey('rebs_project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order_group = models.ForeignKey('rebs_contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
     unit_type = models.ForeignKey('rebs_project.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
+    number_payments = models.PositiveSmallIntegerField('분할 납부회수')
     payment_amount = models.PositiveIntegerField('납부 계약금액')
 
     def __str__(self):
