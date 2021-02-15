@@ -155,17 +155,15 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
         verbose_name_plural = '06. 납입회차 관리'
 
 
-class InstallmentPaymentAmount(models.Model):  # 회차별 납부액 등록
-    sales_price = models.ForeignKey('SalesPriceByGT', on_delete=models.CASCADE, verbose_name='타입별 분양가')
-    payment_order = models.ForeignKey('InstallmentPaymentOrder', on_delete=models.CASCADE, verbose_name='납입 회차')
-    payment_amount = models.PositiveIntegerField('회차별 납부금액')
+class DownPayment(models.Model):
+    project = models.ForeignKey('rebs_project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    unit_type = models.ForeignKey('rebs_project.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
+    payment_amount = models.PositiveIntegerField('납부 계약금액')
 
     def __str__(self):
         return f'{self.payment_amount}'
 
     class Meta:
         ordering = ('id',)
-        verbose_name = '07. 회차별 납부금액 관리'
-        verbose_name_plural = '07. 회차별 납부금액 관리'
-
-# rebs_cash_salespricebygt
+        verbose_name = '07. 타입별 계약금 관리'
+        verbose_name_plural = '07. 타입별 계약금 관리'

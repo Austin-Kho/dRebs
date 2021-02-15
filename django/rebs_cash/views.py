@@ -610,8 +610,8 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             unit = None
         unit_set = (self.get_project().is_unit_set and unit)
 
-        payment_list = [] # 회차별 납부금액
-        this_price = 0 # 해당 건 분양가
+        this_price = 0     # 해당 건 분양가
+        payment_list = []  # 회차별 납부금액
 
         if contract:
             sales_price = SalesPriceByGT.objects.filter(project=self.get_project(),
@@ -621,6 +621,8 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             this_price = sales_price.get(unit_floor_type=contract.contractunit.unitnumber.floor_type) \
                 if unit_set else sales_price.last()
             if unit_set:
+                context['this_price'] = this_price
+
                 for ia in this_price.installmentpaymentamount_set.all():
                     payment_list.append(ia.payment_amount)
                     if ia.payment_order.pay_code <= 2 or \
@@ -628,6 +630,8 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
                              ia.payment_order.pay_due_date < datetime.today().date()):
                         unpaid -= ia.payment_amount
             else:
+                context['this_price'] = contract.contractunit.unit_type.average_price
+
                 for ia in this_price.installmentpaymentamount_set.all():
                     if ia.payment_order.pay_sort == '1':
                         payment_list.append(ia.payment_amount)
@@ -640,7 +644,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         else:
             for i in context['payment_orders']:
                 payment_list.append(0)
-        context['this_price'] = this_price if unit_set else 0
+
         context['payment_list'] = list(reversed(payment_list))
         context['second_pay'] = contract.contractor.contract_date + timedelta(days=30) if contract else None
         context['unpaid'] = unpaid

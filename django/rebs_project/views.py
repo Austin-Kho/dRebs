@@ -12,7 +12,7 @@ from rebs_project.forms import (OrderGroupFormSet, UnitTypeFormSet, UnitFloorTyp
 from rebs_project.models import (Project, UnitType, UnitFloorType, Site,
                                  SiteOwner, SiteContract, SiteOwnshipRelationship)
 from rebs_contract.models import OrderGroup
-from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder, InstallmentPaymentAmount
+from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -248,69 +248,71 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
 
 
 class SettingsPaymentAmount(LoginRequiredMixin, TemplateView):
+    pass
     """회차별 납입금 등록"""
-    template_name = 'rebs_project/settings_installment_amount.html'
+    # template_name = 'rebs_project/settings_installment_amount.html'
 
-    def get_project(self):
-        try:
-            project = self.request.user.staffauth.assigned_project
-        except:
-            project = Project.objects.first()
-        gp = self.request.GET.get('project')
-        project = Project.objects.get(pk=gp) if gp else project
-        return project
+    # def get_project(self):
+    #     try:
+    #         project = self.request.user.staffauth.assigned_project
+    #     except:
+    #         project = Project.objects.first()
+    #     gp = self.request.GET.get('project')
+    #     project = Project.objects.get(pk=gp) if gp else project
 
-    def get_context_data(self, **kwargs):
-        context = super(SettingsPaymentAmount, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
-        context['this_project'] = self.get_project()
-        context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
-        context['order_group'] = OrderGroup.objects.get(pk=self.request.GET.get('group')) \
-            if self.request.GET.get('group') else OrderGroup.objects.first()
-        context['types_sel'] = UnitType.objects.filter(project=self.get_project())
-        if self.request.GET.get('type'):
-            context['types'] = context['types_sel'].filter(pk=self.request.GET.get('type'))
-        else:
-            context['types'] = context['types_sel']
-        context['floor_types'] = UnitFloorType.objects.filter(project=self.get_project())
-        context['prices'] = SalesPriceByGT.objects.filter(project=self.get_project())
-        sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
-        context['pay_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
-        context['pay_amounts'] = InstallmentPaymentAmount.objects.filter(sales_price__project=self.get_project()).order_by('sales_price', 'payment_order')
+    #     return project
 
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(SettingsPaymentAmount, self).get_context_data(**kwargs)
+    #     context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+    #     context['this_project'] = self.get_project()
+    #     context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
+    #     context['order_group'] = OrderGroup.objects.get(pk=self.request.GET.get('group')) \
+    #         if self.request.GET.get('group') else OrderGroup.objects.first()
+    #     context['types_sel'] = UnitType.objects.filter(project=self.get_project())
+    #     if self.request.GET.get('type'):
+    #         context['types'] = context['types_sel'].filter(pk=self.request.GET.get('type'))
+    #     else:
+    #         context['types'] = context['types_sel']
+    #     context['floor_types'] = UnitFloorType.objects.filter(project=self.get_project())
+    #     context['prices'] = SalesPriceByGT.objects.filter(project=self.get_project())
+    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
+    #     context['pay_orders'] = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
+        # context['pay_amounts'] = InstallmentPaymentAmount.objects.filter(sales_price__project=self.get_project()).order_by('sales_price', 'payment_order')
 
-    def post(self, request, *args, **kwargs):
+    #     return context
 
-        prices = SalesPriceByGT.objects.filter(project=self.get_project())
-        sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
-        pay_orders = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
+    # def post(self, request, *args, **kwargs):
 
-        for price in prices:
-            for po in pay_orders:
-                pay_amount = request.POST.get('pa_' + str(price.id) + '_' + str(po.id))
-                if pay_amount:
-                    amount_id = request.POST.get('pa_' + str(price.id) + '_' + str(po.id) + '_id')
-                    price = SalesPriceByGT.objects.get(pk=request.POST.get('pr_' + str(price.id) + '_' + str(po.id)))
-                    order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('po_' + str(price.id) + '_' + str(po.id)))
-                    if amount_id:
-                        amount = InstallmentPaymentAmount(pk=amount_id)
-                        amount.sales_price = price
-                        amount.payment_order = order
-                        amount.payment_amount = pay_amount
-                    else:
-                        amount = InstallmentPaymentAmount(sales_price = price,
-                                                          payment_order = order,
-                                                          payment_amount = pay_amount)
-                    amount.save()
+    #     prices = SalesPriceByGT.objects.filter(project=self.get_project())
+    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else '1'
+    #     pay_orders = InstallmentPaymentOrder.objects.filter(project=self.get_project(), pay_sort=sort)
 
-        project = str(self.get_project().id)
-        order_group = self.request.GET.get('group') \
-            if self.request.GET.get('group') else str(OrderGroup.objects.first().id)
-        type = self.request.GET.get('type') if self.request.GET.get('type') else ''
-        sort = self.request.GET.get('sort') if self.request.GET.get('sort') else ''
-        query_string = '?project='+ project +'&group=' + order_group + '&type=' + type + '&sort=' + sort
-        return redirect(reverse_lazy('rebs:project:set-payment-amount') + query_string)
+        # for price in prices:
+        #     for po in pay_orders:
+                # pay_amount = request.POST.get('pa_' + str(price.id) + '_' + str(po.id))
+                # if pay_amount:
+                #     amount_id = request.POST.get('pa_' + str(price.id) + '_' + str(po.id) + '_id')
+                #     price = SalesPriceByGT.objects.get(pk=request.POST.get('pr_' + str(price.id) + '_' + str(po.id)))
+                #     order = InstallmentPaymentOrder.objects.get(pk=request.POST.get('po_' + str(price.id) + '_' + str(po.id)))
+                #     if amount_id:
+                        # amount = InstallmentPaymentAmount(pk=amount_id)
+                #         amount.sales_price = price
+                #         amount.payment_order = order
+                #         amount.payment_amount = pay_amount
+                #     else:
+                        # amount = InstallmentPaymentAmount(sales_price = price,
+                        #                                   payment_order = order,
+                        #                                   payment_amount = pay_amount)
+                #     amount.save()
+
+    #     project = str(self.get_project().id)
+    #     order_group = self.request.GET.get('group') \
+    #         if self.request.GET.get('group') else str(OrderGroup.objects.first().id)
+    #     type = self.request.GET.get('type') if self.request.GET.get('type') else ''
+    #     sort = self.request.GET.get('sort') if self.request.GET.get('sort') else ''
+    #     query_string = '?project='+ project +'&group=' + order_group + '&type=' + type + '&sort=' + sort
+    #     return redirect(reverse_lazy('rebs:project:set-payment-amount') + query_string)
 
 
 class SiteManage(LoginRequiredMixin, ListView, FormView):

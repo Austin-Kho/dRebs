@@ -3,7 +3,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
 from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
-from .models import SalesPriceByGT, InstallmentPaymentOrder, InstallmentPaymentAmount
+from .models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 class CompanyBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -52,16 +52,11 @@ class ProjectCashBookAdmin(ImportExportMixin, admin.ModelAdmin):
     formatted_outlay.short_description = '출금액'
 
 
-class InstallmentPaymentAmountInline(ImportExportMixin, admin.TabularInline):
-    model = InstallmentPaymentAmount
-    extra = 1
-
 class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'order_group', 'unit_type', 'unit_floor_type', 'price_build', 'price_land', 'price_tax', 'price')
     list_display_links = ('project', 'unit_type', 'unit_floor_type')
     list_editable = ('price_build', 'price_land', 'price_tax', 'price')
     list_filter = ('project', 'order_group', 'unit_type')
-    inlines = (InstallmentPaymentAmountInline,)
 
 
 class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -71,11 +66,11 @@ class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('project', 'pay_name',)
 
 
-class InstallmentPaymentAmountAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'sales_price', 'payment_order', 'payment_amount')
-    list_display_links = ('sales_price', 'payment_order')
+class DownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'payment_amount')
+    list_display_links = ('project',)
     list_editable = ('payment_amount',)
-    list_filter = ('sales_price', 'payment_order',)
+    list_filter = ('unit_type',)
 
 
 admin.site.register(CompanyBankAccount, CompanyBankAccountAdmin)
@@ -84,4 +79,4 @@ admin.site.register(CashBook, CashBookAdmin)
 admin.site.register(ProjectCashBook, ProjectCashBookAdmin)
 admin.site.register(SalesPriceByGT, SalesPriceByGTAdmin)
 admin.site.register(InstallmentPaymentOrder, InstallmentPaymentOrderAdmin)
-admin.site.register(InstallmentPaymentAmount, InstallmentPaymentAmountAdmin)
+admin.site.register(DownPayment, DownPaymentAdmin)
