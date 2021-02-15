@@ -31,7 +31,7 @@
                         <td class="text-right">
                             {% if payment_due %}{{ payment_due|default:"-"|intcomma }}{% else %}-{% endif %}
                         </td>
-                        <td class="text-right">
+                        <td class="text-right {% if pay_sum_by_order and po.pay_code > 2 and not po.pay_due_date or po.pay_due_date > today %}text-primary{% endif %}">
                             {% ifequal pay_sum_by_order 0 %}-{% else %}
                                 {{ pay_sum_by_order|intcomma|default:"-" }}{% endifequal %}
                         </td>

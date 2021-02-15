@@ -562,6 +562,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         context['project_list'] = self.request.user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['types'] = UnitType.objects.filter(project=self.get_project())
+        context['today'] = datetime.today().date()
         contracts = Contract.objects.filter(project=self.get_project())
         if self.request.GET.get('type'):
             contracts = contracts.filter(contractunit__unit_type=self.request.GET.get('type'))
@@ -592,11 +593,9 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
         unpaid = 0  # 미납금
         pay_sum_by_order_list = []
         for po in context['payment_orders']:
-            pay_sum_by_order = payments.filter(installment_order=po).aggregate(Sum('income'))
-            pay_sum_by_order_list.append(pay_sum_by_order['income__sum']
-                                         if pay_sum_by_order['income__sum'] else 0)
-            if po.pay_code <= 2 or (po.pay_due_date and po.pay_due_date < datetime.today().date()):
-                unpaid += pay_sum_by_order['income__sum'] if pay_sum_by_order['income__sum'] else 0
+            pay_sum_by_order = payments.filter(installment_order=po).aggregate(Sum('income')) # 회차별 납부총액
+            pay_sum_by_order_list.append(pay_sum_by_order['income__sum'] if pay_sum_by_order['income__sum'] else 0)
+            unpaid += pay_sum_by_order['income__sum'] if pay_sum_by_order['income__sum'] else 0
         pay_sum_by_order_list = list(reversed(pay_sum_by_order_list))
         context['pay_sum_by_order_list'] = pay_sum_by_order_list
 
@@ -619,7 +618,6 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             this_price = sales_price.get(unit_floor_type=contract.contractunit.unitnumber.floor_type) \
                 if unit_set else contract.contractunit.unit_type.average_price
 
-            # Todo 회차별 납부금액 로직 변경
             # 1. 계약금
             down_order = payment_orders.filter(pay_sort='1')
             total_down = 0
@@ -656,6 +654,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             for po in context['payment_orders']:
                 payment_list.append(0)
 
+        context['this_price'] = this_price
         context['payment_list'] = list(reversed(payment_list))
         context['second_pay'] = contract.contractor.contract_date + timedelta(days=30) if contract else None
         context['unpaid'] = unpaid
