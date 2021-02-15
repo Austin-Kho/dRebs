@@ -247,6 +247,7 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
         return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
 
 
+# Todo 회차별 납입금 등록 페이지 -> 타입별 계약금 등록 페이지로 변경 작업
 class SettingsPaymentAmount(LoginRequiredMixin, TemplateView):
     pass
     """회차별 납입금 등록"""

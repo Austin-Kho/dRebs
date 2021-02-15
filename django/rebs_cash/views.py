@@ -623,6 +623,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             if unit_set:
                 context['this_price'] = this_price
 
+                # Todo 회차별 납부금액 로직 변경
                 for ia in this_price.installmentpaymentamount_set.all():
                     payment_list.append(ia.payment_amount)
                     if ia.payment_order.pay_code <= 2 or \
