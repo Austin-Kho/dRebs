@@ -12,7 +12,8 @@ from django.db.models import Sum
 from rebs_project.models import Project
 from rebs_contract.models import Contract
 from rebs_notice.models import SalesBillIssue
-from rebs_cash.models import SalesPriceByGT, ProjectCashBook, InstallmentPaymentOrder
+from rebs_cash.models import (SalesPriceByGT, ProjectCashBook,
+                              InstallmentPaymentOrder, DownPayment)
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
@@ -61,32 +62,57 @@ class ExportPdfBill(View):
             paid_list = ProjectCashBook.objects.filter(contract=contract).order_by('installment_order', 'deal_date')
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
-            this_amounts = this_price.installmentpaymentamount_set.all()  # 해당 건 전체 약정액
-            amount_sum = 0  # 저정회차까지 약정액 합계
-            for ta in this_amounts:
-                amount_sum += ta.payment_amount    # 저정회차까지 약정액 합계 (+)
-                if paid_sum >= amount_sum:         # 기 납부총액이 약정액보다 같거나 큰지 검사 ?????
-                    paid_order = ta.payment_order  # 최종 납부회차 구하기
-                if ta.payment_order.id == now_due_order: # 순회 회차가 지정회차와 같으면 순회중단
+            this_orders = InstallmentPaymentOrder.objects.filter(project=project) # 해당 건 전체 약정 회차
+
+            total_down = 0
+            total_medium = 0
+            total_cont_amount = 0   # 지정회차까지 약정액 합계
+            down_num = this_orders.filter(pay_sort='1').count()
+            bal_num = this_orders.filter(pay_sort='3').count()
+            for to in this_orders:
+                pay_amount = 0
+                if to.pay_sort == '1':
+                    try:
+                        dp = DownPayment.objects.get(project=project, order_group=contract.order_group,
+                                                     unit_type=contract.contractunit.unit_type)
+                        pay_amount = dp.payment_amount
+                    except:
+                        pn = round(down_num / 2)
+                        pay_amount = int(this_price * 0.1 / pn)
+                        total_down += pay_amount
+                if to.pay_sort == '2':
+                    pay_amount = int(this_price*0.1)
+                    total_medium += pay_amount
+                if to.pay_sort == '3':
+                    pay_amount = int((this_price - total_down - total_medium) / bal_num)
+
+                total_cont_amount += pay_amount    # 지정회차까지 약정액 합계 (+)
+                if paid_sum >= total_cont_amount:  # 기 납부총액이 약정액보다 같거나 큰지 검사
+                    paid_order = to.pay_code       # 최종 납부회차 구하기
+                if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
-            cont['paid_amounts'] = this_amounts.filter(payment_order__pay_code__lte=now_due_order)
-            payment_by_order = []
-            for pa in cont['paid_amounts']:
-                payment_by_order.append(paid_list.filter(installment_order=pa.payment_order).aggregate(Sum('income'))['income__sum'])
+            # cont['paid_amounts'] = this_amounts.filter(payment_order__pay_code__lte=now_due_order) # 지정회차까지 납부액
+            cont['paid_orders'] = this_orders.filter(pay_code__lte=now_due_order) # 지정회차까지 회차
+            payment_by_order = [] # 회차별 납부금액
+            for po in cont['paid_orders']:
+                payment_by_order.append(paid_list.filter(installment_order=po).aggregate(Sum('income'))['income__sum'])
             cont['payment_by_order'] = list(reversed(payment_by_order))
-            paid_amounts = this_amounts.filter(payment_order__pay_code__lte=paid_order.pay_code)
-            paid_amount_sum = paid_amounts.aggregate(Sum('payment_amount'))['payment_amount__sum'] # 완납회차까지 약정금
             # --------------------------------------------------------------
 
             # 3. 미납 회차 (지정회차 - 완납회차)
-            cont['second_date'] = contract.contractor.contract_date + timedelta(days=31)
-            unpaid_amounts_all = this_amounts.filter(payment_order__pay_code__gt=paid_order.pay_code)
-            cont['unpaid_amounts'] = unpaid_amounts = unpaid_amounts_all.filter(payment_order__pay_code__lte=now_due_order) # 지정 회차까지 약정액
+            cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
+
+            # unpaid_amounts_all = this_amounts.filter(payment_order__pay_code__gt=paid_order)
+            unpaid_orders_all = this_orders.filter(pay_code__gt=paid_order) # 최종 기납부회차 이후 납부회차
+            cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order) # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+
+            # Todo 고지서 디버그 --- 진행 중
             cont['unpaid_amounts_sum'] = unpaid_amounts_sum = unpaid_amounts.aggregate(Sum('payment_amount'))['payment_amount__sum']
+
             # --------------------------------------------------------------
 
             # 5. 미납 금액 (약정금액 - 납부금액)
-            cont['cal_unpaid'] = cal_unpaid = paid_sum - paid_amount_sum
+            cont['cal_unpaid'] = cal_unpaid = paid_sum - total_cont_amount
             cont['cal_unpaid_sum'] = cal_unpaid_sum = unpaid_amounts_sum - cal_unpaid
             cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
             cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
