@@ -147,7 +147,7 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
     pay_due_date = models.DateField('납부기한일', null=True, blank=True)
 
     def __str__(self):
-        return f'[{self.get_pay_sort_display()}] - {self.pay_name} {self.alias_name}'
+        return f'[{self.get_pay_sort_display()}] - {self.pay_name}'
 
     class Meta:
         ordering = ['-project', 'pay_code']

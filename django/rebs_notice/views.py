@@ -11,7 +11,7 @@ from .models import SalesBillIssue
 from .forms import SalesBillIssueForm
 from rebs_project.models import Project, UnitType, UnitNumber
 from rebs_contract.models import OrderGroup, Contractor
-from rebs_cash.models import ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder
+from rebs_cash.models import ProjectCashBook, SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
@@ -123,23 +123,67 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                 unit_set = None
             group = contract.order_group
             type = contract.contractunit.unit_type
-            prices = SalesPriceByGT.objects.filter(project=self.get_project(), order_group=group, unit_type=type)
+
+            prices = SalesPriceByGT.objects.filter(project=self.get_project(), order_group=group, unit_type=type) # 타입별 분양가 그룹
+            price = contract.contractunit.unit_type.average_price # 동호 미지정시 타입별 평균 분양가
             if unit_set:
                 floor = contract.contractunit.unitnumber.floor_type
-                prices = prices.filter(unit_floor_type=floor)
-            all_pay = prices.first().installmentpaymentamount_set.all()
-            now_pay = all_pay.filter(payment_order__pay_code__lte=now_pay_code)
-            pay_by_order = 0
-            payid_by = payment_by_cont if payment_by_cont else 0
-            for ap in all_pay:
-                pay_by_order += ap.payment_amount
-                if payid_by >= pay_by_order:
-                    pbo_string = ap.payment_order.pay_name
-                else:
-                    break
+                price = prices.get(unit_floor_type=floor) # 동호 지정시 해당 동호 분양가
+
+            # all_pay = price.installmentpaymentamount_set.all() # 분양가 -> 회차별 납입가 그룹
+            # now_pay = all_pay.filter(payment_order__pay_code__lte=now_pay_code) # 회차별 납입가 중 -> 현재 회차까지 그룹
+            # -----
+
+            all_pay_order = InstallmentPaymentOrder.objects.filter(project=self.get_project())
+            now_pay = 0
+            now_pay_order = all_pay_order.filter(pay_code__lte=now_pay_code)
+
+            pay_by_order = 0 # 회차별 납입액 합계
+            payid_by = payment_by_cont if payment_by_cont else 0 # 해당 계약건 총 기납입액
+
+            balance_order = all_pay_order.filter(pay_sort='3')
+            for apo in all_pay_order:
+
+                if apo.pay_sort == '1': # 계약금일때
+                    try:
+                        dp = DownPayment.objects.get(project=self.get_project(),
+                                                     order_group=contract.order_group,
+                                                     unit_type=contract.contractunit.unit_type)
+                        down_payment = dp.payment_amount
+                    except:
+                        pay_num = all_pay_order.filter(pay_sort='1').count()
+                        pn = round(pay_num / 2)
+                        down_payment = int(price * 0.1 / pn)
+                    if apo.pay_code <= now_pay_code:
+                        now_pay += down_payment
+                    pay_by_order += down_payment # 회차별 납입액 가산
+                    if payid_by >= pay_by_order:
+                        pbo_string = apo.pay_name
+                    else:
+                        break
+
+                if apo.pay_sort == '2': # 중도금일때
+                    medium_amount = int(price * 0.1)
+                    pay_by_order += medium_amount # 회차별 납입액 가산
+                    if apo.pay_code <= now_pay_code:
+                        now_pay += down_payment
+                    if payid_by >= pay_by_order:
+                        pbo_string = apo.pay_name
+                    else:
+                        break
+
+                if apo.pay_sort == '3': # 잔금일때
+                    balance_amount = int((price - pay_by_order) / balance_order.count())
+                    pay_by_order += balance_amount # 회차별 납입액 가산
+                    if apo.pay_code <= now_pay_code:
+                        now_pay += down_payment
+                    if payid_by >= pay_by_order:
+                        pbo_string = apo.pay_name
+                    else:
+                        break
+
             paid_order.append(pbo_string)
-            now_pay_sum = now_pay.aggregate(Sum('payment_amount'))['payment_amount__sum']
-            amounts.append(now_pay_sum)
+            amounts.append(now_pay)
         context['total_pay_by_contract'] = list(reversed(total_pay_by_contract))
         context['amounts'] = list(reversed(amounts))
         context['paid_order'] = list(reversed(paid_order))
