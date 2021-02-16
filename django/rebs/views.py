@@ -32,7 +32,7 @@ class ExportPdfBill(View):
         context['issue_date'] = request.GET.get('date')
         context['bill'] = SalesBillIssue.objects.get(project_id=project)
 
-        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project=project)
+        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project_id=project)
         now_due_order = context['bill'].now_payment_order.pay_code if context['bill'].now_payment_order else 2
         context['contractor_id'] = contractor_id = request.GET.get('seq').split('-')
         context['data_list'] = []
@@ -50,12 +50,13 @@ class ExportPdfBill(View):
             cont['unit'] = unit_set
             group = contract.order_group
             type = contract.contractunit.unit_type
-            prices = SalesPriceByGT.objects.filter(project=project, order_group=group, unit_type=type)
+            this_price = contract.contractunit.unit_type.average_price
+            # this_price = '동호 지정 후 고지'
+            prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
             if unit_set:
                 floor = contract.contractunit.unitnumber.floor_type
-                prices = prices.filter(unit_floor_type=floor)
-            this_price = prices.first()
-            cont['price'] = this_price if unit_set else "동호 지정 후 고지"
+                this_price = prices.get(unit_floor_type=floor).price
+            cont['price'] = this_price
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
@@ -64,21 +65,24 @@ class ExportPdfBill(View):
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
             this_orders = InstallmentPaymentOrder.objects.filter(project=project) # 해당 건 전체 약정 회차
 
-            total_down = 0
-            total_medium = 0
+            total_down = 0 # 계약금 누계
+            total_medium = 0 # 중도금 누계
+            paid_order_amount = 0 # 완납회차까지 약정액 합계
             total_cont_amount = 0   # 지정회차까지 약정액 합계
+            pm_cost_sum = 0 # pm 용역비 누계
+
             down_num = this_orders.filter(pay_sort='1').count()
             bal_num = this_orders.filter(pay_sort='3').count()
             for to in this_orders:
                 pay_amount = 0
                 if to.pay_sort == '1':
                     try:
-                        dp = DownPayment.objects.get(project=project, order_group=contract.order_group,
+                        dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
                                                      unit_type=contract.contractunit.unit_type)
                         pay_amount = dp.payment_amount
                     except:
                         pn = round(down_num / 2)
-                        pay_amount = int(this_price * 0.1 / pn)
+                        pay_amount = int(this_price*0.1 / pn)
                         total_down += pay_amount
                 if to.pay_sort == '2':
                     pay_amount = int(this_price*0.1)
@@ -89,6 +93,10 @@ class ExportPdfBill(View):
                 total_cont_amount += pay_amount    # 지정회차까지 약정액 합계 (+)
                 if paid_sum >= total_cont_amount:  # 기 납부총액이 약정액보다 같거나 큰지 검사
                     paid_order = to.pay_code       # 최종 납부회차 구하기
+                    paid_order_amount += pay_amount # 완납회차까지 약정액 누계
+                if to.is_pm_cost:
+                    pm_cost_sum += pay_amount # pm 용역비 누계
+
                 if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
             # cont['paid_amounts'] = this_amounts.filter(payment_order__pay_code__lte=now_due_order) # 지정회차까지 납부액
@@ -101,14 +109,9 @@ class ExportPdfBill(View):
 
             # 3. 미납 회차 (지정회차 - 완납회차)
             cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
-
-            # unpaid_amounts_all = this_amounts.filter(payment_order__pay_code__gt=paid_order)
             unpaid_orders_all = this_orders.filter(pay_code__gt=paid_order) # 최종 기납부회차 이후 납부회차
             cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order) # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
-
-            # Todo 고지서 디버그 --- 진행 중
-            cont['unpaid_amounts_sum'] = unpaid_amounts_sum = unpaid_amounts.aggregate(Sum('payment_amount'))['payment_amount__sum']
-
+            cont['unpaid_amounts_sum'] = unpaid_amounts_sum = total_cont_amount - paid_order_amount
             # --------------------------------------------------------------
 
             # 5. 미납 금액 (약정금액 - 납부금액)
@@ -117,18 +120,18 @@ class ExportPdfBill(View):
             cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
             cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
             cont['cal_due_payment'] = cal_unpaid_sum + arrears_sum
-            pm_cost_sum = unpaid_amounts.filter(payment_order__is_pm_cost=True).aggregate(Sum('payment_amount'))['payment_amount__sum']
-            cont['pm_cost_sum'] = pm_cost_sum if pm_cost_sum else 0
+            cont['pm_cost_sum'] = pm_cost_sum
 
             # 6. 잔여 약정 목록
-            cont['remaining_orders'] = remaining_orders = this_amounts.filter(payment_order__pay_code__gt=now_due_order)
+            # Todo 고지서 디버그 --- 진행 중
+            cont['remaining_orders'] = remaining_orders = this_orders.filter(pay_code__gt=now_due_order)
             if not unit_set:
-                cont['remaining_orders'] = remaining_orders.filter(payment_order__pay_sort='1')
+                cont['remaining_orders'] = remaining_orders.filter(pay_sort='1')
             cont['modi_dates'] = 0 # 선납 or 지연 일수
             cont['modifi'] = 0 # 선납할인 or 연체 가산금계산
             cont['modifi_sum'] = 0 # 가감액 합계
 
-            num = unpaid_amounts.count() + 1 if cont['pm_cost_sum'] else unpaid_amounts.count()
+            num = unpaid_orders.count() + 1 if cont['pm_cost_sum'] else unpaid_orders.count()
             rem_blank = 0 if unit_set else remaining_orders.count()
             blank_line = (14 - (num + pay_orders.count())) + rem_blank
             cont['blank_line'] = '*' * blank_line
