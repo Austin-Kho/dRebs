@@ -82,32 +82,32 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="16%;">연체가산금</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="20%;">납부 총액</td>
     </tr>
-    {% for un_amount in data.unpaid_amounts %}
+    {% for un_order in data.unpaid_orders %}
         <tr>
             <!--납 부 회 차-->
-            <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_amount.payment_order }}</td>
+            <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_order }}</td>
             <!--납 부 기 한-->
             <td style="padding: 3px 0px; border:1px solid black; text-align:center;">
-                {{ un_amount.payment_order.pay_due_date|default:data.second_date }}
+                {{ un_order.payment_order.pay_due_date|default:data.second_date }}
             </td>
-            <!--금 회 약 정-->
-            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ un_amount|intcomma }}</td>
-            <!--미 납 금 액-->
+            <!--금 회 약 정 ??????-->
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ 60000000|intcomma }}</td>
+            <!--미 납 금 액 ?????-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {{ un_amount.payment_amount|sub:data.cal_unpaid|intcomma }}
+                    {{ un_order.payment_amount|sub:data.cal_unpaid|intcomma }}
                 {% else %}
-                    {{ un_amount|intcomma }}
+                    {{ un_order|intcomma }}
                 {% endif %}
             </td>
             <!--연 체 금 액-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.arrears|default:"-" }}</td>
-            <!--납 부 총 액-->
+            <!--납 부 총 액 ?????-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {{ un_amount.payment_amount|sub:data.cal_unpaid|add:data.arrears|intcomma }}
+                    {{ un_order.payment_amount|sub:data.cal_unpaid|add:data.arrears|intcomma }}
                 {% else %}
-                    {{ un_amount.payment_amount|add:data.arrears|intcomma }}
+                    {{ un_order.payment_amount|add:data.arrears|intcomma }}
                 {% endif %}
             </td>
         </tr>

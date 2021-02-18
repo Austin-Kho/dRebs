@@ -99,7 +99,6 @@ class ExportPdfBill(View):
 
                 if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
-            # cont['paid_amounts'] = this_amounts.filter(payment_order__pay_code__lte=now_due_order) # 지정회차까지 납부액
             cont['paid_orders'] = this_orders.filter(pay_code__lte=now_due_order) # 지정회차까지 회차
             payment_by_order = [] # 회차별 납부금액
             for po in cont['paid_orders']:
@@ -123,13 +122,15 @@ class ExportPdfBill(View):
             cont['pm_cost_sum'] = pm_cost_sum
 
             # 6. 잔여 약정 목록
-            # Todo 고지서 디버그 --- 진행 중
             cont['remaining_orders'] = remaining_orders = this_orders.filter(pay_code__gt=now_due_order)
             if not unit_set:
                 cont['remaining_orders'] = remaining_orders.filter(pay_sort='1')
             cont['modi_dates'] = 0 # 선납 or 지연 일수
-            cont['modifi'] = 0 # 선납할인 or 연체 가산금계산
+            cont['modifi'] = 0     # 선납할인 or 연체 가산금계산
             cont['modifi_sum'] = 0 # 가감액 합계
+
+            # 7. sort별 약정액
+            # Todo 고지서 디버그 --- 진행
 
             num = unpaid_orders.count() + 1 if cont['pm_cost_sum'] else unpaid_orders.count()
             rem_blank = 0 if unit_set else remaining_orders.count()
