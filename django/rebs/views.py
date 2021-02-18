@@ -42,53 +42,61 @@ class ExportPdfBill(View):
             cont = {}
             cont['contract'] = contract = Contract.objects.get(contractor__id=id) # 해당 계약건
 
-            # 1. 분양가 구하기
-            try:
-                unit_set = contract.contractunit.unitnumber
+            # 1. 차수/타입별/동호수별 분양가 및 계약금 + 중도금 + 잔금 구하기
+            group = contract.order_group # 차수
+            type = contract.contractunit.unit_type # 타입
+            try: # 동호수
+               cont['unit'] = unit_set = contract.contractunit.unitnumber
             except Exception:
-                unit_set = None
-            cont['unit'] = unit_set
-            group = contract.order_group
-            type = contract.contractunit.unit_type
+                cont['unit'] = unit_set = None
+            # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
             this_price = contract.contractunit.unit_type.average_price
-            # this_price = '동호 지정 후 고지'
             prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
             if unit_set:
                 floor = contract.contractunit.unitnumber.floor_type
                 this_price = prices.get(unit_floor_type=floor).price
             cont['price'] = this_price
+            # Todo 고지서 디버그 --- 진행
+            # 계약금 구하기
+            this_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
+            down_num = this_orders.filter(pay_sort='1').count()
+            try:
+                dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
+                                             unit_type=contract.contractunit.unit_type)
+                cont['down'] = down = dp.payment_amount
+            except:
+                pn = round(down_num / 2)
+                cont['down'] = down = int(this_price * 0.1 / pn)
+            down_total = down * down_num
+
+            # 중도금 구하기
+            med_num = this_orders.filter(pay_sort='2').count()
+            cont['medium'] = medium = int(this_price*0.1)
+            medium_total = medium * med_num
+
+            # 잔금 구하기
+            bal_num = this_orders.filter(pay_sort='3').count()
+            cont['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
+
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
             paid_list = ProjectCashBook.objects.filter(contract=contract).order_by('installment_order', 'deal_date')
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
-            this_orders = InstallmentPaymentOrder.objects.filter(project=project) # 해당 건 전체 약정 회차
 
-            total_down = 0 # 계약금 누계
-            total_medium = 0 # 중도금 누계
             paid_order_amount = 0 # 완납회차까지 약정액 합계
             total_cont_amount = 0   # 지정회차까지 약정액 합계
             pm_cost_sum = 0 # pm 용역비 누계
 
-            down_num = this_orders.filter(pay_sort='1').count()
-            bal_num = this_orders.filter(pay_sort='3').count()
             for to in this_orders:
                 pay_amount = 0
                 if to.pay_sort == '1':
-                    try:
-                        dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
-                                                     unit_type=contract.contractunit.unit_type)
-                        pay_amount = dp.payment_amount
-                    except:
-                        pn = round(down_num / 2)
-                        pay_amount = int(this_price*0.1 / pn)
-                        total_down += pay_amount
+                    pay_amount = down
                 if to.pay_sort == '2':
-                    pay_amount = int(this_price*0.1)
-                    total_medium += pay_amount
+                    pay_amount = medium
                 if to.pay_sort == '3':
-                    pay_amount = int((this_price - total_down - total_medium) / bal_num)
+                    pay_amount = balance
 
                 total_cont_amount += pay_amount    # 지정회차까지 약정액 합계 (+)
                 if paid_sum >= total_cont_amount:  # 기 납부총액이 약정액보다 같거나 큰지 검사
@@ -128,9 +136,6 @@ class ExportPdfBill(View):
             cont['modi_dates'] = 0 # 선납 or 지연 일수
             cont['modifi'] = 0     # 선납할인 or 연체 가산금계산
             cont['modifi_sum'] = 0 # 가감액 합계
-
-            # 7. sort별 약정액
-            # Todo 고지서 디버그 --- 진행
 
             num = unpaid_orders.count() + 1 if cont['pm_cost_sum'] else unpaid_orders.count()
             rem_blank = 0 if unit_set else remaining_orders.count()
