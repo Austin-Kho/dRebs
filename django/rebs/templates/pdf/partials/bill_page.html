@@ -19,14 +19,16 @@
     </tr>
     <tr>
         <td style="padding: 5px 15px 2px;">수 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;신 :</td>
-        <td style="padding: 5px 0 2px; font-size:13px;" colspan="2"><strong>{{ data.contract.contractor.name }} 님</strong></td>
+        <td style="padding: 5px 0 2px; font-size:13px;" colspan="2"><strong>{{ data.contract.contractor.name }}
+            님</strong></td>
     </tr>
     <tr>
         <td style="padding: 5px 15px 2px;">참 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;조 :</td>
         <td colspan="2"></td>
     </tr>
     <tr>
-        <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :</td>
+        <td style="padding: 2px 15px  8px; border-bottom: 2px solid #000;">제 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목 :
+        </td>
         <td style="padding: 2px 0 8px; font-size:14px; border-bottom: 2px solid #000;" colspan="2">{{ bill.title }}</td>
     </tr>
 </table>
@@ -90,24 +92,35 @@
             <td style="padding: 3px 0px; border:1px solid black; text-align:center;">
                 {{ un_order.payment_order.pay_due_date|default:data.second_date }}
             </td>
-            <!--금 회 약 정 ??????-->
-            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ 60000000|intcomma }}</td>
+            <!--금 회 약 정-->
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
+                {% if un_order.pay_sort == '1' %}{{ data.down|intcomma }}{% elif un_order.pay_sort == '2' %}{{ data.medium|intcomma }}{% else %}{{ data.balance|intcomma }}{% endif %}
+            </td>
             <!--미 납 금 액 ?????-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {{ un_order.payment_amount|sub:data.cal_unpaid|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|sub:data.cal_unpaid|intcomma }}
+                    {% elif un_order.pay_sort == '2' %}{{ data.medium|sub:data.cal_unpaid|intcomma }}
+                    {% else %}{{ data.balance|sub:data.cal_unpaid|intcomma }}
+                    {% endif %}
                 {% else %}
-                    {{ un_order|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|intcomma }}{% elif un_order.pay_sort == '2' %}{{ data.medium|intcomma }}{% else %}{{ data.balance|intcomma }}{% endif %}
                 {% endif %}
             </td>
             <!--연 체 금 액-->
-            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.arrears|default:"-" }}</td>
+            <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.arrears|default:"-"|intcomma }}</td>
             <!--납 부 총 액 ?????-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {{ un_order.payment_amount|sub:data.cal_unpaid|add:data.arrears|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|sub:data.cal_unpaid|intcomma }}
+                    {% elif un_order.pay_sort == '2' %}{{ data.medium|sub:data.cal_unpaid|intcomma }}
+                    {% else %}{{ data.balance|sub:data.cal_unpaid|intcomma }}
+                    {% endif %}
                 {% else %}
-                    {{ un_order.payment_amount|add:data.arrears|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|add:data.arrears|intcomma }}
+                    {% elif un_order.pay_sort == '2' %}{{ data.medium|add:data.arrears|intcomma }}
+                    {% else %}{{ data.balance|add:data.arrears|intcomma }}
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>
@@ -225,7 +238,7 @@
     {% for rem_order in data.remaining_orders %}
         <tr>
             <td style="text-align:center; border-left: solid 1px;">{{ rem_order.payment_order.pay_name }}</td>
-                <td style="text-align:center;">{{ rem_order.payment_order.pay_due_date|date:"Y-m-d" }}</td>
+            <td style="text-align:center;">{{ rem_order.payment_order.pay_due_date|date:"Y-m-d" }}</td>
             <td style="text-align:right;">{{ rem_order.payment_amount|default:"-"|intcomma }}</td>
             <td style="border-right: solid 1px;" colspan="6"></td>
         </tr>

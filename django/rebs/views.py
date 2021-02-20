@@ -46,7 +46,7 @@ class ExportPdfBill(View):
             group = contract.order_group # 차수
             type = contract.contractunit.unit_type # 타입
             try: # 동호수
-               cont['unit'] = unit_set = contract.contractunit.unitnumber
+                cont['unit'] = unit_set = contract.contractunit.unitnumber
             except Exception:
                 cont['unit'] = unit_set = None
             # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
@@ -56,7 +56,6 @@ class ExportPdfBill(View):
                 floor = contract.contractunit.unitnumber.floor_type
                 this_price = prices.get(unit_floor_type=floor).price
             cont['price'] = this_price
-            # Todo 고지서 디버그 --- 진행
             # 계약금 구하기
             this_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
             down_num = this_orders.filter(pay_sort='1').count()
@@ -78,6 +77,7 @@ class ExportPdfBill(View):
             bal_num = this_orders.filter(pay_sort='3').count()
             cont['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
 
+            # Todo 고지서 디버그 --- 진행
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
