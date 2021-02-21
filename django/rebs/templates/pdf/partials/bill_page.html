@@ -96,12 +96,12 @@
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if un_order.pay_sort == '1' %}{{ data.down|intcomma }}{% elif un_order.pay_sort == '2' %}{{ data.medium|intcomma }}{% else %}{{ data.balance|intcomma }}{% endif %}
             </td>
-            <!--미 납 금 액 ?????-->
+            <!--미 납 금 액-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {% if un_order.pay_sort == '1' %}{{ data.down|sub:data.cal_unpaid|intcomma }}
-                    {% elif un_order.pay_sort == '2' %}{{ data.medium|sub:data.cal_unpaid|intcomma }}
-                    {% else %}{{ data.balance|sub:data.cal_unpaid|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|add:data.cal_unpaid|intcomma }}
+                    {% elif un_order.pay_sort == '2' %}{{ data.medium|add:data.cal_unpaid|intcomma }}
+                    {% else %}{{ data.balance|add:data.cal_unpaid|intcomma }}
                     {% endif %}
                 {% else %}
                     {% if un_order.pay_sort == '1' %}{{ data.down|intcomma }}{% elif un_order.pay_sort == '2' %}{{ data.medium|intcomma }}{% else %}{{ data.balance|intcomma }}{% endif %}
@@ -112,9 +112,9 @@
             <!--납 부 총 액 ?????-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
-                    {% if un_order.pay_sort == '1' %}{{ data.down|sub:data.cal_unpaid|intcomma }}
-                    {% elif un_order.pay_sort == '2' %}{{ data.medium|sub:data.cal_unpaid|intcomma }}
-                    {% else %}{{ data.balance|sub:data.cal_unpaid|intcomma }}
+                    {% if un_order.pay_sort == '1' %}{{ data.down|add:data.cal_unpaid|add:data.arrears|intcomma }}
+                    {% elif un_order.pay_sort == '2' %}{{ data.medium|add:data.cal_unpaid|add:data.arrears|intcomma }}
+                    {% else %}{{ data.balance|add:data.cal_unpaid|add:data.arrears|intcomma }}
                     {% endif %}
                 {% else %}
                     {% if un_order.pay_sort == '1' %}{{ data.down|add:data.arrears|intcomma }}
@@ -130,7 +130,7 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.unpaid_amounts_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.arrears_sum|default:"-"|intcomma }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_due_payment|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.arrears_sum|default:"-"|intcomma }}</td>
     </tr>
 </table>
 

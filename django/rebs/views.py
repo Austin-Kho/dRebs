@@ -122,11 +122,10 @@ class ExportPdfBill(View):
             # --------------------------------------------------------------
 
             # 5. 미납 금액 (약정금액 - 납부금액)
-            cont['cal_unpaid'] = cal_unpaid = paid_sum - total_cont_amount
-            cont['cal_unpaid_sum'] = cal_unpaid_sum = unpaid_amounts_sum - cal_unpaid
+            cont['cal_unpaid'] = cal_unpaid = paid_order_amount - paid_sum
+            cont['cal_unpaid_sum'] = cal_unpaid_sum = total_cont_amount - paid_sum
             cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
             cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
-            cont['cal_due_payment'] = cal_unpaid_sum + arrears_sum
             cont['pm_cost_sum'] = pm_cost_sum
 
             # 6. 잔여 약정 목록
