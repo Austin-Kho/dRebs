@@ -66,7 +66,7 @@
             {% endif %}
         </td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ data.contract.contractunit.unit_type }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">{{ data.price|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %}; ">{% if data.unit %}{{ data.price|intcomma }}{% else %}동호 지정 후 고지{% endif %}</td>
     </tr>
 </table>
 
@@ -207,19 +207,29 @@
         <td colspan="9" style="padding-bottom: 5px; border-left: solid 1px; border-right: solid 1px;"></td>
     </tr>
 
-    {% for paid_amount in data.paid_amounts %}
+    {% for paid_order in data.paid_orders %}
         {% with paid_cash=data.payment_by_order.pop %}
             <tr>
-                <td style="text-align:center; border-left: solid 1px;">{{ paid_amount.payment_order.pay_name }}</td>
+                <td style="text-align:center; border-left: solid 1px;">{{ paid_order.pay_name }}</td>
                 <td style="text-align:center;">
-                    {% if paid_amount.payment_order.pay_code == 2 %}
+                    {% if paid_order.pay_code == 2 %}
                         {{ data.second_date|date:"Y-m-d" }}
                     {% else %}
-                        {{ paid_amount.payment_order.pay_due_date|date:"Y-m-d" }}
+                        {{ paid_order.pay_due_date|date:"Y-m-d" }}
                     {% endif %}
                 </td>
-                <td style="text-align:right;">{{ paid_amount.payment_amount|intcomma }}</td>
-                <td style="text-align:center; padding-right:1px;">{{ paid_amount.deal_date|date:"Y-m-d" }}</td>
+                <td style="text-align:right;">
+                    {% if paid_order.pay_sort == '1' %}{{ data.down|intcomma }}
+                    {% elif paid_order.pay_sort == '2' %}{{ data.medium|intcomma }}
+                    {% else %}{{ data.balance|intcomma }}
+                    {% endif %}
+                </td>
+
+                <td style="text-align:center; padding-right:1px;">
+                    {# Todo 수납일자 로직 작성  #}
+                    {{ paid_cash.deal_date|date:"Y-m-d" }}
+                </td>
+
                 <td style="text-align:right;">{{ paid_cash|default:"-"|intcomma }}</td>
                 <td style="text-align:right;">{{ data.modi_dates|default:"-"|intcomma }}</td>
                 <td style="padding-right:5px; text-align:right;">{{ data.modifi|default:"-"|intcomma }}</td>
@@ -237,9 +247,14 @@
 
     {% for rem_order in data.remaining_orders %}
         <tr>
-            <td style="text-align:center; border-left: solid 1px;">{{ rem_order.payment_order.pay_name }}</td>
-            <td style="text-align:center;">{{ rem_order.payment_order.pay_due_date|date:"Y-m-d" }}</td>
-            <td style="text-align:right;">{{ rem_order.payment_amount|default:"-"|intcomma }}</td>
+            <td style="text-align:center; border-left: solid 1px;">{{ rem_order.pay_name }}</td>
+            <td style="text-align:center;">{{ rem_order.pay_due_date|date:"Y-m-d" }}</td>
+            <td style="text-align:right;">
+                {% if rem_order.pay_sort == '1' %}{{ data.down|intcomma }}
+                {% elif rem_order.pay_sort == '2' %}{{ data.medium|intcomma }}
+                {% else %}{{ data.balance|intcomma }}
+                {% endif %}
+            </td>
             <td style="border-right: solid 1px;" colspan="6"></td>
         </tr>
     {% endfor %}
@@ -249,7 +264,7 @@
     <tr>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;">합 계</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:{% if data.unit %}right{% else %}center{% endif %};"
-            colspan="2">{{ data.price|intcomma }}</td>
+            colspan="2">{% if data.unit %}{{ data.price|intcomma }}{% else %}동호 지정 후 고지{% endif %}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;"
             colspan="2">{{ data.paid_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.test|default:"-" }}</td>
