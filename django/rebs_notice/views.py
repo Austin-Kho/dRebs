@@ -140,7 +140,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
 
             pay_by_order = 0 # 회차별 납입액 합계
             payid_by = payment_by_cont if payment_by_cont else 0 # 해당 계약건 총 기납입액
-
+            pbo_string = '계약금미납'
             balance_order = all_pay_order.filter(pay_sort='3')
             for apo in all_pay_order:
 
