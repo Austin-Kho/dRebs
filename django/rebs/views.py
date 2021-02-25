@@ -76,11 +76,10 @@ class ExportPdfBill(View):
             # 잔금 구하기
             bal_num = this_orders.filter(pay_sort='3').count()
             cont['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
-
-            # Todo 고지서 디버그 --- 진행
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
+            # Todo 회차별 수납 완료일자 구하기 로직 작성하기
             paid_list = ProjectCashBook.objects.filter(contract=contract).order_by('installment_order', 'deal_date')
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
@@ -125,6 +124,7 @@ class ExportPdfBill(View):
             # 5. 미납 금액 (약정금액 - 납부금액)
             cont['cal_unpaid'] = cal_unpaid = paid_order_amount - paid_sum
             cont['cal_unpaid_sum'] = cal_unpaid_sum = total_cont_amount - paid_sum
+            # Todo 연체료 및 할인료 계산 로직 작성하기
             cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
             cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
             cont['pm_cost_sum'] = pm_cost_sum
