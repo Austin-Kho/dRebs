@@ -30,9 +30,9 @@ class ExportPdfBill(View):
         context = {}
         project = request.GET.get('project')
         context['issue_date'] = request.GET.get('date')
-        context['bill'] = SalesBillIssue.objects.get(project_id=project)
+        context['bill'] = SalesBillIssue.objects.get(project=project)
 
-        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project_id=project)
+        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project=project)
         now_due_order = context['bill'].now_payment_order.pay_code if context['bill'].now_payment_order else 2
         context['contractor_id'] = contractor_id = request.GET.get('seq').split('-')
         context['data_list'] = []
@@ -51,7 +51,7 @@ class ExportPdfBill(View):
                 cont['unit'] = unit_set = None
             # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
             this_price = contract.contractunit.unit_type.average_price
-            prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
+            prices = SalesPriceByGT.objects.filter(project=project, order_group=group, unit_type=type)
             if unit_set:
                 floor = contract.contractunit.unitnumber.floor_type
                 this_price = prices.get(unit_floor_type=floor).price
@@ -60,7 +60,7 @@ class ExportPdfBill(View):
             this_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
             down_num = this_orders.filter(pay_sort='1').count()
             try:
-                dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
+                dp = DownPayment.objects.get(project=project, order_group=contract.order_group,
                                              unit_type=contract.contractunit.unit_type)
                 cont['down'] = down = dp.payment_amount
             except:
@@ -85,6 +85,7 @@ class ExportPdfBill(View):
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
 
+            paid_order = 0
             paid_order_amount = 0 # 완납회차까지 약정액 합계
             total_cont_amount = 0   # 지정회차까지 약정액 합계
             pm_cost_sum = 0 # pm 용역비 누계
