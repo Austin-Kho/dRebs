@@ -109,7 +109,7 @@
             </td>
             <!--연 체 금 액-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.arrears|default:"-"|intcomma }}</td>
-            <!--납 부 총 액 ?????-->
+            <!--납 부 총 액-->
             <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                 {% if forloop.first %}
                     {% if un_order.pay_sort == '1' %}{{ data.down|add:data.cal_unpaid|add:data.arrears|intcomma }}
@@ -153,7 +153,7 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account1 }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number1 }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; " colspan="2">{{ bill.bank_host1 }}</td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_due_payment|sub:data.pm_cost_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.arrears_sum|sub:data.pm_cost_sum|default:"-"|intcomma }}</td>
     </tr>
     {% if data.pm_cost_sum %}
         <tr>
