@@ -108,14 +108,32 @@ class ExportPdfBill(View):
                 if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
             cont['paid_orders'] = this_orders.filter(pay_code__lte=now_due_order) # 지정회차까지 회차
+            due_date_by_order = [] # 회차별 납부기한
             payment_by_order = [] # 회차별 납부금액
+            paid_date_by_order = [] # 회차별 완납일자
+            adjustment_days = [] # 회차별 선납지연 일수
             for po in cont['paid_orders']:
+                if po.pay_time == 1:
+                    due_date = contract.contractor.contract_date
+                elif po.pay_time == 2:
+                    due_date = contract.contractor.contract_date + timedelta(days=30)
+                else:
+                    due_date = po.pay_due_date
+                due_date_by_order.append(due_date)
                 payment_by_order.append(paid_list.filter(installment_order=po).aggregate(Sum('income'))['income__sum'])
+                paid_date = paid_list.filter(installment_order=po).latest('deal_date')
+                paid_date_by_order.append(paid_date.deal_date)
+                ad_days = paid_date-due_date
+                adjustment_days.append(ad_days.days)
+            cont['due_date_by_order'] = list(reversed(due_date_by_order))
             cont['payment_by_order'] = list(reversed(payment_by_order))
+            cont['paid_date_by_order'] = list(reversed(paid_date_by_order))
+            cont['adjustment_days'] = list(reversed(adjustment_days))
+            cont['pm_cost_sum'] = pm_cost_sum
             # --------------------------------------------------------------
 
             # 3. 미납 회차 (지정회차 - 완납회차)
-            cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
+            # cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
             unpaid_orders_all = this_orders.filter(pay_code__gt=paid_order) # 최종 기납부회차 이후 납부회차
             cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order) # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
             cont['unpaid_amounts_sum'] = unpaid_amounts_sum = total_cont_amount - paid_order_amount
@@ -125,9 +143,10 @@ class ExportPdfBill(View):
             cont['cal_unpaid'] = cal_unpaid = paid_order_amount - paid_sum
             cont['cal_unpaid_sum'] = cal_unpaid_sum = total_cont_amount - paid_sum
             # Todo 연체료 및 할인료 계산 로직 작성하기
-            cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
-            cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
-            cont['pm_cost_sum'] = pm_cost_sum
+            dq_rate = 0.05 # 연체율
+            dc_rate = 0.05 # 할인율
+            cont['adjustment'] = 0 # 연체/할인료 - 향후 연체료 계산 변수
+            cont['adjustment_sum'] = 0 # 연체/할인료 합계
 
             # 6. 잔여 약정 목록
             cont['remaining_orders'] = remaining_orders = this_orders.filter(pay_code__gt=now_due_order)
