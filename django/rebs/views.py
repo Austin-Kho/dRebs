@@ -30,9 +30,9 @@ class ExportPdfBill(View):
         context = {}
         project = request.GET.get('project')
         context['issue_date'] = request.GET.get('date')
-        context['bill'] = SalesBillIssue.objects.get(project=project)
+        context['bill'] = SalesBillIssue.objects.get(project_id=project)
 
-        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project=project)
+        context['pay_orders'] = pay_orders = InstallmentPaymentOrder.objects.filter(project_id=project)
         now_due_order = context['bill'].now_payment_order.pay_code if context['bill'].now_payment_order else 2
         context['contractor_id'] = contractor_id = request.GET.get('seq').split('-')
         context['data_list'] = []
@@ -51,7 +51,7 @@ class ExportPdfBill(View):
                 cont['unit'] = unit_set = None
             # 해당 계약건 분양가 # this_price = '동호 지정 후 고지'
             this_price = contract.contractunit.unit_type.average_price
-            prices = SalesPriceByGT.objects.filter(project=project, order_group=group, unit_type=type)
+            prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type)
             if unit_set:
                 floor = contract.contractunit.unitnumber.floor_type
                 this_price = prices.get(unit_floor_type=floor).price
@@ -60,7 +60,7 @@ class ExportPdfBill(View):
             this_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
             down_num = this_orders.filter(pay_sort='1').count()
             try:
-                dp = DownPayment.objects.get(project=project, order_group=contract.order_group,
+                dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
                                              unit_type=contract.contractunit.unit_type)
                 cont['down'] = down = dp.payment_amount
             except:
@@ -76,15 +76,15 @@ class ExportPdfBill(View):
             # 잔금 구하기
             bal_num = this_orders.filter(pay_sort='3').count()
             cont['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
+
+            # Todo 고지서 디버그 --- 진행
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
-            # Todo 회차별 수납 완료일자 구하기 로직 작성하기
             paid_list = ProjectCashBook.objects.filter(contract=contract).order_by('installment_order', 'deal_date')
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
 
-            paid_order = 0
             paid_order_amount = 0 # 완납회차까지 약정액 합계
             total_cont_amount = 0   # 지정회차까지 약정액 합계
             pm_cost_sum = 0 # pm 용역비 누계
@@ -108,32 +108,14 @@ class ExportPdfBill(View):
                 if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
             cont['paid_orders'] = this_orders.filter(pay_code__lte=now_due_order) # 지정회차까지 회차
-            due_date_by_order = [] # 회차별 납부기한
             payment_by_order = [] # 회차별 납부금액
-            paid_date_by_order = [] # 회차별 완납일자
-            adjustment_days = [] # 회차별 선납지연 일수
             for po in cont['paid_orders']:
-                if po.pay_time == 1:
-                    due_date = contract.contractor.contract_date
-                elif po.pay_time == 2:
-                    due_date = contract.contractor.contract_date + timedelta(days=30)
-                else:
-                    due_date = po.pay_due_date
-                due_date_by_order.append(due_date)
                 payment_by_order.append(paid_list.filter(installment_order=po).aggregate(Sum('income'))['income__sum'])
-                paid_date = paid_list.filter(installment_order=po).latest('deal_date')
-                paid_date_by_order.append(paid_date.deal_date)
-                ad_days = paid_date-due_date
-                adjustment_days.append(ad_days.days)
-            cont['due_date_by_order'] = list(reversed(due_date_by_order))
             cont['payment_by_order'] = list(reversed(payment_by_order))
-            cont['paid_date_by_order'] = list(reversed(paid_date_by_order))
-            cont['adjustment_days'] = list(reversed(adjustment_days))
-            cont['pm_cost_sum'] = pm_cost_sum
             # --------------------------------------------------------------
 
             # 3. 미납 회차 (지정회차 - 완납회차)
-            # cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
+            cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
             unpaid_orders_all = this_orders.filter(pay_code__gt=paid_order) # 최종 기납부회차 이후 납부회차
             cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order) # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
             cont['unpaid_amounts_sum'] = unpaid_amounts_sum = total_cont_amount - paid_order_amount
@@ -142,11 +124,9 @@ class ExportPdfBill(View):
             # 5. 미납 금액 (약정금액 - 납부금액)
             cont['cal_unpaid'] = cal_unpaid = paid_order_amount - paid_sum
             cont['cal_unpaid_sum'] = cal_unpaid_sum = total_cont_amount - paid_sum
-            # Todo 연체료 및 할인료 계산 로직 작성하기
-            dq_rate = 0.05 # 연체율
-            dc_rate = 0.05 # 할인율
-            cont['adjustment'] = 0 # 연체/할인료 - 향후 연체료 계산 변수
-            cont['adjustment_sum'] = 0 # 연체/할인료 합계
+            cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
+            cont['arrears_sum'] = arrears_sum = 0 # 연체료 합계 - 향후 연체료 합계 계산 변수
+            cont['pm_cost_sum'] = pm_cost_sum
 
             # 6. 잔여 약정 목록
             cont['remaining_orders'] = remaining_orders = this_orders.filter(pay_code__gt=now_due_order)
