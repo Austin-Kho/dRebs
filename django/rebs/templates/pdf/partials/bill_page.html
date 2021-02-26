@@ -208,22 +208,13 @@
     </tr>
 
     {% for paid_order in data.paid_orders %}
-        {% with due_date=due_date_by_order.pop paid_cash=data.payment_by_order.pop %}{# paid_date=data.paid_date_by_order.pop ad_days=adjustment_days.pop #}
+        {% with due_date=data.due_dates.pop paid_date=data.paid_dates.pop paid_cash=data.payments.pop ad_days=data.adj_days.pop %}
             <tr>
                 <td style="text-align:center; border-left: solid 1px;">
                     {# 구분 #}
                     {{ paid_order.pay_name }}
                 </td>
-                <td style="text-align:center;">
-                    {# 납부기한 #}
-                    {% if paid_order.pay_code == 1 %}
-                        {{ data.contract.contractor.contract_date|date:"Y-m-d" }}
-                    {% elif paid_order.pay_code == 2 %}
-                        {{ data.second_date|date:"Y-m-d" }}
-                    {% else %}
-                        {{ paid_order.pay_due_date|date:"Y-m-d" }}
-                    {% endif %}
-                </td>
+                <td style="text-align:center;">{{ due_date|date:"Y-m-d" }}</td>{# 납부기한 #}
                 <td style="text-align:right;">
                     {# 약정금액 #}
                     {% if paid_order.pay_sort == '1' %}{{ data.down|intcomma }}
@@ -234,7 +225,7 @@
 
                 <td style="text-align:center; padding-right:1px;">
                     {# 회차별 최종 수납일자 #}
-                    {{ paid_date.deal_date|date:"Y-m-d" }}
+                    {{ paid_date|date:"Y-m-d" }}
                 </td>
 
                 <td style="text-align:right;">
@@ -244,12 +235,7 @@
                 <td style="text-align:right;">
                     {# 선납-지연 일수 #}
                     {% if not forloop.first %}
-{#                        {{ data.modi_dates|default:"-"|intcomma }}#}
-                        {% if paid_order.pay_code == 2 %}
-                            {{ paid_date.deal_date|sub:data.second_date }}
-                        {% else %}
-                            {{ paid_date.deal_date|sub:paid_order.pay_due_date }}
-                        {% endif %}
+                        {{ ad_days|default:"-"|intcomma }}
                     {% endif %}
                 </td>
                 <td style="padding-right:5px; text-align:right;">

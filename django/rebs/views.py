@@ -76,8 +76,6 @@ class ExportPdfBill(View):
             # 잔금 구하기
             bal_num = this_orders.filter(pay_sort='3').count()
             cont['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
-
-            # Todo 고지서 디버그 --- 진행
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
@@ -104,14 +102,33 @@ class ExportPdfBill(View):
                     paid_order_amount += pay_amount # 완납회차까지 약정액 누계
                 if to.is_pm_cost:
                     pm_cost_sum += pay_amount # pm 용역비 누계
-
                 if to.pay_code == now_due_order:   # 순회 회차가 지정회차와 같으면 순회중단
                     break
+
             cont['paid_orders'] = this_orders.filter(pay_code__lte=now_due_order) # 지정회차까지 회차
-            payment_by_order = [] # 회차별 납부금액
+            due_dates = [] # 회차별 납부일자
+            paid_dates = [] # 회차별 최종 수납일자
+            payments = [] # 회차별 납부금액
+            adj_days = [] # 회차별 지연일수
             for po in cont['paid_orders']:
-                payment_by_order.append(paid_list.filter(installment_order=po).aggregate(Sum('income'))['income__sum'])
-            cont['payment_by_order'] = list(reversed(payment_by_order))
+                if po.pay_time == 1 or po.pay_code == 1:
+                    due_date = contract.contractor.contract_date
+                elif po.pay_time == 2 or po.pay_code == 2:
+                    due_date = contract.contractor.contract_date + timedelta(days=30)
+                else:
+                    due_date = po.pay_due_date
+
+                due_dates.append(due_date) # 회차별 납부일자
+                pl = paid_list.filter(installment_order=po)
+                paid_dates.append(pl.latest('deal_date').deal_date) # 회차별 최종 수납일자
+                payments.append(pl.aggregate(Sum('income'))['income__sum']) # 회차별 납부금액
+                ad = pl.latest('deal_date').deal_date - due_date
+                adj_days.append(ad.days)  # 회차별 지연일수
+
+            cont['due_dates'] = list(reversed(due_dates)) # 회차별 납부일자
+            cont['paid_dates'] = list(reversed(paid_dates)) # 회차별 최종 수납일자
+            cont['payments'] = list(reversed(payments)) # 회차별 납부금액
+            cont['adj_days'] = list(reversed(adj_days)) # 회차별 지연일수
             # --------------------------------------------------------------
 
             # 3. 미납 회차 (지정회차 - 완납회차)
