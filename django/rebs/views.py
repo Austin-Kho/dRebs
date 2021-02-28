@@ -120,10 +120,12 @@ class ExportPdfBill(View):
 
                 due_dates.append(due_date) # 회차별 납부일자
                 pl = paid_list.filter(installment_order=po)
-                paid_dates.append(pl.latest('deal_date').deal_date) # 회차별 최종 수납일자
+                pld = pl.latest('deal_date').deal_date if pl else None
+                paid_dates.append(pld) # 회차별 최종 수납일자
                 payments.append(pl.aggregate(Sum('income'))['income__sum']) # 회차별 납부금액
-                ad = pl.latest('deal_date').deal_date - due_date
-                adj_days.append(ad.days)  # 회차별 지연일수
+                ad = pl.latest('deal_date').deal_date - due_date if pl else None
+                add = ad.days if pl else None
+                adj_days.append(add)  # 회차별 지연일수
 
             cont['due_dates'] = list(reversed(due_dates)) # 회차별 납부일자
             cont['paid_dates'] = list(reversed(paid_dates)) # 회차별 최종 수납일자
