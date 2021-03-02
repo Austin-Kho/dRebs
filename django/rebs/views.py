@@ -83,6 +83,7 @@ class ExportPdfBill(View):
             cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
             paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
 
+            paid_order = 0 # 완납회차
             paid_order_amount = 0 # 완납회차까지 약정액 합계
             total_cont_amount = 0   # 지정회차까지 약정액 합계
             pm_cost_sum = 0 # pm 용역비 누계
