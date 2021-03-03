@@ -29,6 +29,6 @@ urlpatterns = [
     path('schedule/', memu2_1, name='menu2_1'),
 
     # pdf url
-    path('pdf-bill/', ExportPdfBill.as_view(), name='pdf-bill'),
-    path('pdf-payments/', PaymentList.as_view(), name='pdf-payments'),
+    path('pdf-bill/', PdfExportBill.as_view(), name='pdf-bill'),
+    path('pdf-payments/', PdfExportPayments.as_view(), name='pdf-payments'),
 ]

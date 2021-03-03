@@ -75,7 +75,7 @@
         <tr>
             <td class="title center bl br bb">분양금</td>
             <td class="right br bb">{{ this_price|default:"추후지정"|intcomma }}</td>
-            <td class="right br bb" style="background: yellow;">40,000,000</td>
+            <td class="right br bb">{{ now_payments|default:"-"|intcomma }}</td>
             <td class="right br bb" style="background: yellow;">40,000,000</td>
             <td class="right br bb">{{ this_price.price|sub:now_payments|intcomma|default:"-" }}</td>
             <td class="right br bb" style="background: yellow;">-</td>

@@ -23,7 +23,7 @@ def memu2_1(request):
     return render(request, 'rebs/main/2_1_schedule.html')
 
 
-class ExportPdfBill(View):
+class PdfExportBill(View):
     """고지서 리스트"""
 
     def get(self, request):
@@ -177,7 +177,7 @@ class ExportPdfBill(View):
         return response
 
 
-class PaymentList(View):
+class PdfExportPayments(View):
 
     def get(self, request):
         context = {}
@@ -202,7 +202,9 @@ class PaymentList(View):
         this_price = sales_price.get(unit_floor_type=context['contract'].contractunit.unitnumber.floor_type) \
                      if unit_set else None
         context['this_price'] = this_price
-        context['now_payments'] = 40000000
+        # 실입금액
+        paid_list = ProjectCashBook.objects.filter(contract=contract)
+        context['now_payments'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['due_payments'] = 40000000
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
