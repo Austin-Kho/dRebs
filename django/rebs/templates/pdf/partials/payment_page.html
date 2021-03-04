@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td class="title bl br2 bb" colspan="4">동호수</td>
-            <td class="bb" colspan="7">{{ contract.contractunit.unitnumber }}</td>
+            <td class="bb" colspan="7">{{ contract.contractunit.unitnumber|default:"미지정" }}</td>
             <td class="title bl2 br2 bb" colspan="4">계약일</td>
             <td class="bb" colspan="7">{{ contract.contractor.contract_date }}</td>
         </tr>
@@ -48,7 +48,7 @@
 {#        </tr>#}
         <tr>
             <td class="title bl br2 bb" colspan="4">분양금</td>
-            <td class="bb" colspan="7">{{ this_price|default:"추후지정"|intcomma }}</td>
+            <td class="bb" colspan="7">{{ this_price|default:"-"|intcomma }}</td>
             <td class="title bl2 br2 bb" colspan="4">건물가</td>
             <td class="bb" colspan="7">{{ this_price.price_build|default:"-"|intcomma }}</td>
         </tr>
@@ -74,21 +74,21 @@
         </tr>
         <tr>
             <td class="title center bl br bb">분양금</td>
-            <td class="right br bb">{{ this_price|default:"추후지정"|intcomma }}</td>
+            <td class="right br bb">{{ this_price|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ now_payments|default:"-"|intcomma }}</td>
-            <td class="right br bb" style="background: yellow;">40,000,000</td>
-            <td class="right br bb">{{ this_price.price|sub:now_payments|intcomma|default:"-" }}</td>
-            <td class="right br bb" style="background: yellow;">-</td>
-            <td class="right br bb" style="background: yellow;">-</td>
+            <td class="right br bb">{{ due_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ this_price.price|sub:now_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">-</td>
+            <td class="right br bb">-</td>
         </tr>
         <tr>
             <td class="title center bl br bb2">추가납부</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
-            <td class="right br bb2" style="background: yellow;">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
+            <td class="right br bb2">-</td>
         </tr>
         <tr>
             <td colspan="7">&nbsp;</td>
@@ -114,7 +114,11 @@
                                 {{ order.pay_due_date|date:"Y-m-d"|default:"추후지정" }}
                             {% endif %}
                         </td>
-                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}" style="background: yellow;">10,000,000</td>
+                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">
+                            {% if order.pay_sort == '1' %}{{ down|default:"-"|intcomma }}
+                            {% elif order.pay_sort == '2' %}{{ medium|default:"-"|intcomma }}
+                            {% else %}{{ balance|default:"-"|intcomma }}{% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
@@ -156,10 +160,13 @@
         <tr>
             <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 납입내역 요약의 분양금에 추가납부가 포함됩니다.</td>
         </tr>
+        {% if not unit %}
+            <tr>
+                <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 동호수 미지정인 경우 상기 분양가격 등은 타입별 평균가격으로, 동호 지정후 변경됩니다.</td>
+            </tr>
+        {% endif %}
         <tr>
-            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 상기 납입내역은 당시 결산 시점차이 및 부득이한 전산장애
-                등으로 인하여 정확하지 않을 수 있습니다.
-            </td>
+            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 상기 납입내역은 당시 결산 시점차이 및 부득이한 전산장애 등으로 인하여 정확하지 않을 수 있습니다.</td>
         </tr>
         <tr>
             <td colspan="22">&nbsp;</td>

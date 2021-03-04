@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -15,6 +15,7 @@ from rebs_notice.models import SalesBillIssue
 from rebs_cash.models import (SalesPriceByGT, ProjectCashBook,
                               InstallmentPaymentOrder, DownPayment)
 
+TODAY = datetime.today().strftime('%Y-%m-%d')
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'rebs/main/1_1_dashboard.html'
@@ -182,30 +183,75 @@ class PdfExportPayments(View):
     def get(self, request):
         context = {}
         project = request.GET.get('project')
-        contract = request.GET.get('contract')
-        context['contract'] = Contract.objects.get(pk=contract)
-        context['second_pay'] = context['contract'].contractor.contract_date + timedelta(days=30) if context['contract'] else None
-        context['ip_orders'] = InstallmentPaymentOrder.objects.filter(project=project)
+        get_contract = request.GET.get('contract')
+        context['contract'] = contract = Contract.objects.get(pk=get_contract)
+        context['second_pay'] = contract.contractor.contract_date + timedelta(days=30) if contract else None
+        context['ip_orders'] = ip_orders = InstallmentPaymentOrder.objects.filter(project=project)
         context['payments'] = ProjectCashBook.objects.filter(project=project, contract=contract)
 
-        # 해당 세대 분양가
-        try:
-            unit = context['contract'].contractunit.unitnumber
-        except:
+        # 1. 분양가격 (차수/타입별/동호수별) 및 계약금, 중도금, 잔금 구하기
+        group = contract.order_group  # 차수
+        type = contract.contractunit.unit_type  # 타입
+        prices = SalesPriceByGT.objects.filter(project_id=project, order_group=group, unit_type=type) # 그룹 및 타입별 가격대
+        this_price = int(round(contract.contractunit.unit_type.average_price, -4))
+
+        try:  # 동호수
+            unit = contract.contractunit.unitnumber
+        except Exception:
             unit = None
-        project = Project.objects.get(pk=project)
-        unit_set = project.is_unit_set and unit
-        this_price = 0
-        sales_price = SalesPriceByGT.objects.filter(project=project,
-                                                    order_group=context['contract'].order_group,
-                                                    unit_type=context['contract'].contractunit.unit_type)
-        this_price = sales_price.get(unit_floor_type=context['contract'].contractunit.unitnumber.floor_type) \
-                     if unit_set else None
+
+        if unit:
+            floor = contract.contractunit.unitnumber.floor_type
+            this_price = prices.get(unit_floor_type=floor).price
+        context['unit'] = unit
         context['this_price'] = this_price
-        # 실입금액
+        # --------------------------------------------------------------
+
+        # 2. 실입금액
         paid_list = ProjectCashBook.objects.filter(contract=contract)
         context['now_payments'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
-        context['due_payments'] = 40000000
+
+        # 3. 납부원금 (현재 지정회차 + 납부해야할 금액 합계)
+        ## 계약금 구하기
+        this_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 해당 건 전체 약정 회차
+        down_num = this_orders.filter(pay_sort='1').count()
+        try:
+            dp = DownPayment.objects.get(project_id=project, order_group=contract.order_group,
+                                         unit_type=contract.contractunit.unit_type)
+            context['down'] = down = dp.payment_amount
+        except:
+            pn = round(down_num / 2)
+            context['down'] = down = int(this_price * 0.1 / pn)
+        down_total = down * down_num
+
+        ## 중도금 구하기
+        med_num = this_orders.filter(pay_sort='2').count()
+        context['medium'] = medium = int(this_price * 0.1)
+        medium_total = medium * med_num
+
+        ## 잔금 구하기
+        bal_num = this_orders.filter(pay_sort='3').count()
+        context['balance'] = balance = int((this_price - down_total - medium_total) / bal_num)
+
+        set_order1 = ip_orders.filter(pay_due_date__lt=TODAY).latest('pay_due_date')
+        due_order = SalesBillIssue.objects.get(project_id=project)
+        now_due_order = due_order.now_payment_order.pay_code if due_order.now_payment_order else 2
+        set_order2 = ip_orders.filter(pay_time__lte=now_due_order).latest('pay_time')
+        set_order = set_order1 if set_order1.pay_time >= set_order2.pay_time else set_order2
+        due_installment = InstallmentPaymentOrder.objects.filter(pay_time__lte=set_order.pay_time)
+
+        total_cont_amount = 0  # 지정회차까지 약정액 합계
+
+        for di in due_installment:
+            if di.pay_sort == '1':
+                pay_amount = down
+            if di.pay_sort == '2':
+                pay_amount = medium
+            if di.pay_sort == '3':
+                pay_amount = balance
+            total_cont_amount += pay_amount  # 지정회차까지 약정액 합계 (+)
+
+        context['due_payments'] = total_cont_amount
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
 
