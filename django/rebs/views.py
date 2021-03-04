@@ -250,8 +250,33 @@ class PdfExportPayments(View):
             if di.pay_sort == '3':
                 pay_amount = balance
             total_cont_amount += pay_amount  # 지정회차까지 약정액 합계 (+)
-
         context['due_payments'] = total_cont_amount
+
+        context['paid_orders'] = paid_orders = this_orders.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
+        paid_dates = []  # 회차별 최종 수납일자
+        payments = []  # 회차별 납부금액
+        adj_days = []  # 회차별 지연일수
+        for po in paid_orders:
+            if po.pay_time == 1 or po.pay_code == 1:
+                due_date = contract.contractor.contract_date
+            elif po.pay_time == 2 or po.pay_code == 2:
+                due_date = context['second_pay']
+            else:
+                due_date = po.pay_due_date
+
+            pl = paid_list.filter(installment_order=po)
+            pld = pl.latest('deal_date').deal_date if pl else None
+            paid_dates.append(pld)  # 회차별 최종 수납일자
+
+            payments.append(pl.aggregate(Sum('income'))['income__sum'])  # 회차별 납부금액
+
+            ad = pl.latest('deal_date').deal_date - due_date if pl else None
+            add = ad.days if pl else None
+            adj_days.append(add)  # 회차별 지연일수
+
+        context['paid_dates'] = list(reversed(paid_dates))  # 회차별 최종 수납일자
+        context['payments'] = list(reversed(payments))  # 회차별 납부금액
+        context['adj_days'] = list(reversed(adj_days))  # 회차별 지연일수
 
         html_string = render_to_string('pdf/payments_by_contractor.html', context)
 
