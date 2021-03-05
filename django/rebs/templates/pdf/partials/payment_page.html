@@ -77,7 +77,7 @@
             <td class="right br bb">{{ this_price|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ now_payments|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ due_payments|default:"-"|intcomma }}</td>
-            <td class="right br bb">{{ this_price.price|sub:now_payments|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ this_price|sub:now_payments|default:"-"|intcomma }}</td>
             <td class="right br bb">-</td>
             <td class="right br bb">-</td>
         </tr>
