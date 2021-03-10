@@ -9,7 +9,6 @@ import io
 from django.http import HttpResponse
 import xlsxwriter
 import xlwt
-import xlrd
 
 from datetime import datetime
 from django.db.models import Q
@@ -509,9 +508,19 @@ class ExportUnitStatus(View):
 
         worksheet.set_default_row(20)
 
-        # data start --------------------------------------------- #
+        ### data start --------------------------------------------- #
+        project = Project.objects.get(pk=request.GET.get('project'))
 
-        # data end ----------------------------------------------- #
+        # 1. Title
+        row_num = 0
+        title_format = workbook.add_format()
+        worksheet.set_row(row_num, 50)
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        title_format.set_bold()
+        worksheet.merge_range(row_num, 0, row_num, 20, str(project) + ' 동호수 현황표', title_format)
+
+        ### data end ----------------------------------------------- #
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -1175,7 +1184,7 @@ class ExportExamples(View):
         workbook = xlsxwriter.Workbook(output)
         worksheet = workbook.add_worksheet('시트 타이틀')
 
-        worksheet.set_default_row(20)
+        worksheet.set_default_row(20) # 기본 행 높이
 
         # data start --------------------------------------------- #
 
