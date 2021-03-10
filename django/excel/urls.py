@@ -7,6 +7,7 @@ urlpatterns = [
     path('contracts/', ExportContracts.as_view(), name='contracts'),
     path('reservations/', ExportApplicants.as_view(), name='reservations'),
     path('releases/', ExportReleases.as_view(), name='releases'),
+    path('status/', ExportUnitStatus.as_view(), name='unit-status'),
     path('payments/', export_payments_xls, name='payments'),
     path('p-cashbooks/', export_project_cash_xls, name='p-cashbooks'),
     path('sites/', export_sites_xls, name='sites'),

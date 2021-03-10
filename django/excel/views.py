@@ -493,9 +493,39 @@ class ExportReleases(View):
         return response
 
 
-def export_cont_dashboard_xls(request):
-    """동호수표"""
-    pass
+class ExportUnitStatus(View):
+    """동호수 현황표"""
+
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('동호수현황표')
+
+        worksheet.set_default_row(20)
+
+        # data start --------------------------------------------- #
+
+        # data end ----------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = '{date}-unit-status-board.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
 
 def export_payments_xls(request):
@@ -1129,3 +1159,38 @@ def export_cashbook_xls(request):
 
     wb.save(response)
     return response
+
+
+class ExportExamples(View):
+    """Examples"""
+
+    def get(self, request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('시트 타이틀')
+
+        worksheet.set_default_row(20)
+
+        # data start --------------------------------------------- #
+
+        # data end ----------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = '{date}-file_title.xlsx'.format(date=datetime.now().strftime('%Y-%m-%d'))
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
