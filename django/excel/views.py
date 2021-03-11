@@ -11,12 +11,13 @@ import xlsxwriter
 import xlwt
 
 from datetime import datetime
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.views.generic import View
 
 from rebs_company.models import Company
-from rebs_project.models import Project, Site, SiteOwner, SiteContract
-from rebs_contract.models import Contract, ContractorRelease
+from rebs_project.models import (Project, Site, SiteOwner, SiteContract,
+                                 UnitType, ContractUnit, UnitNumber)
+from rebs_contract.models import Contract, Contractor, ContractorRelease
 from rebs_cash.models import CashBook, ProjectCashBook
 
 
@@ -506,10 +507,39 @@ class ExportUnitStatus(View):
         workbook = xlsxwriter.Workbook(output)
         worksheet = workbook.add_worksheet('동호수현황표')
 
-        worksheet.set_default_row(20)
+        worksheet.set_default_row(15)
 
         ### data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
+        types = UnitType.objects.filter(project=project)
+        max_floor = UnitNumber.objects.aggregate(Max('floor_no'))
+        floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
+        max_floor_range = range(1, floor_no__max)
+        unit_numbers = UnitNumber.objects.filter(project=project)
+        is_hold = UnitNumber.objects.filter(project=project, is_hold=True)
+        is_apply = Contractor.objects.filter(contract__project=project, status='1')
+        is_contract = Contractor.objects.filter(contract__project=project, status='2')
+        max_col = 0
+        dong_list = []
+        line_list = []
+        # unit_list = []
+
+        dong_obj = UnitNumber.objects.order_by().values('bldg_no').distinct()
+
+        for dong in dong_obj:
+            dong_list.append(dong['bldg_no'])
+            lines = UnitNumber.objects.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
+            ln = []
+            max_col += 1
+            for line in lines:
+                ln.append(line['bldg_line'])
+                max_col += 1
+            line_list.append(ln)
+            # unit_list.append(UnitNumber.objects.filter(bldg_no__contains=dong['bldg_no']).order_by('-floor_no', 'bldg_line'))
+
+        max_col -= 1
+        line_list = list(reversed(line_list))
+        # unit_list = list(reversed(unit_list))
 
         # 1. Title
         row_num = 0
@@ -518,7 +548,27 @@ class ExportUnitStatus(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.merge_range(row_num, 0, row_num, 20, str(project) + ' 동호수 현황표', title_format)
+        worksheet.merge_range(row_num, 0, row_num, max_col, str(project) + ' 동호수 현황표', title_format)
+
+        # 2. Sub Description
+        row_num = 1
+        worksheet.merge_range(row_num, 0, row_num, max_col, TODAY + ' 현재', workbook.add_format({'align': 'right', 'font_size': '9'}))
+
+        row_num = 2
+        worksheet.set_column(0, max_col, 5)
+
+        # 3. Unit status board
+        row_num = 4
+        worksheet.set_column(0, max_col, 5)
+
+        for dong in dong_obj:
+            unit_by_dong = unit_numbers.filter(bldg_no=dong)
+            for f in max_floor_range:
+                row_num += 1
+                unit_by_floor = unit_by_dong.filter(floor_no=f).order_by('bldg_line')
+
+                for col_num, col in enumerate(unit_by_floor):
+                    worksheet.write(row_num, col_num, col)
 
         ### data end ----------------------------------------------- #
 
