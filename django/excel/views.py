@@ -575,9 +575,16 @@ class ExportUnitStatus(View):
             col = 1
             # 동 수 만큼 반복
             for dong in dong_obj: # 동호수 표시 라인
-                lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
+                units = unit_numbers.filter(bldg_no=dong['bldg_no'])
+                lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
                 for line in lines:
-                    worksheet.write(row_num, col, str(floor_no)+'0'+str(line['bldg_line']), unit_format)
+                    try:
+                        unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
+                    except:
+                        unit = None
+                    unit_name = int(str(floor_no)+'0'+str(line['bldg_line'])) if unit else ''
+                    if unit or floor_no <= 2:
+                        worksheet.write(row_num, col, unit_name, unit_format)
                     col += 1
                 col += 1
 
@@ -585,20 +592,31 @@ class ExportUnitStatus(View):
             col = 1
             # 동 수 만큼 반복
             for dong in dong_obj: # 호수 상태 표시 라인
-                lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
-                    bldg_no__contains=dong['bldg_no']).distinct()
+                units = unit_numbers.filter(bldg_no=dong['bldg_no'])
+                lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
                 for line in lines:
-                    worksheet.write(row_num, col, '', unit_format)
+                    try:
+                        unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
+                    except:
+                        unit = None
+                    if unit or floor_no <= 2:
+                        worksheet.write(row_num, col, '', unit_format)
                     col += 1
                 col += 1
 
+        dong_title_format = workbook.add_format()
+        dong_title_format.set_bold()
+        dong_title_format.set_border()
+        dong_title_format.set_font_size(11)
+        dong_title_format.set_align('center')
+        dong_title_format.set_align('vcenter')
         row_num += 1
         col = 1
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
             lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
                 bldg_no__contains=dong['bldg_no']).distinct()
-            worksheet.merge_range(row_num, col, row_num + 1, col + lines.count() - 1, dong['bldg_no'], unit_format)
+            worksheet.merge_range(row_num, col, row_num + 1, col + lines.count() - 1, dong['bldg_no'] + '동', dong_title_format)
 
             col = col + lines.count() + 1
 
