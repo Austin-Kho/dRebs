@@ -511,7 +511,6 @@ class ExportUnitStatus(View):
 
         ### data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        types = UnitType.objects.filter(project=project)
         max_floor = UnitNumber.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
@@ -569,17 +568,25 @@ class ExportUnitStatus(View):
                         unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
                     except:
                         unit = None
-                    unit_name = int(str(floor_no)+'0'+str(line['bldg_line'])) if unit else ''
                     if unit or floor_no <= 2:
                         unit_format['bg_color'] = unit.unit_type.color if unit else '#dddddd'
                         unit_formats = workbook.add_format(unit_format)
-                        status_formats = workbook.add_format(status_format)
                         if not unit:
-                            worksheet.merge_range(row_num, col_num, row_num + 1, col_num, unit_name, unit_formats)
-                            worksheet.write(row_num + 1, col_num, '', status_formats)
+                            worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
                         else:
-                            worksheet.write(row_num, col_num, unit_name, unit_formats)
-                            worksheet.write(row_num + 1, col_num, '', status_formats)
+                            worksheet.write(row_num, col_num, int(unit.bldg_unit_no), unit_formats)
+                            if unit.contract_unit:
+                                if int(unit.contract_unit.contract.contractor.status) % 2 == 0:
+                                    status_format['bg_color'] = '#85929E'
+                                    status_format['font_color'] = 'white'
+                                else:
+                                    status_format['bg_color'] = '#DAF7A6'
+                                    status_format['font_color'] = 'black'
+                            else:
+                                status_format['bg_color'] = 'white'
+                            cont = unit.contract_unit.contract.contractor.name if unit.contract_unit else ''
+                            status_formats = workbook.add_format(status_format)
+                            worksheet.write(row_num + 1, col_num, cont, status_formats)
                     col_num += 1
                 col_num += 1
 
@@ -592,6 +599,7 @@ class ExportUnitStatus(View):
         dong_title_format.set_font_size(11)
         dong_title_format.set_align('center')
         dong_title_format.set_align('vcenter')
+        dong_title_format.set_bg_color('#bbbbbb')
 
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
