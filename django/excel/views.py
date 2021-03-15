@@ -514,30 +514,29 @@ class ExportUnitStatus(View):
         types = UnitType.objects.filter(project=project)
         max_floor = UnitNumber.objects.aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
-        max_floor_range = range(1, floor_no__max)
+        max_floor_range = range(0, floor_no__max)
         unit_numbers = UnitNumber.objects.filter(project=project)
-        is_hold = UnitNumber.objects.filter(project=project, is_hold=True)
-        is_apply = Contractor.objects.filter(contract__project=project, status='1')
-        is_contract = Contractor.objects.filter(contract__project=project, status='2')
+        # is_hold = UnitNumber.objects.filter(project=project, is_hold=True)
+        # is_apply = Contractor.objects.filter(contract__project=project, status='1')
+        # is_contract = Contractor.objects.filter(contract__project=project, status='2')
         max_col = 0
         dong_list = []
         line_list = []
         # unit_list = []
 
-        dong_obj = UnitNumber.objects.order_by().values('bldg_no').distinct()
+        dong_obj = unit_numbers.order_by().values('bldg_no').distinct()
 
         for dong in dong_obj:
             dong_list.append(dong['bldg_no'])
-            lines = UnitNumber.objects.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
+            lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
             ln = []
-            max_col += 1
             for line in lines:
                 ln.append(line['bldg_line'])
                 max_col += 1
+            max_col += 1
             line_list.append(ln)
             # unit_list.append(UnitNumber.objects.filter(bldg_no__contains=dong['bldg_no']).order_by('-floor_no', 'bldg_line'))
 
-        max_col -= 1
         line_list = list(reversed(line_list))
         # unit_list = list(reversed(unit_list))
 
@@ -561,14 +560,47 @@ class ExportUnitStatus(View):
         row_num = 4
         worksheet.set_column(0, max_col, 5)
 
-        for dong in dong_obj:
-            unit_by_dong = unit_numbers.filter(bldg_no=dong)
-            for f in max_floor_range:
-                row_num += 1
-                unit_by_floor = unit_by_dong.filter(floor_no=f).order_by('bldg_line')
+        # 최고층수 만큼 반복
 
-                for col_num, col in enumerate(unit_by_floor):
-                    worksheet.write(row_num, col_num, col)
+        unit_format = workbook.add_format()
+        unit_format.set_border()
+        unit_format.set_font_size(8)
+        unit_format.set_align('center')
+        unit_format.set_align('vcenter')
+        # unit_format.set_bg_color('#eeeeee')
+
+        for mf in max_floor_range:
+            row_num += 1
+            floor_no = floor_no__max - mf # 현재 층수
+            col = 1
+            # 동 수 만큼 반복
+            for dong in dong_obj: # 동호수 표시 라인
+                lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
+                for line in lines:
+                    worksheet.write(row_num, col, str(floor_no)+'0'+str(line['bldg_line']), unit_format)
+                    col += 1
+                col += 1
+
+            row_num += 1
+            col = 1
+            # 동 수 만큼 반복
+            for dong in dong_obj: # 호수 상태 표시 라인
+                lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
+                    bldg_no__contains=dong['bldg_no']).distinct()
+                for line in lines:
+                    worksheet.write(row_num, col, '', unit_format)
+                    col += 1
+                col += 1
+
+        row_num += 1
+        col = 1
+        # 동 수 만큼 반복
+        for dong in dong_obj:  # 호수 상태 표시 라인
+            lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
+                bldg_no__contains=dong['bldg_no']).distinct()
+            worksheet.merge_range(row_num, col, row_num + 1, col + lines.count() - 1, dong['bldg_no'], unit_format)
+
+            col = col + lines.count() + 1
 
         ### data end ----------------------------------------------- #
 
