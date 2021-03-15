@@ -562,12 +562,18 @@ class ExportUnitStatus(View):
 
         # 최고층수 만큼 반복
 
-        unit_format = workbook.add_format()
-        unit_format.set_border()
-        unit_format.set_font_size(8)
-        unit_format.set_align('center')
-        unit_format.set_align('vcenter')
+        # unit_format = workbook.add_format()
+        # unit_format.set_border()
+        # unit_format.set_font_size(8)
+        # unit_format.set_align('center')
+        # unit_format.set_align('vcenter')
         # unit_format.set_bg_color('#eeeeee')
+        u_format = {
+            'border': True,
+            'font_size': 8,
+            'align': 'center',
+            'valign': 'vcenter'
+        }
 
         for mf in max_floor_range:
             row_num += 1
@@ -584,7 +590,12 @@ class ExportUnitStatus(View):
                         unit = None
                     unit_name = int(str(floor_no)+'0'+str(line['bldg_line'])) if unit else ''
                     if unit or floor_no <= 2:
-                        worksheet.write(row_num, col, unit_name, unit_format)
+                        u_format['bg_color'] = unit.unit_type.color if unit else '#dddddd'
+                        unit_format = workbook.add_format(u_format)
+                        if not unit:
+                            worksheet.merge_range(row_num, col, row_num + 1, col, unit_name, unit_format)
+                        else:
+                            worksheet.write(row_num, col, unit_name, unit_format)
                     col += 1
                 col += 1
 
@@ -600,7 +611,10 @@ class ExportUnitStatus(View):
                     except:
                         unit = None
                     if unit or floor_no <= 2:
-                        worksheet.write(row_num, col, '', unit_format)
+                        u_format['bg_color'] = 'white'
+                        unit_format = workbook.add_format(u_format)
+                        if unit:
+                            worksheet.write(row_num, col, '', unit_format)
                     col += 1
                 col += 1
 
