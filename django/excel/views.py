@@ -516,29 +516,7 @@ class ExportUnitStatus(View):
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
         unit_numbers = UnitNumber.objects.filter(project=project)
-        # is_hold = UnitNumber.objects.filter(project=project, is_hold=True)
-        # is_apply = Contractor.objects.filter(contract__project=project, status='1')
-        # is_contract = Contractor.objects.filter(contract__project=project, status='2')
-        max_col = 0
-        dong_list = []
-        line_list = []
-        # unit_list = []
-
         dong_obj = unit_numbers.order_by().values('bldg_no').distinct()
-
-        for dong in dong_obj:
-            dong_list.append(dong['bldg_no'])
-            lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
-            ln = []
-            for line in lines:
-                ln.append(line['bldg_line'])
-                max_col += 1
-            max_col += 1
-            line_list.append(ln)
-            # unit_list.append(UnitNumber.objects.filter(bldg_no__contains=dong['bldg_no']).order_by('-floor_no', 'bldg_line'))
-
-        line_list = list(reversed(line_list))
-        # unit_list = list(reversed(unit_list))
 
         # 1. Title
         row_num = 0
@@ -547,38 +525,41 @@ class ExportUnitStatus(View):
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
         title_format.set_bold()
-        worksheet.merge_range(row_num, 0, row_num, max_col, str(project) + ' 동호수 현황표', title_format)
+
+        worksheet.write(row_num, 0, str(project) + ' 동호수 현황표', title_format)
 
         # 2. Sub Description
+        max_col = 0
         row_num = 1
-        worksheet.merge_range(row_num, 0, row_num, max_col, TODAY + ' 현재', workbook.add_format({'align': 'right', 'font_size': '9'}))
 
-        row_num = 2
-        worksheet.set_column(0, max_col, 5)
+        for dong in dong_obj:
+            lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
+            for line in lines:
+                max_col += 1
+            max_col += 1
+
+        worksheet.write(row_num, max_col, TODAY + ' 현재', workbook.add_format({'align': 'right', 'font_size': '9'}))
 
         # 3. Unit status board
-        row_num = 4
-        worksheet.set_column(0, max_col, 5)
-
-        # 최고층수 만큼 반복
-
-        # unit_format = workbook.add_format()
-        # unit_format.set_border()
-        # unit_format.set_font_size(8)
-        # unit_format.set_align('center')
-        # unit_format.set_align('vcenter')
-        # unit_format.set_bg_color('#eeeeee')
-        u_format = {
+        row_num = 3
+        worksheet.set_column(0, max_col, 5.5)
+        unit_format = {
             'border': True,
             'font_size': 8,
             'align': 'center',
             'valign': 'vcenter'
         }
-
+        status_format = {
+            'border': True,
+            'font_size': 8,
+            'align': 'center',
+            'valign': 'vcenter'
+        }
+        # 최고층수 만큼 반복
         for mf in max_floor_range:
-            row_num += 1
+            row_num += 2
             floor_no = floor_no__max - mf # 현재 층수
-            col = 1
+            col_num = 1
             # 동 수 만큼 반복
             for dong in dong_obj: # 동호수 표시 라인
                 units = unit_numbers.filter(bldg_no=dong['bldg_no'])
@@ -590,33 +571,20 @@ class ExportUnitStatus(View):
                         unit = None
                     unit_name = int(str(floor_no)+'0'+str(line['bldg_line'])) if unit else ''
                     if unit or floor_no <= 2:
-                        u_format['bg_color'] = unit.unit_type.color if unit else '#dddddd'
-                        unit_format = workbook.add_format(u_format)
+                        unit_format['bg_color'] = unit.unit_type.color if unit else '#dddddd'
+                        unit_formats = workbook.add_format(unit_format)
+                        status_formats = workbook.add_format(status_format)
                         if not unit:
-                            worksheet.merge_range(row_num, col, row_num + 1, col, unit_name, unit_format)
+                            worksheet.merge_range(row_num, col_num, row_num + 1, col_num, unit_name, unit_formats)
+                            worksheet.write(row_num + 1, col_num, '', status_formats)
                         else:
-                            worksheet.write(row_num, col, unit_name, unit_format)
-                    col += 1
-                col += 1
+                            worksheet.write(row_num, col_num, unit_name, unit_formats)
+                            worksheet.write(row_num + 1, col_num, '', status_formats)
+                    col_num += 1
+                col_num += 1
 
-            row_num += 1
-            col = 1
-            # 동 수 만큼 반복
-            for dong in dong_obj: # 호수 상태 표시 라인
-                units = unit_numbers.filter(bldg_no=dong['bldg_no'])
-                lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(bldg_no__contains=dong['bldg_no']).distinct()
-                for line in lines:
-                    try:
-                        unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
-                    except:
-                        unit = None
-                    if unit or floor_no <= 2:
-                        u_format['bg_color'] = 'white'
-                        unit_format = workbook.add_format(u_format)
-                        if unit:
-                            worksheet.write(row_num, col, '', unit_format)
-                    col += 1
-                col += 1
+        row_num += 2
+        col_num = 1
 
         dong_title_format = workbook.add_format()
         dong_title_format.set_bold()
@@ -624,15 +592,14 @@ class ExportUnitStatus(View):
         dong_title_format.set_font_size(11)
         dong_title_format.set_align('center')
         dong_title_format.set_align('vcenter')
-        row_num += 1
-        col = 1
+
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
             lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
                 bldg_no__contains=dong['bldg_no']).distinct()
-            worksheet.merge_range(row_num, col, row_num + 1, col + lines.count() - 1, dong['bldg_no'] + '동', dong_title_format)
+            worksheet.merge_range(row_num, col_num, row_num + 1, col_num + lines.count() - 1, dong['bldg_no'] + '동', dong_title_format)
 
-            col = col + lines.count() + 1
+            col_num = col_num + lines.count() + 1
 
         ### data end ----------------------------------------------- #
 
