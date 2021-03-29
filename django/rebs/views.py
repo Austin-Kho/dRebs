@@ -126,7 +126,7 @@ class PdfExportBill(View):
                 paid_dates.append(pld) # 회차별 최종 수납일자
                 payments.append(pl.aggregate(Sum('income'))['income__sum']) # 회차별 납부금액
                 ad = pl.latest('deal_date').deal_date - due_date if pl else None
-                add = ad.days if pl else None
+                add = None# ad.days if pl else None
                 adj_days.append(add)  # 회차별 지연일수
 
             cont['due_dates'] = list(reversed(due_dates)) # 회차별 납부일자
