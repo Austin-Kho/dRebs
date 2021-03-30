@@ -134,7 +134,7 @@
                                                 <td class="text-center">
                                                     <a href="javascript: void(0);" class="action-icon"><i
                                                             class="mdi mdi-pencil"></i></a>
-                                                    <a href="javascript: void(0);" class="action-icon"><i
+                                                    <a href="javascript:inout_del('{{ inout.pk }}')" class="action-icon"><i
                                                             class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>
@@ -209,6 +209,13 @@
       function d1_change(form) {
         pa_d2.options[0].selected = true
         form.submit()
+      }
+
+      function inout_del(pk) {
+        if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
+          location.href = "/rebs/cash-io/project/delete/"+pk+"/"
+        }
+        return
       }
     </script>
 

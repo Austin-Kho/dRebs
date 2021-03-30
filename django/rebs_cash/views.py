@@ -108,7 +108,7 @@ class DaylyCashReport(LoginRequiredMixin, TemplateView):
 class CashInoutLV(LoginRequiredMixin, ListView, FormView):
     model = CashBook
     form_class = CashSearchForm
-    paginate_by = 10
+    paginate_by = 15
 
     def get_queryset(self):
         company = Company.objects.first()
@@ -322,7 +322,7 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
 class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
     model = ProjectCashBook
     form_class = ProjectCashSearchForm
-    paginate_by = 10
+    paginate_by = 15
 
     def get_project(self):
         try:
@@ -430,6 +430,12 @@ class ProjectCashInoutCV(LoginRequiredMixin, CreateView):
 
 class ProjectCashInoutUV(LoginRequiredMixin, UpdateView):
     model = ProjectCashBook
+
+
+def ProjectCashInoutDV(request, *args, **kwargs):
+    cash_inout = ProjectCashBook.objects.get(pk=kwargs['pk'])
+    cash_inout.delete()
+    return redirect(reverse_lazy('rebs:cash-inout:project-index'))
 
 
 class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
