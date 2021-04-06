@@ -134,7 +134,7 @@
                                                 <td class="text-center">
                                                     <a href="javascript: void(0);" class="action-icon"><i
                                                             class="mdi mdi-pencil"></i></a>
-                                                    <a href="javascript:inout_del('{{ inout.pk }}')" class="action-icon"><i
+                                                    <a href="javascript:inout_del('{{ inout.pk }}', {% if request.user.staffauth.project_cash == '2' and inout.deal_date > auth_date %}1{% else %}0{% endif %})" class="action-icon"><i
                                                             class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>
@@ -211,10 +211,21 @@
         form.submit()
       }
 
-      function inout_del(pk) {
-        if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
-          location.href = "/rebs/cash-io/project/delete/"+pk+"/"
-        }
+      function inout_del(pk, second_auth) {
+        {% if request.user.is_superuser %}
+          if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
+            location.href = "/rebs/cash-io/project/delete/"+pk+"/"
+          }
+        {% else %}
+          if (second_auth) {
+            if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
+              location.href = "/rebs/cash-io/project/delete/"+pk+"/"
+            }
+          } else {
+            alert('권한이 없거나 수정 또는 삭제가능일이 경과하였습니다.. \n\n수정 또는 삭제하려면 관리자에게 문의하여 주시기 바랍니다.')
+          }
+        {% endif %}
+
         return
       }
     </script>

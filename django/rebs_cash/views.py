@@ -351,6 +351,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
             pa_d2 = pa_d2.filter(d1_id__exact=int(self.request.GET.get('d1')))
         context['pa_d2'] = pa_d2
         context['bank_account'] = ProjectBankAccount.objects.filter(project=self.get_project())
+        context['auth_date'] = datetime.today().date() - timedelta(days=10)
         return context
 
     def get_queryset(self):
