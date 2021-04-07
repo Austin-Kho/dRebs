@@ -359,7 +359,7 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         today = TODAY
         sdate = self.request.GET.get('sdate') if self.request.GET.get('sdate') else '1900-01-01'
         edate = self.request.GET.get('edate') if self.request.GET.get('edate') else today
-        results = ProjectCashBook.objects.filter(Q(project=project) & Q(deal_date__range=(sdate, edate)))
+        results = ProjectCashBook.objects.filter(Q(project=project) & Q(deal_date__range=(sdate, edate))).order_by('-deal_date', '-id')
 
         if self.request.GET.get('sort'):
             results = results.filter(Q(cash_category1__icontains=self.request.GET.get('sort')))

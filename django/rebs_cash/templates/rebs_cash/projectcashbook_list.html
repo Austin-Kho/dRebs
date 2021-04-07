@@ -132,10 +132,10 @@
                                                 <td class="text-right bg-info-lighten">{{ inout.outlay|floatformat:"0"|intcomma|default:"-" }}</td>
                                                 <td class="text-center">{{ inout.get_evidence_display }}</td>
                                                 <td class="text-center">
-                                                    <a href="javascript: void(0);" class="action-icon"><i
-                                                            class="mdi mdi-pencil"></i></a>
-                                                    <a href="javascript:inout_del('{{ inout.pk }}', {% if request.user.staffauth.project_cash == '2' and inout.deal_date > auth_date %}1{% else %}0{% endif %})" class="action-icon"><i
-                                                            class="mdi mdi-delete"></i></a>
+                                                    <a href="javascript:auth_chk({% if request.user.staffauth.project_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:project-update' inout.pk %}', '')"
+                                                       class="action-icon"><i class="mdi mdi-pencil"></i></a>
+                                                    <a href="javascript:auth_chk({% if request.user.staffauth.project_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:project-delete' inout.pk %}', 'del')"
+                                                       class="action-icon"><i class="mdi mdi-delete"></i></a>
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -211,21 +211,20 @@
         form.submit()
       }
 
-      function inout_del(pk, second_auth) {
-        {% if request.user.is_superuser %}
-          if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
-            location.href = "/rebs/cash-io/project/delete/"+pk+"/"
-          }
-        {% else %}
-          if (second_auth) {
+      function auth_chk(auth, url, del) {
+        if (auth) {
+          if (del) {
             if (confirm('삭제 후 복구할 수 없습니다.\n\n해당 거래 건을 삭제하시겠습니까?')) {
-              location.href = "/rebs/cash-io/project/delete/"+pk+"/"
+              location.href = url
             }
           } else {
-            alert('권한이 없거나 수정 또는 삭제가능일이 경과하였습니다.. \n\n수정 또는 삭제하려면 관리자에게 문의하여 주시기 바랍니다.')
+            if (confirm('해당 거래 건을 수정하시겠습니까?')) {
+              location.href = url
+            }
           }
-        {% endif %}
-
+        } else {
+          alert('권한이 없거나 수정 또는 삭제가능일(10일)이 경과하였습니다.. \n\n수정 또는 삭제하려면 관리자에게 문의하여 주시기 바랍니다.')
+        }
         return
       }
     </script>
