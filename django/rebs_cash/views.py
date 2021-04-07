@@ -115,7 +115,7 @@ class CashInoutLV(LoginRequiredMixin, ListView, FormView):
         today = TODAY
         s_date = self.request.GET.get('s_date') if self.request.GET.get('s_date') else '1900-01-01'
         e_date = self.request.GET.get('e_date') if self.request.GET.get('e_date') else today
-        results = CashBook.objects.filter(Q(company=company) & Q(deal_date__range=(s_date, e_date)))
+        results = CashBook.objects.filter(Q(company=company) & Q(deal_date__range=(s_date, e_date))).order_by('-deal_date', '-id')
 
         if self.request.GET.get('category1'):
             results = results.filter(Q(cash_category1__icontains=self.request.GET.get('category1', '')))
