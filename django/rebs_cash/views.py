@@ -667,7 +667,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             for po in context['payment_orders']:
                 payment_list.append(0)
 
-        context['this_price'] = this_price.price
+        context['this_price'] = this_price
         context['payment_list'] = list(reversed(payment_list))
         context['second_pay'] = contract.contractor.contract_date + timedelta(days=30) if contract else None
         context['unpaid'] = unpaid
