@@ -80,9 +80,9 @@ class PdfExportBill(View):
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
-            paid_list = ProjectCashBook.objects.filter(contract=contract).order_by('installment_order', 'deal_date')
-            cont['paid_sum'] = paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
-            paid_sum = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
+            paid_list = ProjectCashBook.objects.filter(is_contract_payment=True, contract=contract).order_by('installment_order', 'deal_date')
+            paid_sum = paid_list.aggregate(Sum('income'))['income__sum'] # 기 납부총액
+            cont['paid_sum'] = paid_sum if paid_sum else 0 # 기 납부총액(None 이면 0)
 
             paid_order = 0 # 완납회차
             paid_order_amount = 0 # 완납회차까지 약정액 합계
@@ -143,6 +143,7 @@ class PdfExportBill(View):
             # --------------------------------------------------------------
 
             # 5. 미납 금액 (약정금액 - 납부금액)
+            cont['total_cont_amount'] = total_cont_amount
             cont['cal_unpaid'] = cal_unpaid = paid_order_amount - paid_sum
             cont['cal_unpaid_sum'] = cal_unpaid_sum = total_cont_amount - paid_sum
             cont['arrears'] = 0 # 연체료 - 향후 연체료 계산 변수
@@ -159,7 +160,7 @@ class PdfExportBill(View):
 
             num = unpaid_orders.count() + 1 if cont['pm_cost_sum'] else unpaid_orders.count()
             rem_blank = 0 if unit_set else remaining_orders.count()
-            blank_line = (14 - (num + pay_orders.count())) + rem_blank
+            blank_line = (15 - (num + pay_orders.count())) + rem_blank
             cont['blank_line'] = '*' * blank_line
 
             context['data_list'].append(cont)
