@@ -148,6 +148,7 @@ DATABASES = {
 
 # DATABASE_ROUTERS = ['app.routers.MasterSlaveRouter']
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTH_USER_MODEL = 'account.User'
 
 # Password validation
