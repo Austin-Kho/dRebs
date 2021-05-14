@@ -153,7 +153,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                     except:
                         pay_num = all_pay_order.filter(pay_sort='1').count()
                         pn = round(pay_num / 2)
-                        down_payment = int(price * 0.1 / pn)
+                        down_payment = int(price.price * 0.1 / pn)
                     if apo.pay_code <= now_pay_code:
                         now_pay += down_payment
                     pay_by_order += down_payment # 회차별 납입액 가산
@@ -163,7 +163,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                         break
 
                 if apo.pay_sort == '2': # 중도금일때
-                    medium_amount = int(price * 0.1)
+                    medium_amount = int(price.price * 0.1)
                     pay_by_order += medium_amount # 회차별 납입액 가산
                     if apo.pay_code <= now_pay_code:
                         now_pay += down_payment
@@ -173,7 +173,7 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
                         break
 
                 if apo.pay_sort == '3': # 잔금일때
-                    balance_amount = int((price - pay_by_order) / balance_order.count())
+                    balance_amount = int((price.price - pay_by_order) / balance_order.count())
                     pay_by_order += balance_amount # 회차별 납입액 가산
                     if apo.pay_code <= now_pay_code:
                         now_pay += down_payment
