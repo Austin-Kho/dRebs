@@ -469,14 +469,14 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
 
                     # 1. 계약자 정보 현재 상태 변경
                     contractor = Contractor.objects.get(pk=request.POST.get('contractor'))
-                    contractor.is_registed = False
-                    contractor.status = str(int(contractor.status) + 2)
-                    contractor.register = request.user
+                    contractor.is_registed = False  # 인가 등록 여부
+                    contractor.status = str(int(contractor.status) + 2) # 해지 상태로 변경
+                    contractor.register = request.user # 해지 등록 작업자
                     contractor.save()
                     # 2. 계약 상태 변경
                     contract = Contract.objects.get(pk=contractor.contract.id)
                     contract.serial_number = str(contract.serial_number) + '-terminated-' + str(form.cleaned_data.get('completion_date'))
-                    contract.activation = False
+                    contract.activation = False # 일련번호 활성 해제
                     contract.save()
                     # 3. 계약유닛 연결 해제
                     contractunit = ContractUnit.objects.get(contract__contractor=contractor)
@@ -487,7 +487,8 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                     for pc in projectCash:
                         refund_d2 = pc.project_account_d1.id + 61
                         pc.project_account_d2 = ProjectAccountD2.objects.get(pk=refund_d2)
-                        pc.is_refund_closing = contractor
+                        pc.is_refund = True
+                        pc.is_refund_contractor = contractor
                         msg = str(form.cleaned_data.get('completion_date')) + ' 환불건'
                         append_note = ', ' + msg if pc.note else msg
                         pc.note = pc.note + append_note
