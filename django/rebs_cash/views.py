@@ -463,7 +463,7 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
         s_date = self.request.GET.get('sd') if self.request.GET.get('sd') else '1900-01-01'
         e_date = self.request.GET.get('ed') if self.request.GET.get('ed') else today
         results = ProjectCashBook.objects.filter(project=self.get_project(), project_account_d2__in=(1, 2),
-                                                 deal_date__range=(s_date, e_date))
+                                                 is_release=False, deal_date__range=(s_date, e_date))
 
         if self.request.GET.get('ipo'):
             results = results.filter(Q(installment_order_id=self.request.GET.get('ipo')))

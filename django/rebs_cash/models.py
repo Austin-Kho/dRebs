@@ -92,7 +92,7 @@ class ProjectCashBook(models.Model):
     is_contract_payment = models.BooleanField('분양/분담금 여부', default=False)  # 분양대금여부(납입, 환불 모두 True)
     contract = models.ForeignKey('rebs_contract.Contract', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='계약일련번호')  # 계약일련번호  (프로젝트 귀속)
     installment_order = models.ForeignKey('InstallmentPaymentOrder', on_delete=models.CASCADE, null=True, blank=True, verbose_name='납부회차')  # 분할납부차수  (프로젝트 귀속)
-    is_refund = models.BooleanField('환불완료 여부', default=False)
+    is_release = models.BooleanField('해지/환불 완료여부', default=False)
     is_refund_contractor = models.ForeignKey('rebs_contract.Contractor', on_delete=models.PROTECT, null=True, blank=True, verbose_name='환불 계약자', help_text='이 건 거래가 환불금 출금인 경우 이 건을 납부한 계약자를 선택')  # 환불 종결 여부
     content = models.CharField('적요', max_length=100, blank=True, default='')
     trader = models.CharField('거래처', max_length=30, blank=True, default='', help_text='분양대금(분담금)일 경우 반드시 해당 계좌에 기재된 입금자를 기재')  # icp=True -> 분양대금 납입자
