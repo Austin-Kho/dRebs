@@ -64,6 +64,7 @@ INSTALLED_APPS += [  # plugin
 INSTALLED_APPS += [  # app
     'account.apps.AccountConfig',
     'home.apps.HomeConfig',
+    'board.apps.BoardConfig',
     'books.apps.BooksConfig',
     'excel.apps.ExcelConfig',
     'rebs.apps.RebsConfig',
