@@ -230,6 +230,7 @@ APP_ORDER = [
     'rebs_contract',
     'rebs_cash',
     'rebs',
+    'board',
     'account'
 ]
 
