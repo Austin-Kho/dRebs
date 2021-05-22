@@ -21,13 +21,13 @@ class Board(models.Model):
 class Category(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     name = models.CharField('값', max_length=255)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
     order = models.PositiveSmallIntegerField('순서')
 
 
 class Post(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    is_notice = models.CharField('공지사항', choices=(('', '일반'), ('1', '공지'), ('2', '전체공지')), default='')
+    is_notice = models.CharField('공지사항', max_length=1, choices=(('', '일반'), ('1', '공지'), ('2', '전체공지')), default='')
     title = models.CharField('제목', max_length=255)
     content = models.TextField('내용')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
