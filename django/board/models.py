@@ -8,7 +8,7 @@ class Group(models.Model):
     url = models.CharField('uri', max_length=20)
     name = models.CharField('이름', max_length=255)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
-    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='관리자')
+    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name='관리자')
 
     def __str__(self):
         return self.name
@@ -25,7 +25,7 @@ class Board(models.Model):
     name = models.CharField('이름', max_length=255)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     search_able = models.BooleanField('검색사용', default=True)
-    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='관리자')
+    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name='관리자')
 
     def __str__(self):
         return self.name
@@ -39,7 +39,7 @@ class Board(models.Model):
 class Category(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     name = models.CharField('이름', max_length=255)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, verbose_name='상위 카테고리')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 카테고리')
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
 
     def __str__(self):
@@ -123,6 +123,9 @@ class Comment(models.Model):
     # number = models.PositiveIntegerField()
     # reply = models.CharField('댓글', max_length=10)
     # html_type = models.CharField('', choices=(('1', 'html'), ('2', 'text'), ('3', 'aa'), ('4', 'bb')))
+
+    def __str__(self):
+        return f"{self.post} -> {self.content}"
 
     class Meta:
         ordering = ['id']
