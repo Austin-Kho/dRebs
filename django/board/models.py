@@ -1,50 +1,73 @@
+import hashlib
 from django.db import models
+from datetime import datetime
 from django.conf import settings
 
 
 class Group(models.Model):
-    url = models.CharField('주소', max_length=20)
-    name = models.CharField('명칭', max_length=255)
-    order = models.PositiveSmallIntegerField('순서')
+    url = models.CharField('uri', max_length=20)
+    name = models.CharField('이름', max_length=255)
+    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     manager = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='관리자')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '01. 그룹 관리'
+        verbose_name_plural = '01. 그룹 관리'
 
 
 class Board(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    url = models.CharField('주소', max_length=20)
-    name = models.CharField('명칭', max_length=255)
-    order = models.PositiveSmallIntegerField('순서')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='그룹')
+    url = models.CharField('uri', max_length=20)
+    name = models.CharField('이름', max_length=255)
+    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     search_able = models.BooleanField('검색사용', default=True)
     manager = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='관리자')
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '02. 게시판 관리'
+        verbose_name_plural = '02. 게시판 관리'
+
 
 class Category(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    name = models.CharField('값', max_length=255)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
-    order = models.PositiveSmallIntegerField('순서')
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
+    name = models.CharField('이름', max_length=255)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, verbose_name='상위 카테고리')
+    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '03. 카테고리 관리'
+        verbose_name_plural = '03. 카테고리 관리'
 
 
 class Post(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    is_notice = models.CharField('공지사항', max_length=1, choices=(('', '일반'), ('1', '공지'), ('2', '전체공지')), default='')
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
+    is_notice = models.CharField('공지사항', max_length=1, choices=(('0', '일반'), ('1', '공지'), ('2', '전체공지')), default='0')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
-    content = models.TextField('내용')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, null=True, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
-    hit = models.PositiveIntegerField('조회수')
-    like = models.PositiveIntegerField('추천')
-    dislike = models.PositiveIntegerField('비추천')
-    blame = models.PositiveSmallIntegerField('신고하기')
-    files = models.FileField()
-    images = models.ImageField()
-    link_urls = models.URLField()
-    ip = models.GenericIPAddressField('아이피')
-    device = models.CharField('기기', max_length=10)
-    soft_delete = models.DateTimeField(null=True, default='')
+    hit = models.PositiveIntegerField('조회수', default=0)
+    like = models.PositiveIntegerField('추천', default=0)
+    dislike = models.PositiveIntegerField('비추천', default=0)
+    blame = models.PositiveSmallIntegerField('신고', default=0)
+    ip = models.GenericIPAddressField('아이피', null=True, blank=True)
+    device = models.CharField('등록기기', max_length=10, null=True, blank=True)
+    secret = models.BooleanField('비밀글', default=False)
+    password = models.CharField('패스워드', max_length=255, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
+    soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     # number = models.PositiveIntegerField()
@@ -53,27 +76,69 @@ class Post(models.Model):
     # receive_email = models.BooleanField()
     # html_type = models.CharField('', choices=(('1', 'html'), ('2', 'text'), ('3', 'aa'), ('4', 'bb')))
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '04. 게시물 관리'
+        verbose_name_plural = '04. 게시물 관리'
+
+
+def get_image_filename(instance, filename):
+    today = datetime.today().strftime('%Y-%m-%d')
+    hash_value = hashlib.md5().hexdigest()
+    return f"{today}_{hash_value}_{filename}"
+
+
+class Images(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    image = models.ImageField(upload_to=get_image_filename, verbose_name='이미지')
+
+
+class Files(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    file = models.FileField(upload_to=get_image_filename, verbose_name='파일')
+
+
+class Links(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    link = models.URLField(verbose_name='링크')
+
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    content = models.TextField(null=True, default='')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물')
+    content = models.TextField('내용')
+    like = models.PositiveIntegerField('추천', default=0)
+    dislike = models.PositiveIntegerField('비추천', default=0)
+    blame = models.PositiveSmallIntegerField('신고', default=0)
+    ip = models.GenericIPAddressField('아이피', null=True, blank=True)
+    device = models.CharField('등록기기', max_length=10, null=True, blank=True)
     secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, null=True, default='')
-    like = models.PositiveIntegerField('추천')
-    dislike = models.PositiveIntegerField('비추천')
-    blame = models.PositiveSmallIntegerField('신고하기')
-    ip = models.GenericIPAddressField('아이피')
-    device = models.CharField('기기', max_length=10)
-    soft_delete = models.DateTimeField(null=True, default='')
+    password = models.CharField('패스워드', max_length=255, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
+    soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     # number = models.PositiveIntegerField()
     # reply = models.CharField('댓글', max_length=10)
     # html_type = models.CharField('', choices=(('1', 'html'), ('2', 'text'), ('3', 'aa'), ('4', 'bb')))
 
+    class Meta:
+        ordering = ['id']
+        verbose_name = '05. 댓글 관리'
+        verbose_name_plural = '05. 댓글 관리'
+
 
 class Tag(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     tag = models.CharField('태그', max_length=100)
-    post = models.ManyToManyField(Post)
+    post = models.ManyToManyField(Post, null=True, blank=True, verbose_name='게시물')
+
+    def __str__(self):
+        return self.tag
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '06. 태그 관리'
+        verbose_name_plural = '06. 태그 관리'
