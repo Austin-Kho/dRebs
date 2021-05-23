@@ -9,7 +9,7 @@
     <div class="container-fluid">
 
         <!-- start page title -->
-        {% include 'rebs/partials/content_title.html' with  second_bs="현장 문서 관리" title="문서 등록 관리" %}
+        {% include 'rebs/partials/content_title.html' with  second_bs="현장 문서 관리" title="일반 문서 관리" %}
         <!-- end page title -->
 
         <div class="row">
@@ -36,4 +36,9 @@
 {% endblock %}
 
 {% block third_party_js %}
+    <script>
+      window.onload = function () {
+        document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+      }
+    </script>
 {% endblock %}

@@ -6,7 +6,15 @@ from board.models import Post
 from rebs_project.models import Project
 
 
-class ProjectDocsBoard(LoginRequiredMixin, ListView):
+class CompanyGeneralDocs(LoginRequiredMixin, ListView):
+    pass
+
+
+class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
+    pass
+
+
+class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
     template_name = 'rebs_docs/project_docs_board.html'
     model = Post
@@ -25,3 +33,7 @@ class ProjectDocsBoard(LoginRequiredMixin, ListView):
         context['project_list'] = self.request.user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         return context
+
+
+class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
+    pass

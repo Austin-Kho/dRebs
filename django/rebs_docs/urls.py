@@ -19,5 +19,8 @@ from .views import *
 app_name = 'docs'
 
 urlpatterns = [
-    path('pr/receive/', ProjectDocsBoard.as_view(), name='pr.receive'),
+    path('co/general/', CompanyGeneralDocs.as_view(), name='co.general'),
+    path('co/lawsuit/', CompanyLawsuitDocs.as_view(), name='co.lawsuit'),
+    path('pr/general/', ProjectGeneralDocs.as_view(), name='pr.general'),
+    path('pr/lawsuit/', ProjectLawsuitDocs.as_view(), name='pr.lawsuit'),
 ]
