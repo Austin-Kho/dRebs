@@ -36,9 +36,23 @@ class Board(models.Model):
         verbose_name_plural = '02. 게시판 관리'
 
 
+class Partition(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
+    name = models.CharField('이름', max_length=100)
+    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = '03. 파티션 관리'
+        verbose_name_plural = '03. 파티션 관리'
+
+
 class Category(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
-    name = models.CharField('이름', max_length=255)
+    name = models.CharField('이름', max_length=100)
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 카테고리')
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
 
@@ -47,8 +61,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '03. 카테고리 관리'
-        verbose_name_plural = '03. 카테고리 관리'
+        verbose_name = '04. 카테고리 관리'
+        verbose_name_plural = '04. 카테고리 관리'
 
 
 class Post(models.Model):
@@ -81,8 +95,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '04. 게시물 관리'
-        verbose_name_plural = '04. 게시물 관리'
+        verbose_name = '05. 게시물 관리'
+        verbose_name_plural = '05. 게시물 관리'
 
 
 def get_image_filename(instance, filename):
@@ -108,7 +122,7 @@ class Links(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물')
-    content = models.TextField('내용')
+    content = models.TextField('내용', default='')
     like = models.PositiveIntegerField('추천', default=0)
     dislike = models.PositiveIntegerField('비추천', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
@@ -129,8 +143,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '05. 댓글 관리'
-        verbose_name_plural = '05. 댓글 관리'
+        verbose_name = '06. 댓글 관리'
+        verbose_name_plural = '06. 댓글 관리'
 
 
 class Tag(models.Model):
@@ -143,5 +157,5 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '06. 태그 관리'
-        verbose_name_plural = '06. 태그 관리'
+        verbose_name = '07. 태그 관리'
+        verbose_name_plural = '07. 태그 관리'
