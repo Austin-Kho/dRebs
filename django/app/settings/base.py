@@ -225,13 +225,14 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 APP_ORDER = [
-    'rebs_company',
-    'rebs_project',
-    'rebs_contract',
-    'rebs_cash',
     'rebs',
     'board',
-    'account'
+    'account',
+    'rebs_docs',
+    'rebs_cash',
+    'rebs_company',
+    'rebs_project',
+    'rebs_contract'
 ]
 
 AWS_ACCESS_KEY_ID = get_environment('AWS_ACCESS_KEY_ID')
