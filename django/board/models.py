@@ -5,9 +5,7 @@ from django.conf import settings
 
 
 class Group(models.Model):
-    url = models.CharField('uri', max_length=20)
     name = models.CharField('이름', max_length=255)
-    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     manager = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name='관리자')
 
     def __str__(self):
