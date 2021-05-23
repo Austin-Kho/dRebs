@@ -73,7 +73,6 @@ INSTALLED_APPS += [  # app
     'rebs_contract.apps.RebsContractConfig',
     'rebs_cash.apps.RebsCashConfig',
     'rebs_notice.apps.RebsNoticeConfig',
-    'rebs_docs.apps.RebsDocsConfig',
 ]
 
 MIDDLEWARE = [
