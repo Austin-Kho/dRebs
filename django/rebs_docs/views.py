@@ -29,7 +29,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         return project
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectDocsBoard, self).get_context_data(**kwargs)
+        context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
         context['project_list'] = self.request.user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         return context

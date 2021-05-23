@@ -1,0 +1,29 @@
+    <div><h4>게시판 명</h4></div>
+
+    <div>정렬하기 ...</div>
+
+    <table class="table table-sm table-hover">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>글쓴이</th>
+            <th>작성일시</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>1</td>
+                <td>{{ object }}</td>
+                <td>{{ object.user }}</td>
+                <td>{{ object.updated|default:object.created }}</td>
+                <td>500</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        목록 / 글쓰기
+    </div>
