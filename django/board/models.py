@@ -6,7 +6,7 @@ from django.conf import settings
 
 class Group(models.Model):
     name = models.CharField('이름', max_length=255)
-    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name='관리자')
+    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name='관리자')
 
     def __str__(self):
         return self.name
@@ -23,7 +23,7 @@ class Board(models.Model):
     name = models.CharField('이름', max_length=255)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     search_able = models.BooleanField('검색사용', default=True)
-    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name='관리자')
+    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name='관리자')
 
     def __str__(self):
         return self.name
@@ -148,7 +148,7 @@ class Comment(models.Model):
 class Tag(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     tag = models.CharField('태그', max_length=100)
-    post = models.ManyToManyField(Post, null=True, blank=True, verbose_name='게시물')
+    post = models.ManyToManyField(Post, blank=True, verbose_name='게시물')
 
     def __str__(self):
         return self.tag

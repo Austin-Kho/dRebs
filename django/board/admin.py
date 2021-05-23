@@ -5,7 +5,8 @@ from . models import Group, Board, Partition, Category, Post, Comment, Tag
 
 
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'url', 'name', 'order')
+    list_display = ('id', 'name')
+    list_display_links = ('name',)
 
 
 class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
