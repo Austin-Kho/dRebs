@@ -1,0 +1,39 @@
+{% extends 'rebs/layouts/base.html' %}
+
+{% block title %}Rebs - Project{% endblock %}
+
+{% block content %}
+{#    {% load humanize mathfilters widget_tweaks %}#}
+
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        {% include 'rebs/partials/content_title.html' with  second_bs="현장 문서 관리" title="문서 등록 관리" %}
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        {% with menu_order='1' %}
+                            {% include 'rebs_docs/partials/head_menu.html' %}
+                        {% endwith %}
+
+                        <form class="form-horizontal p-0 col-12" name="form1" method="get">
+                            <div class="row">
+                                {% include 'rebs/partials/project_select.html' %}
+                                <div class="col-sm-12 col-md-6"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- container -->
+
+{% endblock %}
+
+{% block third_party_js %}
+{% endblock %}
