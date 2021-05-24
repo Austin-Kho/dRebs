@@ -17,17 +17,17 @@
     <tbody>
     {% for notice in notices %}
         <tr>
-            <td>공지</td>
-            <td>{{ notice }}</td>
+            <td><span class="badge badge-primary">공지</span></td>
+            <td class="bold"><a href="">{{ notice }}</a></td>
             <td>{{ notice.user }}</td>
-            <td>{{ notice.updated|default:object.created }}</td>
+            <td>{{ notice.updated|default:notice.created }}</td>
             <td>{{ notice.hit|default:"-"|intcomma }}</td>
         </tr>
     {% endfor %}
     {% for object in object_list %}
         <tr>
             <td>1</td>
-            <td>{{ object }}</td>
+            <td><a href="">{{ object }}</a></td>
             <td>{{ object.user }}</td>
             <td>{{ object.updated|default:object.created }}</td>
             <td>{{ object.hit|default:"-"|intcomma }}</td>

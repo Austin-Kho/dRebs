@@ -17,7 +17,9 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
 class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
     template_name = 'rebs_docs/project_docs_board.html'
-    model = Post
+
+    def get_paginate_by(self, queryset):
+        return self.request.GET.get('limit') if self.request.GET.get('limit') else 2
 
     def get_project(self):
         try:
@@ -31,21 +33,21 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
     def get_board(self):
        return Board.objects.first()
 
-    def get_partition(self):
-        return Partition.objects.get(board=self.get_board(), project=self.get_project())
+    def get_post_list(self):
+        partition = Partition.objects.get(board=self.get_board(), project=self.get_project())
+        return Post.objects.filter(board=self.get_board(), partition=partition)
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
         context['project_list'] = self.request.user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['this_board'] = self.get_board()
-        # context['notices'] = self.get_queryset().object.
+        context['notices'] =self.get_post_list().filter(is_notice=True)
         return context
 
     def get_queryset(self):
-        base_data = Post.objects.filter(board=self.get_board(), partition=self.get_partition())
+        base_data = self.get_post_list().filter(is_notice=False)
         object = base_data
-
         return object
 
 
