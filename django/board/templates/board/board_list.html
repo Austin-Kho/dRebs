@@ -1,30 +1,40 @@
-    <div><h4>게시판 명</h4></div>
+ {% load humanize %}
+<div><h4>게시판 명</h4></div>
 
-    <div>정렬하기 ...</div>
+<div>정렬하기 ...</div>
 
-    <table class="table table-sm table-hover">
+<table class="table table-sm table-hover">
 
-        <thead>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>글쓴이</th>
+        <th>작성일시</th>
+        <th>조회수</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for notice in notices %}
         <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>글쓴이</th>
-            <th>작성일시</th>
-            <th>조회수</th>
+            <td>공지</td>
+            <td>{{ notice }}</td>
+            <td>{{ notice.user }}</td>
+            <td>{{ notice.updated|default:object.created }}</td>
+            <td>{{ notice.hit|default:"-"|intcomma }}</td>
         </tr>
-        </thead>
-        <tbody>
-        {% for object in object_list %}
-            <tr>
-                <td>1</td>
-                <td>{{ object }}</td>
-                <td>{{ object.user }}</td>
-                <td>{{ object.updated|default:object.created }}</td>
-                <td>500</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div>
-        목록 / 글쓰기
-    </div>
+    {% endfor %}
+    {% for object in object_list %}
+        <tr>
+            <td>1</td>
+            <td>{{ object }}</td>
+            <td>{{ object.user }}</td>
+            <td>{{ object.updated|default:object.created }}</td>
+            <td>{{ object.hit|default:"-"|intcomma }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div>
+    목록 / 글쓰기
+</div>

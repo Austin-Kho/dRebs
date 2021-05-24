@@ -67,6 +67,7 @@ class Category(models.Model):
 class Post(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     is_notice = models.CharField('공지사항', max_length=1, choices=(('0', '일반'), ('1', '공지'), ('2', '전체공지')), default='0')
+    partition = models.ForeignKey(Partition, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='파티션')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
     content = models.TextField('내용', blank=True)
@@ -93,7 +94,7 @@ class Post(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-id']
         verbose_name = '05. 게시물 관리'
         verbose_name_plural = '05. 게시물 관리'
 
@@ -141,7 +142,7 @@ class Comment(models.Model):
         return f"{self.post} -> {self.content}"
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-id']
         verbose_name = '06. 댓글 관리'
         verbose_name_plural = '06. 댓글 관리'
 

@@ -5,6 +5,8 @@ from . models import Group, Board, Partition, Category, Post, Comment, Tag
 
 
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('name',)
     search_fields = ('name',)
 
 
@@ -19,7 +21,7 @@ class CategoryInline(admin.TabularInline):
 
 
 class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('group', 'url', 'name', 'order', 'search_able')
+    list_display = ('id', 'group', 'url', 'name', 'order', 'search_able')
     list_display_links = ('name',)
     list_editable = ('group', 'url', 'order', 'search_able')
     search_fields = ('url', 'name')
@@ -28,7 +30,7 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PartitionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('board', 'name', 'project', 'order')
+    list_display = ('id', 'board', 'name', 'project', 'order')
     list_display_links = ('name',)
     list_editable = ('board', 'project', 'order')
     search_fields = ('name',)
@@ -36,7 +38,7 @@ class PartitionAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('board', 'name', 'parent', 'order')
+    list_display = ('id', 'board', 'name', 'parent', 'order')
     list_display_links = ('name',)
     list_editable = ('board', 'parent', 'order')
     search_fields = ('name',)
@@ -44,21 +46,21 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('board', 'is_notice', 'category', 'title', 'user')
+    list_display = ('id', 'board', 'is_notice', 'partition', 'category', 'title', 'user')
     list_display_links = ('title',)
-    list_editable = ('board', 'is_notice', 'category')
+    list_editable = ('board', 'is_notice', 'partition', 'category')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'category')
 
 
 class CommentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'post', 'content', 'user')
-    list_display_links = ('content',)
+    list_display_links = ('post', 'content',)
     search_fields = ('content', 'user')
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('board', 'tag')
+    list_display = ('id', 'board', 'tag')
     list_editable = ('tag',)
     search_fields = ('tag',)
     list_filter = ('board',)
