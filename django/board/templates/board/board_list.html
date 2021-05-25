@@ -1,40 +1,50 @@
- {% load humanize %}
-<div><h4>게시판 명</h4></div>
+{% load humanize %}
 
-<div>정렬하기 ...</div>
+<div class="row">
+    <div class="col-12 border-bottom mb-3"><h4>{{ this_board }}</h4></div>
 
-<table class="table table-sm table-hover">
+    <div class="col-6 p-2">정렬하기</div>
 
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>글쓴이</th>
-        <th>작성일시</th>
-        <th>조회수</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for notice in notices %}
+    <table class="table table-sm table-hover">
+
+        <thead>
         <tr>
-            <td><span class="badge badge-primary">공지</span></td>
-            <td class="bold"><a href="">{{ notice }}</a></td>
-            <td>{{ notice.user }}</td>
-            <td>{{ notice.updated|default:notice.created }}</td>
-            <td>{{ notice.hit|default:"-"|intcomma }}</td>
+            <th style="width: 8%">번호</th>
+            <th style="width: 50%">제목</th>
+            <th style="width: 12%">글쓴이</th>
+            <th style="width: 22%">작성일시</th>
+            <th style="width: 8%">조회수</th>
         </tr>
-    {% endfor %}
-    {% for object in object_list %}
-        <tr>
-            <td>1</td>
-            <td><a href="">{{ object }}</a></td>
-            <td>{{ object.user }}</td>
-            <td>{{ object.updated|default:object.created }}</td>
-            <td>{{ object.hit|default:"-"|intcomma }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<div>
-    목록 / 글쓰기
+        </thead>
+        <tbody>
+        {% for notice in notices %}
+            <tr>
+                <td><span class="badge badge-primary">공지</span></td>
+                <td class="bold"><a href="">{{ notice }}</a></td>
+                <td>{{ notice.user }}</td>
+                <td>{{ notice.updated|default:notice.created }}</td>
+                <td>{{ notice.hit|default:"-"|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        {% for object in object_list %}
+            <tr>
+                <td>1</td>
+                <td><a href="">{{ object }}</a></td>
+                <td>{{ object.user }}</td>
+                <td>{{ object.updated|default:object.created }}</td>
+                <td>{{ object.hit|default:"-"|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="row col-12">
+        <div class="col-6"><button class="btn btn-light">목록</button></div>
+        <div class="col-6"><button class="btn btn-primary float-right">글쓰기</button></div>
+    </div>
 </div>
+
+{% if is_paginated %}
+    {# to_first_last :: 맨처음 / 맨끝으로 버튼 사용 여부 #}
+    {# page_class ex:: pagination-rounded pagination-sm pagination-lg justify-content-center justify-content-end #}
+    {% include 'partials/pagination.html' with to_first_last="ok" page_class="pagination-rounded justify-content-end" %}
+{% endif %}

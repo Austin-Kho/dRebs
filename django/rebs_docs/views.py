@@ -46,8 +46,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        base_data = self.get_post_list().filter(is_notice=False)
-        object = base_data
+        object = self.get_post_list().filter(is_notice=False)
         return object
 
 
