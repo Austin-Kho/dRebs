@@ -2733,5 +2733,124 @@
       "name": "분(부)담금 - 위약금",
       "description": "출자금 - 위약금"
     }
+  },
+  {
+    "model": "board.group",
+    "pk": 1,
+    "fields": {
+      "name": "기본그룹"
+    }
+  },
+  {
+    "model": "board.board",
+    "pk": 1,
+    "fields": {
+      "group": 1,
+      "url": "docs",
+      "name": "일반 문서 게시판",
+      "order": 1
+    }
+  },
+  {
+    "model": "board.board",
+    "pk": 2,
+    "fields": {
+      "group": 1,
+      "url": "lowsuit",
+      "name": "소송 기록 게시판",
+      "order": 2
+    }
+  },
+  {
+    "model": "board.partition",
+    "pk": 1,
+    "fields": {
+      "board": 1,
+      "name": "본사",
+      "order": 1
+    }
+  },
+  {
+    "model": "board.partition",
+    "pk": 2,
+    "fields": {
+      "board": 1,
+      "name": "프로젝트명",
+      "project": 1,
+      "order": 2
+    }
+  },
+  {
+    "model": "board.partition",
+    "pk": 3,
+    "fields": {
+      "board": 2,
+      "name": "본사",
+      "order": 3
+    }
+  },
+  {
+    "model": "board.partition",
+    "pk": 4,
+    "fields": {
+      "board": 2,
+      "name": "프로젝트명",
+      "project": 1,
+      "order": 4
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1,
+    "fields": {
+      "board": 1,
+      "name": "발송공문",
+      "order": 1
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 2,
+    "fields": {
+      "board": 1,
+      "name": "수신공문",
+      "order": 2
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 3,
+    "fields": {
+      "board": 1,
+      "name": "회의록/보고서",
+      "order": 3
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 4,
+    "fields": {
+      "board": 1,
+      "name": "계약서/협약서",
+      "order": 4
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 5,
+    "fields": {
+      "board": 1,
+      "name": "내규/서식",
+      "order": 5
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 6,
+    "fields": {
+      "board": 1,
+      "name": "기타",
+      "order": 6
+    }
   }
 ]
