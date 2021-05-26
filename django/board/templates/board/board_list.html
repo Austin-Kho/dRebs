@@ -3,7 +3,34 @@
 <div class="row">
     <div class="col-12 border-bottom mb-3"><h4>{{ this_board }}</h4></div>
 
-    <div class="col-6 p-2">정렬하기</div>
+    <div class="col-12 row pt-2 pb-2">
+        <div class="col-lg-2">
+            <select class="form-control form-select" id="list-order">
+                <option>정렬하기</option>
+                <option>날짜순</option>
+                <option>조회수</option>
+                <option>댓글수</option>
+                <option>추천순</option>
+            </select>
+        </div>
+        <div class="col-lg-6"></div>
+        <div class="col-lg-2 float-right">
+            <select class="form-control form-select" id="list-order">
+                <option>제목+내용</option>
+                <option>제목</option>
+                <option>내용</option>
+                <option>회원명</option>
+                <option>회원아이디</option>
+            </select>
+
+        </div>
+        <div class="col-lg-2 float-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username">
+                <button class="btn btn-dark" type="button">검색</button>
+            </div>
+        </div>
+    </div>
 
     <table class="table table-sm table-hover">
 
@@ -28,7 +55,7 @@
         {% endfor %}
         {% for object in object_list %}
             <tr>
-                <td>1</td>
+                <td>{{ forloop.revcounter|add:1 }}</td>
                 <td><a href="">{{ object }}</a></td>
                 <td>{{ object.user }}</td>
                 <td>{{ object.updated|default:object.created }}</td>
