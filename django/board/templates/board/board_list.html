@@ -3,28 +3,28 @@
 <div class="row">
     <div class="col-12 border-bottom mb-3"><h4>{{ this_board }}</h4></div>
 
-    <div class="col-12 row pt-2 pb-2">
+    <div class="col-12 row mb-3">
         <div class="col-xs-12 col-sm-4 col-md-6 row">
             <div class="col-sm-8 col-md-6 col-lg-4 col-xl-3">
-            <select class="form-control form-select" id="list-order">
-                <option>정렬하기</option>
-                <option>날짜순</option>
-                <option>조회수</option>
-                <option>댓글수</option>
-                <option>추천순</option>
-            </select>
-        </div>
+                <select class="form-control form-select" id="list-order">
+                    <option>정렬하기</option>
+                    <option>날짜순</option>
+                    <option>조회수</option>
+                    <option>댓글수</option>
+                    <option>추천순</option>
+                </select>
+            </div>
         </div>
         <div class="col-xs-12 col-sm-8 col-md-6 row">
             <div class="d-none d-xl-block col-xl-4"></div>
             <div class="col-sm-4 col-md-4 col-xl-3">
                 <select class="form-control form-select" id="list-order">
-                <option>제목+내용</option>
-                <option>제목</option>
-                <option>내용</option>
-                <option>회원명</option>
-                <option>회원아이디</option>
-            </select>
+                    <option>제목+내용</option>
+                    <option>제목</option>
+                    <option>내용</option>
+                    <option>회원명</option>
+                    <option>회원아이디</option>
+                </select>
             </div>
             <div class="col-sm-8 col-md-8 col-xl-5">
                 <div class="input-group">
@@ -35,7 +35,24 @@
         </div>
     </div>
 
-    <table class="table table-sm table-hover">
+    <ul class="nav nav-pills bg-nav-pills mb-0">
+        <li class="nav-item">
+            <a href="#all" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                <span class="d-none d-md-block">전체 카테고리</span>
+            </a>
+        </li>
+        {% for category in categories %}
+            <li class="nav-item">
+                <a href="#category-{{ category.pk }}" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                    <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                    <span class="d-none d-md-block">{{ category }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <table class="table table-sm table-hover" style="font-family: 'Spoqa Han Sans Neo'">
 
         <thead>
         <tr>
@@ -59,7 +76,7 @@
         {% for object in object_list %}
             <tr>
                 <td>{{ forloop.revcounter|add:1 }}</td>
-                <td><a href="">{{ object }}</a></td>
+                <td>{% if object.category %} <span class="badge badge-secondary">{{ object.category }}</span> {% endif %} <a href="">{{ object }}</a></td>
                 <td>{{ object.user }}</td>
                 <td>{{ object.updated|default:object.created }}</td>
                 <td>{{ object.hit|default:"-"|intcomma }}</td>

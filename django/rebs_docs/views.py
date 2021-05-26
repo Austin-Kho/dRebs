@@ -18,7 +18,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
     template_name = 'rebs_docs/project_docs_board.html'
 
     def get_paginate_by(self, queryset):
-        return self.request.GET.get('limit') if self.request.GET.get('limit') else 2
+        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
 
     def get_project(self):
         try:
@@ -41,6 +41,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         context['project_list'] = self.request.user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['this_board'] = self.get_board()
+        context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] =self.get_post_list().filter(is_notice=True)
         return context
 
