@@ -19,7 +19,6 @@ class Group(models.Model):
 
 class Board(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='그룹')
-    url = models.CharField('uri', max_length=20)
     name = models.CharField('이름', max_length=255)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
     search_able = models.BooleanField('검색사용', default=True)

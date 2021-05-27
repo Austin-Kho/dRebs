@@ -21,10 +21,10 @@ class CategoryInline(admin.TabularInline):
 
 
 class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'group', 'url', 'name', 'order', 'search_able')
+    list_display = ('id', 'group', 'name', 'order', 'search_able')
     list_display_links = ('name',)
-    list_editable = ('group', 'url', 'order', 'search_able')
-    search_fields = ('url', 'name')
+    list_editable = ('group', 'order', 'search_able')
+    search_fields = ('name',)
     list_filter = ('group',)
     inlines = (PartitionInline, CategoryInline)
 
