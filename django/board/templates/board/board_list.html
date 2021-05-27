@@ -28,7 +28,7 @@
             </div>
             <div class="col-sm-8 col-md-8 col-xl-5">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username">
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Search">
                     <button class="btn btn-dark" type="button">검색</button>
                 </div>
             </div>
@@ -52,7 +52,7 @@
         {% endfor %}
     </ul>
 
-    <table class="table table-sm table-hover" style="font-family: 'Spoqa Han Sans Neo'">
+    <table class="table table-sm table-hover" style="font-family: 'Spoqa Han Sans Neo' sans-serif">
 
         <thead>
         <tr>
@@ -75,8 +75,8 @@
         {% endfor %}
         {% for object in object_list %}
             <tr>
-                <td>{{ forloop.revcounter|add:1 }}</td>
-                <td>{% if object.category %} <span class="badge badge-secondary">{{ object.category }}</span> {% endif %} <a href="">{{ object }}</a></td>
+                <td>{{ forloop.revcounter }}</td>
+                <td>{% if object.category %} <span class="badge badge-secondary mr-2">{{ object.category }}</span> {% endif %} <a href="">{{ object }}</a></td>
                 <td>{{ object.user }}</td>
                 <td>{{ object.updated|default:object.created }}</td>
                 <td>{{ object.hit|default:"-"|intcomma }}</td>
