@@ -75,7 +75,7 @@
         {% endfor %}
         {% for object in object_list %}
             <tr>
-                <td>{{ forloop.revcounter }}</td>
+                <td>{{ object.pk }}</td>
                 <td>{% if object.category %} <span class="badge badge-secondary mr-2">{{ object.category }}</span> {% endif %} <a href="">{{ object }}</a></td>
                 <td>{{ object.user }}</td>
                 <td>{{ object.updated|default:object.created }}</td>
