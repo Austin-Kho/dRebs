@@ -37,14 +37,14 @@
 
     <ul class="nav nav-pills bg-nav-pills mb-0">
         <li class="nav-item">
-            <a href="#all" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+            <a href="?category=" data-bs-toggle="tab" aria-expanded="false" class="nav-link {% if not request.GET.category %}active{% endif %}">
                 <i class="mdi mdi-home-variant d-md-none d-block"></i>
                 <span class="d-none d-md-block">전체 카테고리</span>
             </a>
         </li>
         {% for category in categories %}
             <li class="nav-item">
-                <a href="#category-{{ category.pk }}" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                <a href="?category={{ category.pk }}" data-bs-toggle="tab" aria-expanded="false" class="nav-link {% if request.GET.category == category.pk|slugify %}active{% endif %}">
                     <i class="mdi mdi-home-variant d-md-none d-block"></i>
                     <span class="d-none d-md-block">{{ category }}</span>
                 </a>
@@ -76,7 +76,14 @@
         {% for object in object_list %}
             <tr>
                 <td>{{ object.pk }}</td>
-                <td>{% if object.category %} <span class="badge badge-secondary mr-2">{{ object.category }}</span> {% endif %} <a href="">{{ object }}</a></td>
+                <td>
+                    {% if object.category %}
+                        <a href="?category={{ object.category.pk }}">
+                            <span class="badge badge-secondary mr-2">{{ object.category }}</span>
+                        </a>
+                    {% endif %}
+                    <a href="">{{ object }}</a>
+                </td>
                 <td>{{ object.user }}</td>
                 <td>{{ object.updated|default:object.created }}</td>
                 <td>{{ object.hit|default:"-"|intcomma }}</td>

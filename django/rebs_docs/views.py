@@ -47,6 +47,8 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         object = self.get_post_list().filter(is_notice=False)
+        if self.request.GET.get('category'):
+            object = object.filter(category=self.request.GET.get('category'))
         return object
 
 
