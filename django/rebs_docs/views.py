@@ -15,7 +15,7 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
 
 class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
-    template_name = 'rebs_docs/project_docs_board.html'
+    template_name = 'rebs_docs/project_general_docs_board.html'
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
