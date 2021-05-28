@@ -6,7 +6,38 @@ from rebs_project.models import Project
 
 
 class CompanyGeneralDocs(LoginRequiredMixin, ListView):
-    pass
+    template_name = 'rebs_docs/project_general_docs_board.html'
+
+    def get_paginate_by(self, queryset):
+        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
+
+    def get_board(self):
+        return Board.objects.first()
+
+    def get_post_list(self):
+        posts = Post.objects.filter(board=self.get_board())
+        return posts
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyGeneralDocs, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = self.get_board()
+        context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
+        context['notices'] = self.get_post_list().filter(is_notice=True, partition__project=None)
+        return context
+
+    def get_queryset(self):
+        project = self.request.GET.get('project')
+        category = self.request.GET.get('category')
+        objects = self.get_post_list().filter(is_notice=False)
+        if project:
+            if project == 'co':
+                objects = objects.filter(partition__project=None)
+            else:
+                objects = objects.filter(partition__project=project)
+        if category:
+            objects = objects.filter(category=category)
+        return objects
 
 
 class CompanyLawsuitDocs(LoginRequiredMixin, ListView):

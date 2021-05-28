@@ -35,11 +35,11 @@
         </div>
     </div>
 
-    <ul class="nav nav-pills bg-nav-pills mb-0">
+    <ul class="col-12 nav nav-tabs nav-bordered mb-0">
         <li class="nav-item">
             <a href="?category=" data-bs-toggle="tab" aria-expanded="false" class="nav-link {% if not request.GET.category %}active{% endif %}">
                 <i class="mdi mdi-home-variant d-md-none d-block"></i>
-                <span class="d-none d-md-block">전체 카테고리</span>
+                <span class="d-none d-md-block">전 체</span>
             </a>
         </li>
         {% for category in categories %}
@@ -52,7 +52,7 @@
         {% endfor %}
     </ul>
 
-    <table class="table table-sm table-hover" style="font-family: 'Spoqa Han Sans Neo' sans-serif">
+    <table class="table table-sm table-hover" style="font-family: sans-serif;">
 
         <thead>
         <tr>
@@ -65,9 +65,13 @@
         </thead>
         <tbody>
         {% for notice in notices %}
-            <tr>
-                <td><span class="badge badge-primary">공지</span></td>
-                <td class="bold"><a href="">{{ notice }}</a></td>
+        <tr>
+                <td><span class="badge badge-dark">공지</span></td>
+                <td style="white-space:nowrap; overflow:hidden; display:block;">
+                    <a href="">
+                        {% if co and notice.partition.project %}<span class="badge badge-outline-success mr-1">{{ notice.partition.project }}</span> {% endif %}{{ notice }}
+                    </a>
+                </td>
                 <td>{{ notice.user }}</td>
                 <td>{{ notice.updated|default:notice.created }}</td>
                 <td>{{ notice.hit|default:"-"|intcomma }}</td>
@@ -76,10 +80,22 @@
         {% for object in object_list %}
             <tr>
                 <td>{{ object.pk }}</td>
-                <td>
+                <td style="white-space:nowrap; overflow:hidden; display:block;">
+                    {% if co %}
+
+                        {% if object.partition.project %}
+                            <a href="?project={{ object.partition.project.pk }}&category={{ request.GET.category }}">
+                                <span class="badge badge-outline-success mr-1">{{ object.partition.project }}</span>
+                            </a>
+                        {% else %}
+                            <a href="?project=co&category={{ request.GET.category }}">
+                                <span class="badge badge-primary-lighten mr-1">본사</span>
+                            </a>
+                        {% endif %}
+                    {% endif %}
                     {% if object.category %}
-                        <a href="?category={{ object.category.pk }}">
-                            <span class="badge badge-secondary mr-2">{{ object.category }}</span>
+                        <a href="?project={{ request.GET.project }}&category={{ object.category.pk }}">
+                            <span class="badge badge-secondary font-10 mr-1">{{ object.category }}</span>
                         </a>
                     {% endif %}
                     <a href="">{{ object }}</a>
