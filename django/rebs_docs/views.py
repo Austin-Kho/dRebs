@@ -35,7 +35,7 @@ class CompanyGeneralDocs(LoginRequiredMixin, ListView):
             if project == 'co':
                 objects = objects.filter(project=None)
             else:
-                objects = objects.filter(partition__project=project)
+                objects = objects.filter(project=project)
         if category:
             objects = objects.filter(category=category)
         return objects
