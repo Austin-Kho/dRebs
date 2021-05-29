@@ -95,7 +95,8 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
@@ -131,7 +132,8 @@ class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocs, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')

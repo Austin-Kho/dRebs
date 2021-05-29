@@ -210,7 +210,8 @@ class ProjectCashReport(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCashReport, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['bank_accounts'] = ProjectBankAccount.objects.filter(project=self.get_project(), directpay=False)
         context['confirm_date'] = self.request.GET.get('confirm_date') if self.request.GET.get('confirm_date') else TODAY
@@ -340,7 +341,8 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCashInoutLV, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['pa_d1'] = ProjectAccountD1.objects.filter(sort__icontains=self.request.GET.get('sort', ''))
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort='1')
@@ -400,7 +402,8 @@ class ProjectCashInoutCV(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectCashInoutCV, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort=1)
         context['pa_d1_out'] = ProjectAccountD1.objects.filter(sort=2)
@@ -488,7 +491,8 @@ class SalesPaymentLV(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SalesPaymentLV, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['types'] = UnitType.objects.filter(project=self.get_project())
 
@@ -566,7 +570,8 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SalesPaymentRegister, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['types'] = UnitType.objects.filter(project=self.get_project())
         context['today'] = datetime.today().date()

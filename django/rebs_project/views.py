@@ -36,7 +36,8 @@ class SettingsOrderGroup(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsOrderGroup, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['formset'] = OrderGroupFormSet(queryset=OrderGroup.objects.filter(project=self.get_project()))
         return context
@@ -74,7 +75,8 @@ class SettingsUnitType(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsUnitType, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['formset'] = UnitTypeFormSet(queryset=UnitType.objects.filter(project=self.get_project()))
         return context
@@ -112,7 +114,8 @@ class SettingsFloorType(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsFloorType, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['formset'] = UnitFloorTypeFormSet(queryset=UnitFloorType.objects.filter(project=self.get_project()))
         return context
@@ -149,7 +152,8 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsSalesPrice, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['order_group'] = OrderGroup.objects.get(pk=self.request.GET.get('group')) \
@@ -225,7 +229,8 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsPaymentOrder, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['formset'] = InstallmentPaymentOrderFormSet(queryset=InstallmentPaymentOrder.objects.filter(project=self.get_project()))
         return context
@@ -262,7 +267,8 @@ class SettingsDownPayment(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingsDownPayment, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types_sel'] = UnitType.objects.filter(project=self.get_project())
@@ -324,7 +330,8 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SiteManage, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['total_site'] = Site.objects.filter(project=self.get_project())
         is_returned = self.get_project().is_returned_area if self.get_project() else None
@@ -390,7 +397,8 @@ class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SiteOwnerManage, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['total_owner'] = SiteOwner.objects.filter(project=self.get_project())
         total_area = SiteOwnshipRelationship.objects.filter(site__project=self.get_project())
@@ -487,7 +495,8 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SiteContractManage, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['total_contract'] = SiteContract.objects.filter(project=self.get_project()).count()
         ta = []

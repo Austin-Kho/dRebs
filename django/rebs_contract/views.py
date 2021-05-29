@@ -65,7 +65,8 @@ class ContractLV(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ContractLV, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
@@ -198,14 +199,15 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ContractRegisterView, self).get_context_data(**kwargs)
-        cont_id = self.request.GET.get('cont_id')
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
         context['types'] = UnitType.objects.filter(project=self.get_project())
         contract_units = ContractUnit.objects.filter(project=self.get_project(),
                                                      unit_type=self.request.GET.get('type'),
                                                      contract__isnull=True)
+        cont_id = self.request.GET.get('cont_id')
         if cont_id:
             contract_units = ContractUnit.objects.filter(Q(pk=self.request.GET.get('contract_unit')) |
                                                          Q(project=self.get_project(),
@@ -442,7 +444,8 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ContractorReleaseRegister, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['contractors'] = Contractor.objects.filter(contract__project=self.get_project(), status='2')
         if self.request.GET.get('contractor'):
@@ -517,7 +520,8 @@ class BuildDashboard(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BuildDashboard, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['types'] = UnitType.objects.filter(project=self.get_project())
         context['max_floor'] = UnitNumber.objects.aggregate(Max('floor_no'))

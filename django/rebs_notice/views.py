@@ -94,7 +94,8 @@ class BillManageView(LoginRequiredMixin, ListView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(BillManageView, self).get_context_data(**kwargs)
-        context['project_list'] = self.request.user.staffauth.allowed_projects.all()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         context['today'] = TODAY
         context['groups'] = OrderGroup.objects.filter(project=self.get_project())
