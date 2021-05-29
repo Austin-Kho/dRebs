@@ -5,6 +5,7 @@ from django.conf import settings
 class Project(models.Model):
     company = models.ForeignKey('rebs_company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
     name = models.CharField('프로젝트명', max_length=30)
+    order = models.PositiveSmallIntegerField('정렬순서', null=True, blank=True)
     start_year = models.CharField('사업개시년도', max_length=4)
     KIND_CHOICES = (
         ('1', '공동주택(아파트)'),
@@ -43,7 +44,7 @@ class Project(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['-start_year', 'id']
+        ordering = ['order', '-start_year', 'id']
         verbose_name = '01. 프로젝트'
         verbose_name_plural = '01. 프로젝트'
 
