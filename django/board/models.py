@@ -33,21 +33,6 @@ class Board(models.Model):
         verbose_name_plural = '02. 게시판 관리'
 
 
-# class Partition(models.Model):
-#     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
-#     name = models.CharField('이름', max_length=100)
-#     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
-#     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         ordering = ['id']
-#         verbose_name = '03. 파티션 관리'
-#         verbose_name_plural = '03. 파티션 관리'
-
-
 class Category(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     name = models.CharField('이름', max_length=100)
