@@ -46,9 +46,9 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'user')
+    list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
-    list_editable = ('board', 'is_notice', 'project', 'category')
+    list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'category')
 

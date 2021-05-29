@@ -55,6 +55,7 @@ class Post(models.Model):
     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
+    execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
     content = models.TextField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
@@ -79,7 +80,7 @@ class Post(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-execution_date', '-id']
         verbose_name = '04. 게시물 관리'
         verbose_name_plural = '04. 게시물 관리'
 
