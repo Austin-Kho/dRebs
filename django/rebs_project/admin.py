@@ -10,9 +10,9 @@ from .forms import UnitTypeForm
 
 
 class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'kind', 'num_unit', 'build_size', 'area_usage')
+    list_display = ('id', 'name', 'order', 'kind', 'num_unit', 'build_size', 'area_usage')
     list_display_links = ('name',)
-    list_editable = ('kind', 'num_unit', 'build_size', 'area_usage')
+    list_editable = ('order', 'kind', 'num_unit', 'build_size', 'area_usage')
 
 
 class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
