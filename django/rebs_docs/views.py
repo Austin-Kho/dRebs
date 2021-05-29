@@ -6,17 +6,15 @@ from rebs_project.models import Project
 
 
 class CompanyGeneralDocs(LoginRequiredMixin, ListView):
-
+    model = Post
     template_name = 'rebs_docs/project_general_docs_board.html'
-
-    def get_paginate_by(self, queryset):
-        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
+    paginate_by = 15
 
     def get_board(self):
         return Board.objects.first()
 
     def get_post_list(self):
-        posts = Post.objects.filter(board=self.get_board())
+        posts = self.model.objects.filter(board=self.get_board())
         return posts
 
     def get_context_data(self, **kwargs):
@@ -42,17 +40,15 @@ class CompanyGeneralDocs(LoginRequiredMixin, ListView):
 
 
 class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
-
+    model = Post
     template_name = 'rebs_docs/project_general_docs_board.html'
-
-    def get_paginate_by(self, queryset):
-        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
+    paginate_by = 15
 
     def get_board(self):
         return Board.objects.get(pk=2)
 
     def get_post_list(self):
-        posts = Post.objects.filter(board=self.get_board())
+        posts = self.model.objects.filter(board=self.get_board())
         return posts
 
     def get_context_data(self, **kwargs):
@@ -78,11 +74,9 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
 
 
 class ProjectGeneralDocs(LoginRequiredMixin, ListView):
-
+    model = Post
     template_name = 'rebs_docs/project_general_docs_board.html'
-
-    def get_paginate_by(self, queryset):
-        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
+    paginate_by = 15
 
     def get_project(self):
         try:
@@ -97,7 +91,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
        return Board.objects.first()
 
     def get_post_list(self):
-        return Post.objects.filter(board=self.get_board(), project=self.get_project())
+        return self.model.objects.filter(board=self.get_board(), project=self.get_project())
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
@@ -116,10 +110,9 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
 
 class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
+    model = Post
     template_name = 'rebs_docs/project_general_docs_board.html'
-
-    def get_paginate_by(self, queryset):
-        return self.request.GET.get('limit') if self.request.GET.get('limit') else 15
+    paginate_by = 15
 
     def get_project(self):
         try:
@@ -134,7 +127,7 @@ class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
         return Board.objects.get(pk=2)
 
     def get_post_list(self):
-        return Post.objects.filter(board=self.get_board(), project=self.get_project())
+        return self.model.objects.filter(board=self.get_board(), project=self.get_project())
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocs, self).get_context_data(**kwargs)
