@@ -33,19 +33,19 @@ class Board(models.Model):
         verbose_name_plural = '02. 게시판 관리'
 
 
-class Partition(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
-    name = models.CharField('이름', max_length=100)
-    project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
-    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['id']
-        verbose_name = '03. 파티션 관리'
-        verbose_name_plural = '03. 파티션 관리'
+# class Partition(models.Model):
+#     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
+#     name = models.CharField('이름', max_length=100)
+#     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
+#     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         ordering = ['id']
+#         verbose_name = '03. 파티션 관리'
+#         verbose_name_plural = '03. 파티션 관리'
 
 
 class Category(models.Model):
@@ -59,14 +59,15 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '04. 카테고리 관리'
-        verbose_name_plural = '04. 카테고리 관리'
+        verbose_name = '03. 카테고리 관리'
+        verbose_name_plural = '03. 카테고리 관리'
 
 
 class Post(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     is_notice = models.BooleanField('공지', default=False)
-    partition = models.ForeignKey(Partition, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='파티션')
+    # partition = models.ForeignKey(Partition, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='파티션')
+    project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
     content = models.TextField('내용', blank=True)
@@ -94,8 +95,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-id']
-        verbose_name = '05. 게시물 관리'
-        verbose_name_plural = '05. 게시물 관리'
+        verbose_name = '04. 게시물 관리'
+        verbose_name_plural = '04. 게시물 관리'
 
 
 def get_image_filename(instance, filename):
@@ -142,8 +143,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-id']
-        verbose_name = '06. 댓글 관리'
-        verbose_name_plural = '06. 댓글 관리'
+        verbose_name = '05. 댓글 관리'
+        verbose_name_plural = '05. 댓글 관리'
 
 
 class Tag(models.Model):
@@ -156,5 +157,5 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '07. 태그 관리'
-        verbose_name_plural = '07. 태그 관리'
+        verbose_name = '06. 태그 관리'
+        verbose_name_plural = '06. 태그 관리'

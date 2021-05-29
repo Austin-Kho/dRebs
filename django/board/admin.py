@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mdeditor.widgets import MDEditorWidget
 from import_export.admin import ImportExportMixin
-from . models import Group, Board, Partition, Category, Post, Comment, Tag
+from . models import Group, Board, Category, Post, Comment, Tag
 
 
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -10,9 +10,9 @@ class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('name',)
 
 
-class PartitionInline(admin.TabularInline):
-    model = Partition
-    extra = 1
+# class PartitionInline(admin.TabularInline):
+#     model = Partition
+#     extra = 1
 
 
 class CategoryInline(admin.TabularInline):
@@ -26,15 +26,15 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('group', 'order', 'search_able')
     search_fields = ('name',)
     list_filter = ('group',)
-    inlines = (PartitionInline, CategoryInline)
+    inlines = (CategoryInline,)
 
 
-class PartitionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'board', 'name', 'project', 'order')
-    list_display_links = ('name',)
-    list_editable = ('board', 'project', 'order')
-    search_fields = ('name',)
-    list_filter = ('board', 'project')
+# class PartitionAdmin(ImportExportMixin, admin.ModelAdmin):
+#     list_display = ('id', 'board', 'name', 'project', 'order')
+#     list_display_links = ('name',)
+#     list_editable = ('board', 'project', 'order')
+#     search_fields = ('name',)
+#     list_filter = ('board', 'project')
 
 
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -46,9 +46,9 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'board', 'is_notice', 'partition', 'category', 'title', 'user')
+    list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'user')
     list_display_links = ('title',)
-    list_editable = ('board', 'is_notice', 'partition', 'category')
+    list_editable = ('board', 'is_notice', 'project', 'category')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'category')
 
@@ -68,7 +68,7 @@ class TagAdmin(ImportExportMixin, admin.ModelAdmin):
 
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Board, BoardAdmin)
-admin.site.register(Partition, PartitionAdmin)
+# admin.site.register(Partition, PartitionAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)

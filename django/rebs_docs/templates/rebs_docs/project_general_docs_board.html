@@ -17,8 +17,12 @@
                 <div class="card">
                     <div class="card-body">
 
-                        {% with menu_order='1' %}
-                            {% include 'rebs_docs/partials/head_menu.html' %}
+                        {% with menu_order=this_board.pk|slugify %}
+                            {% if not co %}
+                                {% include 'rebs_docs/partials/pr_head_menu.html' %}
+                            {% elif co %}
+                                {% include 'rebs_docs/partials/co_head_menu.html' %}
+                            {% endif %}
                         {% endwith %}
 
                         {% if not co %}
