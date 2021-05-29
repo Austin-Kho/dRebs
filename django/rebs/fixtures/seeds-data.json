@@ -3,9 +3,9 @@
     "model": "rebs_company.company",
     "pk": 1,
     "fields": {
-      "name": "회사명을 변경하세요",
+      "name": "회사명",
       "tax_number": "111-11-11111",
-      "ceo": "대표자명을 변경하세요",
+      "ceo": "대표자명",
       "org_number": "111111-1111111",
       "user": 1
     }
@@ -15,7 +15,7 @@
     "pk": 1,
     "fields": {
       "company": 1,
-      "name": "프로젝트명을 변경하세요",
+      "name": "프로젝트명",
       "start_year": "2000"
     }
   },
@@ -2746,7 +2746,6 @@
     "pk": 1,
     "fields": {
       "group": 1,
-      "url": "docs",
       "name": "일반 문서 게시판",
       "order": 1
     }
@@ -2756,47 +2755,8 @@
     "pk": 2,
     "fields": {
       "group": 1,
-      "url": "lowsuit",
       "name": "소송 기록 게시판",
       "order": 2
-    }
-  },
-  {
-    "model": "board.partition",
-    "pk": 1,
-    "fields": {
-      "board": 1,
-      "name": "본사",
-      "order": 1
-    }
-  },
-  {
-    "model": "board.partition",
-    "pk": 2,
-    "fields": {
-      "board": 1,
-      "name": "프로젝트명",
-      "project": 1,
-      "order": 2
-    }
-  },
-  {
-    "model": "board.partition",
-    "pk": 3,
-    "fields": {
-      "board": 2,
-      "name": "본사",
-      "order": 3
-    }
-  },
-  {
-    "model": "board.partition",
-    "pk": 4,
-    "fields": {
-      "board": 2,
-      "name": "프로젝트명",
-      "project": 1,
-      "order": 4
     }
   },
   {
