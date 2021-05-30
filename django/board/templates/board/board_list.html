@@ -81,7 +81,7 @@
         {% endfor %}
         {% for object in object_list %}
             <tr>
-                <td>{{ object.pk }}</td>
+                <td>{{ forloop.revcounter|add:add_num }}</td>
                 <td>{{ object.execution_date|date:"Y-m-d"|default:"-" }}</td>
                 <td style="white-space:nowrap; overflow:hidden; display:block;">
                     {% if co %}
