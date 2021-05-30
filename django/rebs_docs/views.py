@@ -65,6 +65,13 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] = self.get_post_list().filter(is_notice=True, project=None)
+        post_num = self.get_queryset().count()  # 총 게시물 수
+        page = self.request.GET.get('page')  # 현재 페이지
+        page_num = int(page) if page else 1  # 현재 페이지 수
+        first_page_mod = self.get_queryset().count() % self.paginate_by  # 첫 페이지 나머지
+        total_page = math.ceil(post_num / self.paginate_by)  # 총 페이지 수
+        add_num = (total_page - page_num) * self.paginate_by - (self.paginate_by - first_page_mod)
+        context['add_num'] = add_num if add_num >= 0 else 0
         return context
 
     def get_queryset(self):
@@ -109,6 +116,13 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] =self.get_post_list().filter(is_notice=True)
+        post_num = self.get_queryset().count()  # 총 게시물 수
+        page = self.request.GET.get('page')  # 현재 페이지
+        page_num = int(page) if page else 1  # 현재 페이지 수
+        first_page_mod = self.get_queryset().count() % self.paginate_by  # 첫 페이지 나머지
+        total_page = math.ceil(post_num / self.paginate_by)  # 총 페이지 수
+        add_num = (total_page - page_num) * self.paginate_by - (self.paginate_by - first_page_mod)
+        context['add_num'] = add_num if add_num >= 0 else 0
         return context
 
     def get_queryset(self):
@@ -146,6 +160,13 @@ class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] = self.get_post_list().filter(is_notice=True)
+        post_num = self.get_queryset().count()  # 총 게시물 수
+        page = self.request.GET.get('page')  # 현재 페이지
+        page_num = int(page) if page else 1  # 현재 페이지 수
+        first_page_mod = self.get_queryset().count() % self.paginate_by  # 첫 페이지 나머지
+        total_page = math.ceil(post_num / self.paginate_by)  # 총 페이지 수
+        add_num = (total_page - page_num) * self.paginate_by - (self.paginate_by - first_page_mod)
+        context['add_num'] = add_num if add_num >= 0 else 0
         return context
 
     def get_queryset(self):
