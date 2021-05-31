@@ -106,7 +106,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
        return Board.objects.first()
 
     def get_post_list(self):
-        return self.model.objects.filter(board=self.get_board(), project=self.get_project())
+        return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
@@ -150,7 +150,7 @@ class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
         return Board.objects.get(pk=2)
 
     def get_post_list(self):
-        return self.model.objects.filter(board=self.get_board(), project=self.get_project())
+        return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocs, self).get_context_data(**kwargs)
