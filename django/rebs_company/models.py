@@ -5,7 +5,7 @@ from account.models import User
 # Create your models here.
 
 class Company(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField('회사명', max_length=100)
     tax_number = models.CharField('사업자등록번호', max_length=12)
     ceo = models.CharField('대표자명', max_length=30)
