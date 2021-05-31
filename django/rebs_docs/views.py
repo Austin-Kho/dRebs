@@ -8,7 +8,7 @@ from rebs_project.models import Project
 
 class CompanyGeneralDocs(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'rebs_docs/project_general_docs_board.html'
+    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_board(self):
@@ -49,7 +49,7 @@ class CompanyGeneralDocs(LoginRequiredMixin, ListView):
 
 class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'rebs_docs/project_general_docs_board.html'
+    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_board(self):
@@ -90,7 +90,7 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
 
 class ProjectGeneralDocs(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'rebs_docs/project_general_docs_board.html'
+    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_project(self):
@@ -134,7 +134,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
 
 class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'rebs_docs/project_general_docs_board.html'
+    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_project(self):

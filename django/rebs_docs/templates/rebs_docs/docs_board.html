@@ -42,7 +42,8 @@
                     <div class="card-body">
                         {% endif %}
 
-                        {% include 'board/board_list.html' %}
+{#                        {% include 'board/board_list.html' %}#}
+                        {% block board %}{% endblock %}
 
                     </div>
                 </div>
