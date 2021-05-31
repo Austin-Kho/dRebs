@@ -617,7 +617,7 @@ class SalesPaymentRegister(LoginRequiredMixin, FormView):
             unit = contract.contractunit.unitnumber
         except:
             unit = None
-        unit_set = (self.get_project().is_unit_set and unit)
+        unit_set = (self.get_project() and self.get_project().is_unit_set and unit)
 
         this_price = 0     # 해당 건 분양가
         payment_list = []  # 회차별 납부금액
