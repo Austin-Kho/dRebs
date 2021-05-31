@@ -80,8 +80,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class StaffAuth(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_staff = models.BooleanField('관리자로 승인', default=False, help_text='Staff(관리자) 승인 여부')
-    assigned_project = models.ForeignKey(Project, related_name='assigned_project', on_delete=models.SET_NULL, null=True, verbose_name='담당 메인 프로젝트', help_text='선택한 프로젝트를 각 화면에서 기본 프로젝트로 보여줍니다.')
-    allowed_projects = models.ManyToManyField(Project, related_name='allowed_projects', verbose_name='허용 프로젝트', help_text='조회 및 관리할 수 있는 프로젝트들을 선택합니다.')
+    assigned_project = models.ForeignKey(Project, related_name='assigned_project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당 메인 프로젝트', help_text='선택한 프로젝트를 각 화면에서 기본 프로젝트로 보여줍니다.')
+    allowed_projects = models.ManyToManyField(Project, related_name='allowed_projects', null=True, blank=True, verbose_name='허용 프로젝트', help_text='조회 및 관리할 수 있는 프로젝트들을 선택합니다.')
     AUTH_CHOICE = (('0', '권한없음'), ('1', '읽기권한'), ('2', '쓰기권한'))
     contract = models.CharField('분양 계약 관리', max_length=1, choices=AUTH_CHOICE, default='0')
     payment = models.CharField('분양 수납 관리', max_length=1, choices=AUTH_CHOICE, default='0')
