@@ -3,11 +3,10 @@
     "model": "rebs_company.company",
     "pk": 1,
     "fields": {
-      "name": "회사명",
-      "tax_number": "111-11-11111",
-      "ceo": "대표자명",
-      "org_number": "111111-1111111",
-      "user": 1
+      "name": "",
+      "tax_number": "",
+      "ceo": "",
+      "org_number": ""
     }
   },
   {
