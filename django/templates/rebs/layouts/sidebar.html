@@ -324,7 +324,7 @@
                         <span class="menu-arrow"></span>
                     </a>
                     <ul class="side-nav-second-level" aria-expanded="false">
-                       <li>
+                        <li>
                             <a href="{% url 'rebs:docs:co.general' %}">일반 문서 관리
                                 <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
                             </a>
@@ -382,7 +382,7 @@
             <li class="side-nav-title side-nav-item mt-1">기타 관리</li>
 
             {# 본사 - 최상위 설정 관련 #}
-            {% if request.user.is_superuser or request.user.staffauth.company_settings > '0' %}
+            {% if request.user.is_superuser or request.user.staffauth.company_settings > '0' or request.user.staffauth.auth_manage > '0' %}
                 <li class="side-nav-item">
                     <a href="javascript: void(0);" class="side-nav-link">
                         <i class="uil-cog"></i>
@@ -390,11 +390,14 @@
                         <span class="menu-arrow"></span>
                     </a>
                     <ul class="side-nav-second-level" aria-expanded="false">
-                        <li>
-                            <a href="{% url 'rebs:company:index' %}">회사 정보 관리
-                                <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
-                            </a>
-                        </li>
+                        {% if request.user.is_superuser or request.user.staffauth.company_settings > '0' %}
+                            <li>
+                                <a href="{% url 'rebs:company:index' %}">회사 정보 관리
+                                    <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
                         {% if request.user.is_superuser or request.user.staffauth.auth_manage > '0' %}
                             <li>
                                 <a href="#">권한 설정 관리
