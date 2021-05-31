@@ -148,7 +148,8 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
         edate = self.request.GET.get('ed')
         q = self.request.GET.get('q')
 
-        project_str = 'project=' + str(self.get_project().id)
+        pjid = str(self.get_project().id) if self.get_project() else ''
+        project_str = 'project=' + pjid
         query_str = '?page=' + page + '&' + project_str if page else '?' + project_str
         query_str = query_str + '&limit=' + limit if limit else query_str
         query_str = query_str + '&group=' + group if group else query_str
