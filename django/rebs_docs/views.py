@@ -6,7 +6,7 @@ from board.models import Board, Category, Post
 from rebs_project.models import Project
 
 
-class CompanyGeneralDocs(LoginRequiredMixin, ListView):
+class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
     paginate_by = 15
@@ -19,7 +19,7 @@ class CompanyGeneralDocs(LoginRequiredMixin, ListView):
         return posts
 
     def get_context_data(self, **kwargs):
-        context = super(CompanyGeneralDocs, self).get_context_data(**kwargs)
+        context = super(CompanyGeneralDocsLV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
@@ -47,7 +47,7 @@ class CompanyGeneralDocs(LoginRequiredMixin, ListView):
         return objects
 
 
-class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
+class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
     paginate_by = 15
@@ -60,7 +60,7 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
         return posts
 
     def get_context_data(self, **kwargs):
-        context = super(CompanyLawsuitDocs, self).get_context_data(**kwargs)
+        context = super(CompanyLawsuitDocsLV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
@@ -88,7 +88,7 @@ class CompanyLawsuitDocs(LoginRequiredMixin, ListView):
         return objects
 
 
-class ProjectGeneralDocs(LoginRequiredMixin, ListView):
+class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
     paginate_by = 15
@@ -109,7 +109,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectGeneralDocs, self).get_context_data(**kwargs)
+        context = super(ProjectGeneralDocsLV, self).get_context_data(**kwargs)
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
@@ -132,7 +132,7 @@ class ProjectGeneralDocs(LoginRequiredMixin, ListView):
         return object
 
 
-class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
+class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
     paginate_by = 15
@@ -153,7 +153,7 @@ class ProjectLawsuitDocs(LoginRequiredMixin, ListView):
         return self.model.objects.filter(board=self.get_board(), project__isnull=False, project=self.get_project())
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectLawsuitDocs, self).get_context_data(**kwargs)
+        context = super(ProjectLawsuitDocsLV, self).get_context_data(**kwargs)
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
