@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs mb-5">
     <li class="nav-item">
-        <a href="{% url 'rebs:docs:co.general' %}"
+        <a href="{% url 'rebs:docs:co.general_list' %}"
            aria-expanded="{% if menu_order == '1' %}true{% else %}false{% endif %}"
            class="nav-link  {% if menu_order == '1' %}active{% endif %}">
             <i class="mdi mdi-deskphone d-md-none d-block"></i>
@@ -8,7 +8,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="{% url 'rebs:docs:co.lawsuit' %}"
+        <a href="{% url 'rebs:docs:co.lawsuit_list' %}"
            aria-expanded="{% if menu_order == '2' %}true{% else %}false{% endif %}"
            class="nav-link {% if menu_order == '2' %}active{% endif %}">
             <i class="mdi mdi-format-list-bulleted d-md-none d-block"></i>

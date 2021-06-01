@@ -19,8 +19,9 @@ from .views import *
 app_name = 'docs'
 
 urlpatterns = [
-    path('co/general/', CompanyGeneralDocsLV.as_view(), name='co.general'),
-    path('co/lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit'),
-    path('pr/general/', ProjectGeneralDocsLV.as_view(), name='pr.general'),
-    path('pr/lawsuit/', ProjectLawsuitDocsLV.as_view(), name='pr.lawsuit'),
+    path('co/general/', CompanyGeneralDocsLV.as_view(), name='co.general_list'),
+    path('co/general/<int:pk>/', CompanyGeneralDocsDV.as_view(), name='co.general_detail'),
+    path('co/lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit_list'),
+    path('pr/general/', ProjectGeneralDocsLV.as_view(), name='pr.general_list'),
+    path('pr/lawsuit/', ProjectLawsuitDocsLV.as_view(), name='pr.lawsuit_list'),
 ]
