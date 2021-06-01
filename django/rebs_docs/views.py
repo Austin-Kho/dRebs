@@ -1,6 +1,6 @@
 import math
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, FormView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
 from board.models import Board, Category, Post
 from rebs_project.models import Project
@@ -27,7 +27,7 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
         post_num = self.get_queryset().count() # 총 게시물 수
         page = self.request.GET.get('page')    # 현재 페이지
         page_num = int(page) if page else 1    # 현재 페이지 수
-        first_page_mod = self.get_queryset().count() % self.paginate_by # 첫 페이지 나머지
+        first_page_mod = post_num % self.paginate_by # 첫 페이지 나머지
         total_page = math.ceil(post_num/self.paginate_by) # 총 페이지 수
         add_num = (total_page-page_num)*self.paginate_by-(self.paginate_by-first_page_mod)
         context['add_num'] = add_num if add_num >=0 else 0
@@ -45,6 +45,41 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
         if category:
             objects = objects.filter(category=category)
         return objects
+
+
+class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = 'board/board_view.html'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyGeneralDocsDV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = this_board = Board.objects.first()
+        context['categories'] = Category.objects.filter(board=this_board).order_by('order', 'id')
+        posts = self.model.objects.filter(board=this_board)
+        context['notices'] = posts.filter(is_notice=True, project=None)
+        project = self.request.GET.get('project')
+        category = self.request.GET.get('category')
+        objects = self.model.objects.filter(board=this_board, is_notice=False)
+        if project:
+            if project == 'co':
+                objects = objects.filter(project=None)
+            else:
+                objects = objects.filter(project=project)
+        if category:
+            objects = objects.filter(category=category)
+        context['object_list'] = objects
+
+
+        post_num = objects.count()  # 총 게시물 수
+        page = self.request.GET.get('page')  # 현재 페이지
+        page_num = int(page) if page else 1  # 현재 페이지 수
+        first_page_mod = post_num % self.paginate_by  # 첫 페이지 나머지
+        total_page = math.ceil(post_num / self.paginate_by)  # 총 페이지 수
+        add_num = (total_page - page_num) * self.paginate_by - (self.paginate_by - first_page_mod)
+        context['add_num'] = add_num if add_num >= 0 else 0
+        return context
 
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):

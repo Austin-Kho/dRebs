@@ -18,10 +18,9 @@
             <td><span class="badge badge-dark">공지</span></td>
             <td>{{ notice.execution_date|date:"Y-m-d"|default:"" }}</td>
             <td style="white-space:nowrap; overflow:hidden; display:block;">
-                <a href="">
-                    {% if co and notice.project %}
-                        <span class="badge badge-outline-success mr-1">{{ notice.project }}</span> {% endif %}{{ notice }}
-                </a>
+                {% if co and notice.project %}
+                    <span class="badge badge-outline-success mr-1">{{ notice.project }}</span> {% endif %}
+                <a href="{% url 'rebs:docs:co.general_detail' notice.pk %}">{{ notice }}</a>
             </td>
             <td>{{ notice.user }}</td>
             <td>{{ notice.updated|default:notice.created }}</td>
@@ -34,7 +33,6 @@
             <td>{{ object.execution_date|date:"Y-m-d"|default:"-" }}</td>
             <td style="white-space:nowrap; overflow:hidden; display:block;">
                 {% if co %}
-
                     {% if object.project %}
                         <a href="?project={{ object.project.pk }}&category={{ request.GET.category }}">
                             <span class="badge badge-outline-success mr-1">{{ object.project }}</span>
@@ -50,7 +48,7 @@
                         <span class="badge badge-secondary font-10 mr-1">{{ object.category }}</span>
                     </a>
                 {% endif %}
-                <a href="">{{ object }}</a>
+                <a href="{% url 'rebs:docs:co.general_detail' object.pk %}">{{ object }}</a>
             </td>
             <td>{{ object.user }}</td>
             <td>{{ object.updated|default:object.created }}</td>
