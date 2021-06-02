@@ -1,1 +1,51 @@
-board - view
+<div class="row">
+    <div class="col-12 border-bottom mb-3">
+        <h4>
+            {% if object.category %}[{{ object.category }}]{% endif %} {{ object.title }}
+        </h4>
+    </div>
+
+    <div class="row col-12 mb-5">
+        <div class="col-12 col-md-6">
+            <i class="mdi mdi-wechat mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <i class="mdi mdi-thumb-up mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <i class="mdi mdi-thumb-down mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <a href=""><i class="mdi mdi-printer mr-1"></i> <small class="mr-3">Print</small></a>
+{#            <a href=""><i class="mdi mdi-vector-link mr-1"></i> <small class="mr-3">글주소</small></a>#}
+{#            <a href=""><i class="mdi mdi-qrcode mr-2"></i></a>#}
+        </div>
+        <div class="col-12 col-md-6 text-right">
+            <i class="mdi mdi-calendar-clock"></i> <small>{{ object.updated|default:object.created }}</small>
+        </div>
+    </div>
+
+    <div class="col-12 p-3 mb-5">
+        {{ object }}
+    </div>
+
+    <div class="col-12 mb-5 text-center">
+        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-up font-15"></i></button>
+        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-down font-15"></i></button>
+    </div>
+
+    <div class="row col-12 mb-4">
+        <div class="col-6">SNS 공유하기</div>
+        <div class="col-6 text-right">
+            <button class="btn btn-sm btn-dark">스크랩</button>
+            <button class="btn btn-sm btn-dark">신고</button>
+        </div>
+    </div>
+
+    <div class="row col-12 mb-4">
+        <div class="btn-group col-8 col-sm-6 col-md-4 col-lg-2">
+            <button class="btn btn-light">목록</button>
+            <button class="btn btn-light">이전글</button>
+            <button class="btn btn-light">다음글</button>
+        </div>
+        <div class="col-4 col-sm-6 col-md-8 col-lg-10 text-right">
+            <button class="btn btn-primary float-right">글쓰기</button>
+        </div>
+    </div>
+
+</div>
