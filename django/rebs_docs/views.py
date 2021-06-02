@@ -71,7 +71,6 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
             objects = objects.filter(category=category)
         context['object_list'] = objects
 
-
         post_num = objects.count()  # 총 게시물 수
         page = self.request.GET.get('page')  # 현재 페이지
         page_num = int(page) if page else 1  # 현재 페이지 수

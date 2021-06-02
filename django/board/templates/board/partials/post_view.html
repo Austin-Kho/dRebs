@@ -5,32 +5,64 @@
         </h4>
     </div>
 
-    <div class="row col-12 mb-5">
+    <div class="row col-12 mb-3">
         <div class="col-12 col-md-6">
-            <i class="mdi mdi-wechat mr-2"></i> <small class="mr-3">{{ 1 }}</small>
-            <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ 1 }}</small>
-            <i class="mdi mdi-thumb-up mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <i class="mdi mdi-comment-text-multiple mr-2"></i> <small class="mr-3">{{ 0 }}</small>
+            <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ 19 }}</small>
+            <i class="mdi mdi-thumb-up mr-2"></i> <small class="mr-3">{{ 8 }}</small>
             <i class="mdi mdi-thumb-down mr-2"></i> <small class="mr-3">{{ 1 }}</small>
             <a href=""><i class="mdi mdi-printer mr-1"></i> <small class="mr-3">Print</small></a>
-{#            <a href=""><i class="mdi mdi-vector-link mr-1"></i> <small class="mr-3">글주소</small></a>#}
-{#            <a href=""><i class="mdi mdi-qrcode mr-2"></i></a>#}
+            {#            <a href=""><i class="mdi mdi-vector-link mr-1"></i> <small class="mr-3">글주소</small></a>#}
+            {#            <a href=""><i class="mdi mdi-qrcode mr-2"></i></a>#}
         </div>
         <div class="col-12 col-md-6 text-right">
             <i class="mdi mdi-calendar-clock"></i> <small>{{ object.updated|default:object.created }}</small>
         </div>
     </div>
 
-    <div class="col-12 p-3 mb-5">
+    <div class="col-12 mb-4">
+        <ul class="list-group">
+            <li class="list-group-item disabled text-dark" aria-disabled="true">Download</li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        <i class="dripicons-download mr-1"></i>
+                        <a href="">first.php(143 Bytes)</a>
+                        <i class="dripicons-clock ml-2"></i>
+                        <small>{{ object.created|date:"y-m-d H:m" }}</small>
+                    </div>
+                </div>
+                <span class="badge bg-secondary rounded-pill text-white">4</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        <i class="dripicons-download mr-1"></i>
+                        <a href="">second.php(143 Bytes)</a>
+                        <i class="dripicons-clock ml-2"></i>
+                        <small>{{ object.created|date:"y-m-d H:m" }}</small>
+                    </div>
+                </div>
+                <span class="badge bg-secondary rounded-pill text-white">1</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-12 pl-4 pr-4 mb-5">
         {{ object }}
     </div>
 
     <div class="col-12 mb-5 text-center">
-        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-up font-15"></i></button>
-        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-down font-15"></i></button>
+        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-up-outline font-16"></i></button>
+        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-down-outline font-16"></i></button>
     </div>
 
     <div class="row col-12 mb-4">
-        <div class="col-6">SNS 공유하기</div>
+        <div class="col-6">
+            <a href=""><i class="mdi mdi-facebook mr-1 font-20"></i></a>
+            <a href=""><i class="mdi mdi-twitter mr-1 font-20"></i></a>
+            <a href=""><i class="mdi mdi-instagram mr-1 font-20"></i></a>
+        </div>
         <div class="col-6 text-right">
             <button class="btn btn-sm btn-dark">스크랩</button>
             <button class="btn btn-sm btn-dark">신고</button>
