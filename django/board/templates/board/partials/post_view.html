@@ -53,25 +53,33 @@
     </div>
 
     <div class="col-12 mb-5 text-center">
-        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-up-outline font-16"></i></button>
-        <button class="btn btn-light btn-rounded p-2"><i class="mdi mdi-thumb-down-outline font-16"></i></button>
+        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i class="mdi mdi-thumb-up-outline font-16"></i></button>
+        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i class="mdi mdi-thumb-down-outline font-16"></i></button>
     </div>
 
-    <div class="row col-12 mb-4">
+    <div class="row col-12 mb-3">
         <div class="col-6">
-            <a href=""><i class="mdi mdi-facebook mr-1 font-20"></i></a>
-            <a href=""><i class="mdi mdi-twitter mr-1 font-20"></i></a>
-            <a href=""><i class="mdi mdi-instagram mr-1 font-20"></i></a>
+            <a href="javascript:alert('준비중!')"><i class="mdi mdi-facebook mr-1 font-18 text-secondary"></i></a>
+            <a href="javascript:alert('준비중!')"><i class="mdi mdi-twitter mr-1 font-18 text-secondary"></i></a>
+            <a href="javascript:alert('준비중!')"><i class="mdi mdi-instagram mr-1 font-18 text-secondary"></i></a>
         </div>
         <div class="col-6 text-right">
-            <button class="btn btn-sm btn-dark">스크랩</button>
-            <button class="btn btn-sm btn-dark">신고</button>
+            <button class="btn btn-sm btn-dark" onclick="alert('준비중!')">스크랩</button>
+            <button class="btn btn-sm btn-dark" onclick="alert('준비중!')">신고</button>
         </div>
     </div>
 
-    <div class="row col-12 mb-4">
+    <div class="row col-12 mb-3">
+        <div class="col-12">댓글존</div>
+        <div class="col-12">댓글존</div>
+        <div class="col-12">댓글존</div>
+        <div class="col-12">댓글존</div>
+        <div class="col-12">댓글존</div>
+    </div>
+
+    <div class="row col-12 mb-5">
         <div class="btn-group col-8 col-sm-6 col-md-4 col-lg-2">
-            <button class="btn btn-light">목록</button>
+            <button class="btn btn-light" onclick="location.href='{% url 'rebs:docs:co.general_list' %}'">목록</button>
             <button class="btn btn-light">이전글</button>
             <button class="btn btn-light">다음글</button>
         </div>
