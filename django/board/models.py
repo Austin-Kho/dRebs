@@ -51,7 +51,6 @@ class Category(models.Model):
 class Post(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     is_notice = models.BooleanField('공지', default=False)
-    # partition = models.ForeignKey(Partition, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='파티션')
     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
@@ -129,8 +128,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-id']
-        verbose_name = '05. 댓글 관리'
-        verbose_name_plural = '05. 댓글 관리'
 
 
 class Tag(models.Model):
@@ -143,5 +140,5 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '06. 태그 관리'
-        verbose_name_plural = '06. 태그 관리'
+        verbose_name = '05. 태그 관리'
+        verbose_name_plural = '05. 태그 관리'

@@ -10,11 +10,6 @@ class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('name',)
 
 
-# class PartitionInline(admin.TabularInline):
-#     model = Partition
-#     extra = 1
-
-
 class CategoryInline(admin.TabularInline):
     model = Category
     extra = 1
@@ -29,14 +24,6 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (CategoryInline,)
 
 
-# class PartitionAdmin(ImportExportMixin, admin.ModelAdmin):
-#     list_display = ('id', 'board', 'name', 'project', 'order')
-#     list_display_links = ('name',)
-#     list_editable = ('board', 'project', 'order')
-#     search_fields = ('name',)
-#     list_filter = ('board', 'project')
-
-
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'name', 'parent', 'order')
     list_display_links = ('name',)
@@ -45,18 +32,17 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('board',)
 
 
+class CommentInline(admin.TabularInline):
+    model = Comment
+
+
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
-    list_filter = ('board', 'is_notice', 'category')
-
-
-class CommentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'post', 'content', 'user')
-    list_display_links = ('post', 'content',)
-    search_fields = ('content', 'user')
+    list_filter = ('board', 'is_notice', 'project', 'category')
+    inlines = (CommentInline,)
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -68,8 +54,6 @@ class TagAdmin(ImportExportMixin, admin.ModelAdmin):
 
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Board, BoardAdmin)
-# admin.site.register(Partition, PartitionAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(Comment, CommentAdmin)
 admin.site.register(Tag, TagAdmin)
