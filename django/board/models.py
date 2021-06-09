@@ -90,19 +90,30 @@ def get_image_filename(instance, filename):
     return f"{today}_{hash_value}_{filename}"
 
 
-class Images(models.Model):
+class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
     image = models.ImageField(upload_to=get_image_filename, verbose_name='이미지')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.image
 
 
-class Files(models.Model):
+class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
     file = models.FileField(upload_to=get_image_filename, verbose_name='파일')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file
 
 
-class Links(models.Model):
+class Link(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
     link = models.URLField(verbose_name='링크')
+
+    def __str__(self):
+        return self.link
 
 
 class Comment(models.Model):

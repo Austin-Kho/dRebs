@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mdeditor.widgets import MDEditorWidget
 from import_export.admin import ImportExportMixin
-from . models import Group, Board, Category, Post, Comment, Tag
+from . models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
 
 
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -34,7 +34,19 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class CommentInline(admin.TabularInline):
     model = Comment
+    extra = 1
 
+class ImageInline(admin.TabularInline):
+    model = Image
+    extra = 1
+
+class FileInline(admin.TabularInline):
+    model = File
+    extra = 1
+
+class LinkInline(admin.TabularInline):
+    model = Link
+    extra = 1
 
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
@@ -42,7 +54,7 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
-    inlines = (CommentInline,)
+    inlines = (ImageInline, FileInline, LinkInline, CommentInline)
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):

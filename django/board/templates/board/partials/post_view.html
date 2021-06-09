@@ -1,20 +1,21 @@
+{% load humanize %}
+
 <div class="row">
     <div class="col-12 border-bottom mb-3">
         <h4>
             {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}{% endif %}
-            {% if object.category %}[{{ object.category }}]{% endif %} - {{ object.title }}
+            {% if object.category %}[{{ object.category }}] -{% endif %} {{ object.title }}
         </h4>
     </div>
 
     <div class="row col-12 mb-3">
         <div class="col-12 col-md-6">
-            <i class="mdi mdi-comment-text-multiple mr-2"></i> <small class="mr-3">{{ 0 }}</small>
-            <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ 19 }}</small>
-            <i class="mdi mdi-thumb-up mr-2"></i> <small class="mr-3">{{ 8 }}</small>
-            <i class="mdi mdi-thumb-down mr-2"></i> <small class="mr-3">{{ 1 }}</small>
+            <i class="mdi mdi-comment-text-multiple mr-2"></i> <small
+                class="mr-3">{{ object.comment_set.count }}</small>
+            <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ object.hit|intcomma }}</small>
+            <i class="mdi mdi-thumb-up mr-2"></i> <small class="mr-3">{{ object.like|intcomma }}</small>
+            <i class="mdi mdi-thumb-down mr-2"></i> <small class="mr-3">{{ object.dislike|intcomma }}</small>
             <a href=""><i class="mdi mdi-printer mr-1"></i> <small class="mr-3">Print</small></a>
-            {#            <a href=""><i class="mdi mdi-vector-link mr-1"></i> <small class="mr-3">글주소</small></a>#}
-            {#            <a href=""><i class="mdi mdi-qrcode mr-2"></i></a>#}
         </div>
         <div class="col-12 col-md-6 text-right">
             <i class="mdi mdi-calendar-clock"></i> <small>{{ object.updated|default:object.created }}</small>
@@ -49,24 +50,17 @@
         </ul>
         <ul class="list-group">
             <li class="list-group-item disabled text-dark" aria-disabled="true">Link</li>
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div class="ms-2 me-auto">
-                    <div class="fw-bold">
-                        <i class="mdi mdi-link-variant mr-1"></i>
-                        <a href="">http://naver.com</a>
+            {% for link in object.link_set.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            <i class="mdi mdi-link-variant mr-1"></i>
+                            <a href="{{ link }}">{{ link }}</a>
+                        </div>
                     </div>
-                </div>
-                <span class="badge bg-secondary rounded-pill text-white">4</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div class="ms-2 me-auto">
-                    <div class="fw-bold">
-                        <i class="mdi mdi-link-variant mr-1"></i>
-                        <a href="">http://daum.net</a>
-                    </div>
-                </div>
-                <span class="badge bg-secondary rounded-pill text-white">1</span>
-            </li>
+                    <span class="badge bg-secondary rounded-pill text-white">4</span>
+                </li>
+            {% endfor %}
         </ul>
     </div>
 
@@ -83,9 +77,11 @@
 
     <div class="row col-12 mb-3">
         <div class="col-6">
-            <a href="javascript:alert('준비중!')"><i class="mdi mdi-facebook mr-1 font-18 text-secondary"></i></a>
-            <a href="javascript:alert('준비중!')"><i class="mdi mdi-twitter mr-1 font-18 text-secondary"></i></a>
-            <a href="javascript:alert('준비중!')"><i class="mdi mdi-instagram mr-1 font-18 text-secondary"></i></a>
+            <a href="javascript:alert('사용할 수 없는 기능입니다.')"><i
+                    class="mdi mdi-facebook mr-1 font-18 text-secondary"></i></a>
+            <a href="javascript:alert('사용할 수 없는 기능입니다.')"><i
+                    class="mdi mdi-twitter mr-1 font-18 text-secondary"></i></a>
+            <a href="javascript:alert('사용할 수 없는 기능입니다.')"><i class="mdi mdi-instagram mr-1 font-18 text-secondary"></i></a>
         </div>
         <div class="col-6 text-right">
             <button class="btn btn-sm btn-dark" onclick="alert('준비중!')">스크랩</button>
@@ -94,17 +90,21 @@
     </div>
 
     <div class="row col-12 mb-3">
-        {% for comment in object.comments %}
-            {{ comment }}
+        {% for comment in object.comment_set.all %}
+            <div class="col-12">{{ comment }}</div>
         {% endfor %}
     </div>
 
     <div class="row col-12 mb-5">
         <div class="btn-group col-8 col-sm-6 col-md-4 col-lg-2">
             <button class="btn btn-light"
-                    onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">목록</button>
-            {% if prev %}<button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
-            {% if next %}<button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
+                    onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">
+                목록
+            </button>
+            {% if prev %}
+                <button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
+            {% if next %}
+                <button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
         </div>
         <div class="col-4 col-sm-6 col-md-8 col-lg-10 text-right">
             <button class="btn btn-primary float-right">글쓰기</button>

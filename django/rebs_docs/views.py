@@ -53,6 +53,12 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     template_name = 'board/board_view.html'
     paginate_by = 15
 
+    def get_object(self):
+        post = super().get_object()
+        post.hit += 1
+        post.save()
+        return post
+
     def get_posts(self):
         return self.model.objects.filter(board=Board.objects.first())
 
@@ -161,6 +167,12 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'board/board_view.html'
     paginate_by = 15
+
+    def get_object(self):
+        post = super().get_object()
+        post.hit += 1
+        post.save()
+        return post
 
     def get_project(self):
         return Project.objects.get(pk=self.object.project.pk)
