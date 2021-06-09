@@ -198,7 +198,7 @@ class SiteContract(models.Model):
     owner = models.ForeignKey(SiteOwner, on_delete=models.CASCADE, verbose_name='소유자')
     contract_date = models.DateField('계약체결일')
     total_prices = models.PositiveIntegerField('총매매대금')
-    down_pay1 = models.PositiveIntegerField('계약금1')
+    down_pay1 = models.PositiveIntegerField('계약금1', null=True, blank=True)
     down_pay1_is_paid = models.BooleanField('계약금1 지급여부', default=False)
     down_pay2 = models.PositiveIntegerField('계약금2', null=True, blank=True)
     down_pay2_date = models.DateField('계약금2 지급일', null=True, blank=True)
