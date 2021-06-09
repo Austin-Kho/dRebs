@@ -54,7 +54,7 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
-    inlines = (ImageInline, FileInline, LinkInline, CommentInline)
+    inlines = (ImageInline, FileInline, LinkInline)
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
