@@ -443,7 +443,7 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
     model = SiteContract
     form_class = SiteContractForm
     template_name = 'rebs_project/site_contract_manage.html'
-    paginate_by = 2
+    paginate_by = 15
 
     def get_project(self):
         try:
