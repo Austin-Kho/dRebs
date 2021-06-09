@@ -32,10 +32,6 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('board',)
 
 
-class CommentInline(admin.TabularInline):
-    model = Comment
-    extra = 1
-
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 1
@@ -46,6 +42,10 @@ class FileInline(admin.TabularInline):
 
 class LinkInline(admin.TabularInline):
     model = Link
+    extra = 1
+
+class CommentInline(admin.TabularInline):
+    model = Comment
     extra = 1
 
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
