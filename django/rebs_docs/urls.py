@@ -19,10 +19,10 @@ from .views import *
 app_name = 'docs'
 
 urlpatterns = [
-    path('co/general/', CompanyGeneralDocsLV.as_view(), name='co.general_list'),
-    path('co/general/<int:pk>/', CompanyGeneralDocsDV.as_view(), name='co.general_detail'),
-    path('co/lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit_list'),
-    path('pr/general/', ProjectGeneralDocsLV.as_view(), name='pr.general_list'),
-    path('pr/general/<int:pk>/', ProjectGeneralDocsDV.as_view(), name='pr.general_detail'),
-    path('pr/lawsuit/', ProjectLawsuitDocsLV.as_view(), name='pr.lawsuit_list'),
+    path('general/', CompanyGeneralDocsLV.as_view(), name='co.general_list'),
+    path('general/<int:pk>/', CompanyGeneralDocsDV.as_view(), name='co.general_detail'),
+    path('lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit_list'),
+    path('project/general/', ProjectGeneralDocsLV.as_view(), name='pr.general_list'),
+    path('project/general/<int:pk>/', ProjectGeneralDocsDV.as_view(), name='pr.general_detail'),
+    path('project/lawsuit/', ProjectLawsuitDocsLV.as_view(), name='pr.lawsuit_list'),
 ]
