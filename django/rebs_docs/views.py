@@ -73,6 +73,7 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['this_board'] = Board.objects.first()
         context['prev'] = self.get_prev() if self.get_prev() else ''
         context['next'] = self.get_next() if self.get_next() else ''
         return context
@@ -192,6 +193,7 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDV, self).get_context_data(**kwargs)
+        context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         context['prev'] = self.get_prev() if self.get_prev() else ''
