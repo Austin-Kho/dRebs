@@ -1,7 +1,8 @@
 <div class="row">
     <div class="col-12 border-bottom mb-3">
         <h4>
-            {% if object.category %}[{{ object.category }}]{% endif %} {{ object.title }}
+            {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}{% endif %}
+            {% if object.category %}[{{ object.category }}]{% endif %} - {{ object.title }}
         </h4>
     </div>
 
@@ -46,6 +47,27 @@
                 <span class="badge bg-secondary rounded-pill text-white">1</span>
             </li>
         </ul>
+        <ul class="list-group">
+            <li class="list-group-item disabled text-dark" aria-disabled="true">Link</li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        <i class="mdi mdi-link-variant mr-1"></i>
+                        <a href="">http://naver.com</a>
+                    </div>
+                </div>
+                <span class="badge bg-secondary rounded-pill text-white">4</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        <i class="mdi mdi-link-variant mr-1"></i>
+                        <a href="">http://daum.net</a>
+                    </div>
+                </div>
+                <span class="badge bg-secondary rounded-pill text-white">1</span>
+            </li>
+        </ul>
     </div>
 
     <div class="col-12 pl-4 pr-4 mb-5">
@@ -53,8 +75,10 @@
     </div>
 
     <div class="col-12 mb-5 text-center">
-        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i class="mdi mdi-thumb-up-outline font-16"></i></button>
-        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i class="mdi mdi-thumb-down-outline font-16"></i></button>
+        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i
+                class="mdi mdi-thumb-up-outline font-16"></i></button>
+        <button class="btn btn-light btn-rounded p-2" onclick="alert('준비중!')"><i
+                class="mdi mdi-thumb-down-outline font-16"></i></button>
     </div>
 
     <div class="row col-12 mb-3">
@@ -77,9 +101,10 @@
 
     <div class="row col-12 mb-5">
         <div class="btn-group col-8 col-sm-6 col-md-4 col-lg-2">
-            <button class="btn btn-light" onclick="location.href='{% url 'rebs:docs:co.general_list' %}'">목록</button>
-            <button class="btn btn-light">이전글</button>
-            <button class="btn btn-light">다음글</button>
+            <button class="btn btn-light"
+                    onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">목록</button>
+            {% if prev %}<button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
+            {% if next %}<button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
         </div>
         <div class="col-4 col-sm-6 col-md-8 col-lg-10 text-right">
             <button class="btn btn-primary float-right">글쓰기</button>

@@ -1,4 +1,5 @@
 import math
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
@@ -52,32 +53,22 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     template_name = 'board/board_view.html'
     paginate_by = 15
 
+    def get_posts(self):
+        return self.model.objects.filter(board=Board.objects.first())
+
+    def get_prev(self):
+        instance = self.get_posts().filter(id__lt=self.object.id).order_by('-id',).first()
+        return reverse_lazy('rebs:docs:co.general_detail', args=[instance.id]) if instance else None
+
+    def get_next(self):
+        instance = self.get_posts().filter(id__gt=self.object.id).order_by('id',).first()
+        return reverse_lazy('rebs:docs:co.general_detail', args=[instance.id]) if instance else None
+
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
-        context['this_board'] = this_board = Board.objects.first()
-        context['categories'] = Category.objects.filter(board=this_board).order_by('order', 'id')
-        posts = self.model.objects.filter(board=this_board)
-        context['notices'] = posts.filter(is_notice=True, project=None)
-        project = self.request.GET.get('project')
-        category = self.request.GET.get('category')
-        objects = self.model.objects.filter(board=this_board, is_notice=False)
-        if project:
-            if project == 'co':
-                objects = objects.filter(project=None)
-            else:
-                objects = objects.filter(project=project)
-        if category:
-            objects = objects.filter(category=category)
-        context['object_list'] = objects
-
-        post_num = objects.count()  # 총 게시물 수
-        page = self.request.GET.get('page')  # 현재 페이지
-        page_num = int(page) if page else 1  # 현재 페이지 수
-        first_page_mod = post_num % self.paginate_by  # 첫 페이지 나머지
-        total_page = math.ceil(post_num / self.paginate_by)  # 총 페이지 수
-        add_num = (total_page - page_num) * self.paginate_by - (self.paginate_by - first_page_mod)
-        context['add_num'] = add_num if add_num >= 0 else 0
+        context['prev'] = self.get_prev() if self.get_prev() else ''
+        context['next'] = self.get_next() if self.get_next() else ''
         return context
 
 
@@ -164,6 +155,36 @@ class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
         if self.request.GET.get('category'):
             object = object.filter(category=self.request.GET.get('category'))
         return object
+
+
+class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = 'board/board_view.html'
+    paginate_by = 15
+
+    def get_project(self):
+        return Project.objects.get(pk=self.object.project.pk)
+
+    def get_posts(self):
+        return self.model.objects.filter(board=Board.objects.first(),
+                                         project__isnull=False,
+                                         project=self.get_project())
+
+    def get_prev(self):
+        instance = self.get_posts().filter(id__lt=self.object.id).order_by('-id',).first()
+        return reverse_lazy('rebs:docs:pr.general_detail', args=[instance.id]) if instance else None
+
+    def get_next(self):
+        instance = self.get_posts().filter(id__gt=self.object.id).order_by('id',).first()
+        return reverse_lazy('rebs:docs:pr.general_detail', args=[instance.id]) if instance else None
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectGeneralDocsDV, self).get_context_data(**kwargs)
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
+        context['this_project'] = self.get_project()
+        context['prev'] = self.get_prev() if self.get_prev() else ''
+        context['next'] = self.get_next() if self.get_next() else ''
+        return context
 
 
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
