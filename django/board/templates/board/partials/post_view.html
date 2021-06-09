@@ -92,15 +92,17 @@
     </div>
 
     <div class="row col-12 mb-5">
-        <div class="btn-group col-8 col-sm-6 col-md-4 col-lg-2">
-            <button class="btn btn-light"
-                    onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">
-                목록
-            </button>
-            {% if prev %}
-                <button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
-            {% if next %}
-                <button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
+        <div class="col-8 col-sm-6 col-md-4 col-lg-2 p-0">
+            <div class="btn-group {% if not prev and not next %}col-5{% elif not prev or not next %}col-8{% else %}col-12{% endif %}">
+                <button class="btn btn-light"
+                        onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">
+                    목록
+                </button>
+                {% if prev %}
+                    <button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
+                {% if next %}
+                    <button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
+            </div>
         </div>
         <div class="col-4 col-sm-6 col-md-8 col-lg-10 text-right">
             <button class="btn btn-primary float-right">글쓰기</button>
