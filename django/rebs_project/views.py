@@ -506,8 +506,9 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
         paginate_queryset = paginator.page(page)
         for i in paginate_queryset:
             own_area = SiteOwnshipRelationship.objects.filter(site_owner=i.owner).aggregate(Sum('owned_area'))
-            ta.append(own_area['owned_area__sum'])
-            context['total_cont_area'] += own_area['owned_area__sum']
+            own_area_sum = own_area['owned_area__sum'] if own_area['owned_area__sum'] else 0
+            ta.append(own_area_sum)
+            context['total_cont_area'] += own_area_sum
         context['total_area'] = list(reversed(ta))
         return context
 
