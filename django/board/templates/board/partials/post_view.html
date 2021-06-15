@@ -12,6 +12,7 @@
 
     <div class="row col-12 mb-3">
         <div class="col-12 col-md-6">
+            <small class="mr-2">{{ object.user }}</small>
             <i class="mdi mdi-comment-text-multiple mr-2"></i> <small
                 class="mr-3">{{ object.comment_set.count }}</small>
             <i class="mdi mdi-eye mr-2"></i> <small class="mr-3">{{ object.hit|intcomma }}</small>
