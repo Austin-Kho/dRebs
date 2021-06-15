@@ -83,7 +83,9 @@
                                             </div>
 
                                             <div class="form-group col-4 col-md-2 col-lg-1 mb-1">
-                                                <button type="button" class="btn btn-info" onclick="sample2_execDaumPostcode('id_')">우편번호</button>
+                                                <button type="button" class="btn btn-info"
+                                                        onclick="sample2_execDaumPostcode('id_')">우편번호
+                                                </button>
                                             </div>
                                             <div class="form-group col-md-6 col-lg-4 mb-1">
                                                 {{ form.address1|add_class:"form-control"|attr:"placeholder:주소"|attr:"onclick=sample2_execDaumPostcode('id_')" }}
@@ -99,17 +101,20 @@
                                             </div>
                                             {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
                                                 <div class="col-6 col-lg-1 text-center m-auto">
-                                                    {% if request.GET.id %}<a href="{% url 'rebs:project:site-owner' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">Reset</a>{% endif %}
+                                                    {% if request.GET.id %}<a href="
+                                                            {% url 'rebs:project:site-owner' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">Reset</a>{% endif %}
                                                 </div>
                                             {% endif %}
                                             <div class="col-6 col-lg-{% if request.user.is_superuser or request.user.staffauth.project > '1' %}1{% else %}2{% endif %} text-right m-auto">
                                                 {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
-                                                    <button type="submit" class="btn btn-{% if request.GET.id %}success{% else %}primary{% endif %}">
+                                                    <button type="submit"
+                                                            class="btn btn-{% if request.GET.id %}success{% else %}primary{% endif %}">
                                                         {% if request.GET.id %}변경{% else %}신규{% endif %}등록
                                                     </button>
                                                 {% else %}
                                                     <button type="button" class="btn btn-outline-secondary"
-                                                            onclick="alert('토지 정보 관리 권한이 없습니다. 관리자에게 문의하여 주십시요.')">조회권한 사용자
+                                                            onclick="alert('토지 정보 관리 권한이 없습니다. 관리자에게 문의하여 주십시요.')">조회권한
+                                                        사용자
                                                     </button>
                                                 {% endif %}
                                             </div>
@@ -119,14 +124,15 @@
                             </form>
 
                             <div class="col-12 table-responsive">
-                                <div class="row m-1 mt-3 mb-1">
+                                <div class="row m-1 mt-3">
                                     <div class="col-6 text-success">
                                         소유자 : {{ total_owner.count }}명 등록
                                         | 소유면적 : {{ total_area|floatformat:"2"|default:"-"|intcomma }}m<sup>2</sup>
                                         ({{ total_area|mul:"0.3025"|floatformat:"2"|intcomma }}평) 등록
                                     </div>
                                     <div class="col-6 text-right">
-                                        <a href="{% url 'excel:sites' %}?project={{ this_project.id }}">
+
+                                        <a href="javascript:alert('준비중!')" class="text-secondary">
                                             <i class="mdi mdi-file-excel-box"></i> Excel Export
                                             <i class="mdi mdi-download ml-1"></i>
                                         </a>
@@ -140,15 +146,23 @@
                                         <th class="text-center" colspan="5">소유권 관련 정보</th>
                                     </tr>
                                     <tr>
-{#                                        <th class="text-center" rowspan="2">No</th>#}
-                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 8%">소유구분</th>
-                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 9%">소유자</th>
-                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 10%">생년월일</th>
-                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 12%">주연락처</th>
-                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 9%">소유부지(지번)</th>
-                                        <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유지분(%)</th>
+                                        {#                                        <th class="text-center" rowspan="2">No</th>#}
+                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 8%">소유구분
+                                        </th>
+                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 9%">소유자
+                                        </th>
+                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 10%">생년월일
+                                        </th>
+                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 12%">주연락처
+                                        </th>
+                                        <th class="text-center bg-success-lighten" rowspan="2" style="width: 9%">
+                                            소유부지(지번)
+                                        </th>
+                                        <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유지분(%)
+                                        </th>
                                         <th class="text-center bg-info-lighten" colspan="2">소유면적</th>
-                                        <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유권 취득일</th>
+                                        <th class="text-center bg-info-lighten" rowspan="2" style="width: 11%">소유권 취득일
+                                        </th>
                                         <th class="text-center bg-info-lighten" rowspan="2" style="width: 8%">
                                             <a href="javascript: void(0);" class="action-icon">
                                                 <i class="mdi mdi-pencil"></i></a>
@@ -167,7 +181,7 @@
                                             {% with num=object.siteownshiprelationship_set.all.count %}
                                                 <tr>
                                                     {% if forloop.first %}
-{#                                                        <td class="text-center" rowspan="{{ num }}">{{ object.id }}</td>#}
+                                                        {#                                                        <td class="text-center" rowspan="{{ num }}">{{ object.id }}</td>#}
                                                         <td class="text-center"
                                                             rowspan="{{ num }}">{{ object.get_own_sort_display }}</td>
                                                         <td class="text-center" rowspan="{{ num }}">
@@ -180,14 +194,34 @@
                                                     {% endif %}
 
                                                     <td class="text-center">{{ s.site.lot_number }}</td>
-                                                    <td class="text-right"><input type="number" name="ratio" id="id_ratio" step="0.0001" placeholder="소유지분(%)" class="form-control" value="{{ s.ownership_ratio|floatformat:4 }}"></td>
-                                                    <td class="text-right"><input type="number" name="area" id="id_area" step="0.0001" placeholder="면적(㎡)" class="form-control" value="{{ s.owned_area|floatformat:4 }}"></td>
+                                                    <td class="text-right"><input type="number" name="ratio"
+                                                                                  id="id_ratio" step="0.0001"
+                                                                                  placeholder="소유지분(%)"
+                                                                                  class="form-control"
+                                                                                  value="{{ s.ownership_ratio|floatformat:4 }}">
+                                                    </td>
+                                                    <td class="text-right"><input type="number" name="area" id="id_area"
+                                                                                  step="0.0001" placeholder="면적(㎡)"
+                                                                                  class="form-control"
+                                                                                  value="{{ s.owned_area|floatformat:4 }}">
+                                                    </td>
                                                     <td class="text-right bg-warning-lighten">{{ s.owned_area|mul:"0.3025"|floatformat:4 }}</td>
-                                                    <td class="text-center"><input type="text" name="date" id="id_date" placeholder="소유권 등기일" value="{{ s.acquisition_date|date:"Y-m-d" }}" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-autoclose="true" data-toggle="input-mask" data-mask-format="0000-00-00" class="form-control" maxlength="10"></td>
+                                                    <td class="text-center"><input type="text" name="date" id="id_date"
+                                                                                   placeholder="소유권 등기일"
+                                                                                   value="{{ s.acquisition_date|date:"Y-m-d" }}"
+                                                                                   data-provide="datepicker"
+                                                                                   data-date-format="yyyy-mm-dd"
+                                                                                   data-date-autoclose="true"
+                                                                                   data-toggle="input-mask"
+                                                                                   data-mask-format="0000-00-00"
+                                                                                   class="form-control" maxlength="10">
+                                                    </td>
                                                     <td class="text-center bg-dragula">
-                                                        <a href="javascript: relationshipUpdate('{{ s.id }}');" class="action-icon">
+                                                        <a href="javascript: relationshipUpdate('{{ s.id }}');"
+                                                           class="action-icon">
                                                             <i class="mdi mdi-pencil"></i></a>
-                                                        <a href="javascript: relationshipDelete('{{ s.id }}');" class="action-icon">
+                                                        <a href="javascript: relationshipDelete('{{ s.id }}');"
+                                                           class="action-icon">
                                                             <i class="mdi mdi-delete"></i></a>
                                                     </td>
                                                 </tr>
