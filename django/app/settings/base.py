@@ -54,7 +54,6 @@ INSTALLED_APPS += [  # plugin
     'widget_tweaks',
     'django_markdown2',
     'mdeditor',
-    'tinymce',
     'django.contrib.sites',
     'disqus',
     'import_export',
@@ -217,8 +216,6 @@ MDEDITOR_CONFIGS = {
         'lineNumbers': True  # lineNumbers
     }
 }
-
-CKEDITOR_UPLOAD_PATH = "cke_images/"
 
 SITE_ID = 1
 DISQUS_API_KEY = get_environment('DISQUS_API_KEY')
