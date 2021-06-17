@@ -79,6 +79,11 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
         return context
 
 
+class CompanyGeneralDocsCV(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ('__all__')
+
+
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'

@@ -21,6 +21,7 @@ app_name = 'docs'
 urlpatterns = [
     path('general/', CompanyGeneralDocsLV.as_view(), name='co.general_list'),
     path('general/<int:pk>/', CompanyGeneralDocsDV.as_view(), name='co.general_detail'),
+    path('general/add/', CompanyGeneralDocsCV.as_view(), name='co.general_create'),
     path('lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit_list'),
     path('project/general/', ProjectGeneralDocsLV.as_view(), name='pr.general_list'),
     path('project/general/<int:pk>/', ProjectGeneralDocsDV.as_view(), name='pr.general_detail'),
