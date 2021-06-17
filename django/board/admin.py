@@ -1,5 +1,6 @@
 from django.contrib import admin
-from mdeditor.widgets import MDEditorWidget
+from django.db import models
+from tinymce.widgets import TinyMCE
 from import_export.admin import ImportExportMixin
 from . models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
 
@@ -55,6 +56,9 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
     inlines = (ImageInline, FileInline, LinkInline)
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 10})}
+    }
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):

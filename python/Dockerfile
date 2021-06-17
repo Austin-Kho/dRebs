@@ -12,4 +12,4 @@ RUN apt update \
     && locale-gen ko_KR.UTF-8 \
     && apt install fonts-nanum fonts-nanum-coding fonts-nanum-extra \
     && apt remove default-libmysqlclient-dev build-essential -y
-ENV LC_ALL ko_KR.UTF-8
+ENV LANG ko_KR.UTF-8
