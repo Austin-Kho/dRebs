@@ -35,7 +35,7 @@
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">
                                 <i class="dripicons-download mr-1"></i>
-                                <a href="">{{ file }}</a> (143 Bytes)
+                                <a href="{{ file }}{{ file.file.name }}">{{ file.file.name }}</a> (143 Bytes)
                                 <i class="dripicons-clock ml-2"></i>
                                 <small>{{ object.created|date:"y-m-d H:m" }}</small>
                             </div>
@@ -64,7 +64,10 @@
     </div>
 
     <div class="col-12 pl-4 pr-4 mb-5">
-        {{ object }}
+        {% for image in object.image_set.all %}
+            <p><img src="{{ image }}{{ image.image.name }}" alt="{{ image.image.name }}"></p>
+        {% endfor %}
+        <p>{{ object }}</p>
     </div>
 
     <div class="col-12 mb-5 text-center">

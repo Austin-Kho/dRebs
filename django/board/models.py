@@ -96,7 +96,7 @@ class Image(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.image
+        return settings.MEDIA_URL
 
 
 class File(models.Model):
@@ -105,7 +105,7 @@ class File(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.file
+        return settings.MEDIA_URL
 
 
 class Link(models.Model):
