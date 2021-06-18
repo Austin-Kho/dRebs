@@ -179,11 +179,25 @@
                                 <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                             </a>
                         </li>
+                        {% if 'project/general/add' in request.path %}
+                            <li>
+                                <a href="{{ request.get_full_path }}">일반 문서 작성
+                                    <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                </a>
+                            </li>
+                        {% endif %}
 
                         {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
-                            {% if 'rebs/docs/project/general/' in request.path %}
+                            {% if 'docs/project/general/' in request.path and 'update' not in request.path %}
                                 <li>
                                     <a href="{{ request.get_full_path }}">일반 문서 열람
+                                        <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if 'docs/project/general/update' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">일반 문서 수정
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
@@ -194,10 +208,24 @@
                                 <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                             </a>
                         </li>
+                        {% if 'project/lawsuit/add' in request.path %}
+                            <li>
+                                <a href="{{ request.get_full_path }}">소송 기록 작성
+                                    <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
-                            {% if 'rebs/docs/project/lawsuit/' in request.path %}
+                            {% if 'docs/project/lawsuit/' in request.path and 'update' not in request.path %}
                                 <li>
                                     <a href="{{ request.get_full_path }}">소송 기록 열람
+                                        <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if 'docs/project/lawsuit/update' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">소송 기록 수정
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
@@ -348,10 +376,24 @@
                                 <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                             </a>
                         </li>
+                        {% if 'docs/general/add' in request.path %}
+                            <li>
+                                <a href="{{ request.get_full_path }}">일반 문서 작성
+                                    <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
-                            {% if 'rebs/docs/general/' in request.path %}
+                            {% if 'docs/general/' in request.path and 'update' not in request.path %}
                                 <li>
                                     <a href="{{ request.get_full_path }}">일반 문서 열람
+                                        <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if 'docs/general/update' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">일반 문서 수정
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
@@ -362,10 +404,24 @@
                                 <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                             </a>
                         </li>
+                        {% if 'docs/lawsuit/add' in request.path %}
+                            <li>
+                                <a href="{{ request.get_full_path }}">소송 기록 작성
+                                    <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
-                            {% if 'rebs/docs/lawsuit/' in request.path %}
+                            {% if 'docs/lawsuit/' in request.path and 'update' not in request.path %}
                                 <li>
                                     <a href="{{ request.get_full_path }}">소송 기록 열람
+                                        <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if 'docs/lawsuit/update/' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">소송 기록 수정
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
