@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django_summernote.admin import SummernoteModelAdmin
 from import_export.admin import ImportExportMixin
 from . models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
 
@@ -48,7 +47,7 @@ class CommentInline(admin.TabularInline):
     model = Comment
     extra = 1
 
-class PostAdmin(ImportExportMixin, SummernoteModelAdmin):
+class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
