@@ -1,5 +1,11 @@
 <div class="row col-12">
     <div class="col-12 text-right">
-        <button class="btn btn-primary" onclick="location.href='{% if this_board.pk == 1  %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}'">글쓰기</button>
+        <a href="{% if co %}
+                {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
+            {% else %}
+                {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
+            {% endif %}">
+                <button type="button" class="btn btn-primary">글쓰기</button>
+            </a>
     </div>
 </div>

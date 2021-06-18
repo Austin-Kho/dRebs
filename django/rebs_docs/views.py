@@ -331,6 +331,8 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsCV, self).get_context_data(**kwargs)
         context['this_board'] = Board.objects.first()
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         return context
 
@@ -360,8 +362,8 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsUV, self).get_context_data(**kwargs)
-        context['co'] = True
         context['this_board'] = Board.objects.first()
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         return context
 
@@ -473,6 +475,8 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsCV, self).get_context_data(**kwargs)
         context['this_board'] = Board.objects.get(id=2)
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
         return context
 
@@ -502,8 +506,8 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
-        context['co'] = True
         context['this_board'] = Board.objects.get(id=2)
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         return context
 

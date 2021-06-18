@@ -26,6 +26,13 @@
 
     <script src="{% static 'tinymce/tinymce.min.js' %}" referrerpolicy="origin"></script>
     <script>
+
+      {% if not co %}
+        window.onload = function () {
+          document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+        }
+      {% endif %}
+
       tinymce.init({
         selector: '#id_content',
         language: 'ko_KR',
