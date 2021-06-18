@@ -2,6 +2,7 @@ import hashlib
 from django.db import models
 from datetime import datetime
 from django.conf import settings
+from tinymce.models import HTMLField
 
 
 class Group(models.Model):
@@ -55,7 +56,8 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
-    content = models.TextField('내용', blank=True)
+    # content = models.TextField('내용', blank=True)
+    content = HTMLField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
     like = models.PositiveIntegerField('좋아요', default=0)

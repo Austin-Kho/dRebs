@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
+from board.forms import PostForm
 from board.models import Board, Category, Post
 from rebs_project.models import Project
 
@@ -81,7 +82,8 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
 
 class CompanyGeneralDocsCV(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ('__all__')
+    # form_class = PostForm
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content', 'is_hide_comment', 'password']
 
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):

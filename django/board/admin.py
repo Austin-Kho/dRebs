@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.db import models
-from tinymce.widgets import TinyMCE
+from django_summernote.admin import SummernoteModelAdmin
 from import_export.admin import ImportExportMixin
 from . models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
 
@@ -49,16 +48,13 @@ class CommentInline(admin.TabularInline):
     model = Comment
     extra = 1
 
-class PostAdmin(ImportExportMixin, admin.ModelAdmin):
+class PostAdmin(ImportExportMixin, SummernoteModelAdmin):
     list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
     list_editable = ('board', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
     inlines = (ImageInline, FileInline, LinkInline)
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 10})}
-    }
 
 
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):

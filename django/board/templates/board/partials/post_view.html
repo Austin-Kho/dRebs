@@ -67,7 +67,7 @@
         {% for image in object.image_set.all %}
             <p><img src="{{ image }}{{ image.image.name }}" alt="{{ image.image.name }}"></p>
         {% endfor %}
-        <p>{{ object }}</p>
+        <p>{{ object|safe }}</p>
     </div>
 
     <div class="col-12 mb-5 text-center">

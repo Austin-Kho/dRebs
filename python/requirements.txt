@@ -5,6 +5,8 @@ django-widget-tweaks
 django-markdown2
 Pillow
 django-mdeditor
+django-summernote
+django-tinymce
 django-disqus
 django-import-export
 boto3
