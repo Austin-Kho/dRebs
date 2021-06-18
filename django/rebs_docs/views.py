@@ -52,7 +52,6 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
 class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'board/board_view.html'
-    paginate_by = 15
 
     def get_object(self):
         post = super().get_object()
@@ -159,6 +158,36 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
         if category:
             objects = objects.filter(category=category)
         return objects
+
+
+class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = 'board/board_view.html'
+
+    def get_object(self):
+        post = super().get_object()
+        post.hit += 1
+        post.save()
+        return post
+
+    def get_posts(self):
+        return self.model.objects.filter(board=Board.objects.first())
+
+    def get_prev(self):
+        instance = self.get_posts().filter(id__lt=self.object.id).order_by('-id',).first()
+        return reverse_lazy('rebs:docs:co.general_detail', args=[instance.id]) if instance else None
+
+    def get_next(self):
+        instance = self.get_posts().filter(id__gt=self.object.id).order_by('id',).first()
+        return reverse_lazy('rebs:docs:co.general_detail', args=[instance.id]) if instance else None
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitDocsDV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.get(pk=2)
+        context['prev'] = self.get_prev() if self.get_prev() else ''
+        context['next'] = self.get_next() if self.get_next() else ''
+        return context
 
 
 class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -282,6 +311,14 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
         return context
 
 
+class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    pass
+
+
+class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    pass
+
+
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
@@ -324,3 +361,15 @@ class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
         if self.request.GET.get('category'):
             object = object.filter(category=self.request.GET.get('category'))
         return object
+
+
+class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
+    pass
+
+
+class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    pass
+
+
+class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    pass
