@@ -83,6 +83,12 @@ class CompanyGeneralDocsCV(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content', 'is_hide_comment', 'password']
 
+    def get_context_data(self, **kwargs):
+        context = super(CompanyGeneralDocsCV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.first()
+        return context
+
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
