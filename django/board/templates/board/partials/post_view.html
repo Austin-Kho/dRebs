@@ -26,7 +26,16 @@
         </div>
     </div>
 
-    <div class="col-12 mb-4">
+    <div class="col-12">
+        {% if object.execution_date %}
+            <table class="table-sm table-bordered border-primary mt-2 mb-3">
+                <tr>
+                    <td class="p-2 bg-dragula">문서 작성일자</td>
+                    <td class="p-2">{{ object.execution_date|date:"Y-m-d" }}</td>
+                </tr>
+            </table>
+        {% endif %}
+
         {% if object.file_set.all %}
             <ul class="list-group">
                 <li class="list-group-item disabled text-dark" aria-disabled="true">Download</li>
@@ -63,18 +72,10 @@
         {% endif %}
     </div>
 
-    <div class="col-12 pl-4 pr-4 mb-5">
-
-        {% if object.execution_date %}
-            <table class="table-sm table-bordered border-primary mb-5">
-                <tr>
-                    <td class="p-2 bg-dragula">문서 작성일자</td>
-                    <td class="p-2">{{ object.execution_date|date:"Y-m-d" }}</td>
-                </tr>
-            </table>
-        {% endif %}
+    <div class="col-12 pl-4 pr-4 mt-5 mb-4">
 
         <p>{{ object.content|safe }}</p>
+
     </div>
 
     <div class="col-12 mb-5 text-center">
