@@ -74,9 +74,6 @@
             </table>
         {% endif %}
 
-        {% for image in object.image_set.all %}
-            <p><img src="{{ image }}{{ image.image.name }}" alt="{{ image.image.name }}"></p>
-        {% endfor %}
         <p>{{ object.content|safe }}</p>
     </div>
 
