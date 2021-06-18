@@ -39,7 +39,7 @@
             <td>{{ notice.hit|default:"-"|intcomma }}</td>
         </tr>
     {% endfor %}
-    {{ this_board.pk }}
+
     {% for object in object_list %}
         <tr>
             <td>{{ forloop.revcounter|add:add_num }}</td>

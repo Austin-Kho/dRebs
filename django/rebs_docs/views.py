@@ -481,7 +481,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
+        form.instance.board = Board.objects.get(id=2)
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
         return super(ProjectLawsuitDocsCV, self).form_valid(form)
@@ -512,7 +512,7 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
+        form.instance.board = Board.objects.get(id=2)
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
         return super(ProjectLawsuitDocsUV, self).form_valid(form)

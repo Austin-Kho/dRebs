@@ -1,11 +1,61 @@
-<form action="" method="post">
+{% load widget_tweaks %}
+
+<form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" novalidate>
     {% csrf_token %}
-    {{ form }}
+    {{ form.errors }}
+
+    <div class="col-10">
+        <div class="row mb-2 text-right">
+            <label for="{{ form.title.id_for_label }}" class="col-2 col-form-label">{{ form.title.label }}</label>
+            <div class="col-10">
+                {{ form.title|add_class:"form-control text-dark bg-dragula"|attr:"placeholder:제목" }}
+            </div>
+        </div>
+
+        <div class="row mb-2 text-right">
+            <label for="{{ form.is_notice.id_for_label }}"
+                   class="col-2 col-form-label">{{ form.is_notice.label }}</label>
+            <div class="col-10 text-left pt-1">
+                {{ form.is_notice|add_class:"form-control"|attr:"placeholder:공지"|attr:"data-switch=none" }}
+                <label for="{{ form.is_notice.id_for_label }}" data-on-label="" data-off-label=""></label>
+            </div>
+        </div>
+
+        <div class="row mb-3 text-right">
+            {% if this_board.pk == 1 %}
+                <div class="col-6">
+                    <div class="row mb-6">
+                        <label for="{{ form.category.id_for_label }}"
+                               class="col-4 col-form-label">{{ form.category.label }}</label>
+                        <div class="col-8 text-left">
+                            {{ form.category|add_class:"form-control"|attr:"placeholder:카테고리"|attr:"required" }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if this_board.pk == 1 %}<div class="col-6">{% endif %}
+                {% if this_board.pk == 1 %}<div class="row mb-6">{% endif %}
+                    <label for="{{ form.execution_date.id_for_label }}"
+                           class="{% if this_board.pk == 1 %}col-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
+                    <div class="{% if this_board.pk == 1 %}col-8{% else %}col-10{% endif %}">
+                        {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                    </div>
+                {% if this_board.pk == 1 %}</div>{% endif %}
+            {% if this_board.pk == 1 %}</div>{% endif %}
+        </div>
+    </div>
+
+    <div class="col-12">
+        {{ form.content|add_class:"form-control"|attr:"placeholder:문서 시행일자" }}
+    </div>
 
     <div class="row col-12 mb-5">
         <div class="col-12 text-right p-0 mt-2">
             <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
-            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">작성완료</button>
+            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                작성완료
+            </button>
         </div>
     </div>
 </form>
