@@ -23,22 +23,22 @@
 
         <div class="row mb-3 text-right">
             {% if this_board.pk == 1 %}
-                <div class="col-6">
-                    <div class="row mb-6">
+                <div class="col-12 col-md-6">
+                    <div class="row mb-2">
                         <label for="{{ form.category.id_for_label }}"
-                               class="col-4 col-form-label">{{ form.category.label }}</label>
-                        <div class="col-8 text-left">
+                               class="col-2 col-md-4 col-form-label">{{ form.category.label }}</label>
+                        <div class="col-10 col-md-8 text-left">
                             {{ form.category|add_class:"form-control"|attr:"placeholder:카테고리"|attr:"required" }}
                         </div>
                     </div>
                 </div>
             {% endif %}
 
-            {% if this_board.pk == 1 %}<div class="col-6">{% endif %}
-                {% if this_board.pk == 1 %}<div class="row mb-6">{% endif %}
+            {% if this_board.pk == 1 %}<div class="col-12 col-md-6">{% endif %}
+                {% if this_board.pk == 1 %}<div class="row mb-2">{% endif %}
                     <label for="{{ form.execution_date.id_for_label }}"
-                           class="{% if this_board.pk == 1 %}col-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
-                    <div class="{% if this_board.pk == 1 %}col-8{% else %}col-10{% endif %}">
+                           class="{% if this_board.pk == 1 %}col-2 col-md-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
+                    <div class="{% if this_board.pk == 1 %}col-10 col-md-8{% else %}col-10{% endif %}">
                         {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                     </div>
                 {% if this_board.pk == 1 %}</div>{% endif %}
