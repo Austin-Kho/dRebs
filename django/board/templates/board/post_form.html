@@ -3,16 +3,21 @@
 {% block board %}
     {% load static %}
 
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form }}
-
-        <div class="form-group text-right mt-3">
-            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
-                {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
-            </button>
+    <div class="row">
+        <div class="col-12 border-bottom mb-4">
+            <h4>
+                {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}
+                    {% if not object.category %} <i class="uil-angle-double-right"></i> {% endif %}{% endif %}
+                {{ this_board }}
+            </h4>
         </div>
-    </form>
+
+        <div class="col-12">
+            {% include 'board/partials/form.html' %}
+        </div>
+    </div>
+
+
 
 {% endblock %}
 

@@ -161,6 +161,46 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
         return objects
 
 
+class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "새 게시물이 등록되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitDocsCV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.get(pk=2)
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.get(pk=2)
+        form.instance.user = self.request.user
+        return super(CompanyLawsuitDocsCV, self).form_valid(form)
+
+
+class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "수정한 내용이 저장되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitDocsUV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.get(pk=2)
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.get(pk=2)
+        form.instance.user = self.request.user
+        return super(CompanyLawsuitDocsUV, self).form_valid(form)
+
+
 class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'

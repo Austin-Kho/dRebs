@@ -112,7 +112,7 @@
             </div>
         </div>
         <div class="col-3 text-right p-1">
-            <button class="btn btn-primary float-right" onclick="location.href='{% url 'rebs:docs:co.general_create' %}'">글쓰기</button>
+            <button class="btn btn-primary" onclick="location.href='{% if this_board.pk == 1  %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}'">글쓰기</button>
         </div>
     </div>
 

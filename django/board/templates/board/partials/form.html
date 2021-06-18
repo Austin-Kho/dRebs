@@ -1,0 +1,10 @@
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+
+    <div class="form-group text-right mt-3">
+        <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+            {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
+        </button>
+    </div>
+</form>
