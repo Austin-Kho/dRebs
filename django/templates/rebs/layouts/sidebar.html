@@ -179,11 +179,30 @@
                                 <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
                             </a>
                         </li>
+
+                        {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
+                            {% if 'rebs/docs/project/general/' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">일반 문서 열람
+                                        <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
                         <li>
                             <a href="{% url 'rebs:docs:pr.lawsuit_list' %}">소송 기록 관리
                                 <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing..</span>
                             </a>
                         </li>
+                        {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
+                            {% if 'rebs/docs/project/lawsuit/' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">소송 기록 열람
+                                        <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
@@ -329,11 +348,29 @@
                                 <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
                             </a>
                         </li>
+                        {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
+                            {% if 'rebs/docs/general/' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">일반 문서 열람
+                                        <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
                         <li>
                             <a href="{% url 'rebs:docs:co.lawsuit_list' %}">소송 기록 관리
                                 <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing..</span>
                             </a>
                         </li>
+                        {% if '1' in request.path or '2' in request.path or '3' in request.path or '4' in request.path or '5' in request.path or '6' in request.path or '7' in request.path or '8' in request.path or '9' in request.path %}
+                            {% if 'rebs/docs/lawsuit/' in request.path %}
+                                <li>
+                                    <a href="{{ request.get_full_path }}">소송 기록 열람
+                                        <span class="badge badge-pill badge-warning-lighten font-10 float-right">ing...</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
