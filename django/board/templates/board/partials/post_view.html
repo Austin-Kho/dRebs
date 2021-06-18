@@ -99,12 +99,26 @@
         <div class="col-9 p-1">
             <div class="btn-group">
                 {% if request.user.is_superuser or request.user == object.user %}
-                    <button class="btn btn-light" onclick="location.href='{% url 'rebs:docs:co.general_update' object.pk %}'">수정</button>
+                    <button class="btn btn-light"
+                            onclick="location.href='{% url 'rebs:docs:co.general_update' object.pk %}'">수정
+                    </button>
                 {% endif %}
-                <button class="btn btn-light"
-                        onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">
-                    목록
-                </button>
+                <a href="{% if co %}
+                            {% if this_board.pk == '1' %}
+                                {% url 'rebs:docs:co.general_list' %}
+                            {% else %}
+                                {% url 'rebs:docs:co.lawsuit_list' %}
+                            {% endif %}
+                        {% else %}
+                            {% if this_board.pk == '1' %}
+                                {% url 'rebs:docs:pr.general_list' %}
+                            {% else %}
+                                {% url 'rebs:docs:pr.lawsuit_list' %}
+                            {% endif %}
+                        {% endif %}">
+                    <button class="btn btn-light">목록</button>
+                </a>
+
                 {% if prev %}
                     <button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
                 {% if next %}
@@ -112,7 +126,10 @@
             </div>
         </div>
         <div class="col-3 text-right p-1">
-            <button class="btn btn-primary" onclick="location.href='{% if this_board.pk == 1  %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}'">글쓰기</button>
+            <button class="btn btn-primary" onclick="location.href='
+                    {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}'">
+                글쓰기
+            </button>
         </div>
     </div>
 
