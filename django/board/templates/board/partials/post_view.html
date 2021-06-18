@@ -67,7 +67,7 @@
         {% for image in object.image_set.all %}
             <p><img src="{{ image }}{{ image.image.name }}" alt="{{ image.image.name }}"></p>
         {% endfor %}
-        <p>{{ object|safe }}</p>
+        <p>{{ object.content|safe }}</p>
     </div>
 
     <div class="col-12 mb-5 text-center">
@@ -96,8 +96,11 @@
     </div>
 
     <div class="row col-12 mb-5">
-        <div class="col-8 col-sm-6 col-md-4 col-lg-2 p-0">
-            <div class="btn-group {% if not prev and not next %}col-5{% elif not prev or not next %}col-8{% else %}col-12{% endif %}">
+        <div class="col-9 p-1">
+            <div class="btn-group">
+                {% if request.user.is_superuser or request.user == object.user %}
+                    <button class="btn btn-light" onclick="location.href='{% url 'rebs:docs:co.general_update' object.pk %}'">수정</button>
+                {% endif %}
                 <button class="btn btn-light"
                         onclick="location.href={% if co %}'{% url 'rebs:docs:co.general_list' %}'{% else %}'{% url 'rebs:docs:pr.general_list' %}'{% endif %}">
                     목록
@@ -108,8 +111,8 @@
                     <button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
             </div>
         </div>
-        <div class="col-4 col-sm-6 col-md-8 col-lg-10 text-right">
-            <button class="btn btn-primary float-right">글쓰기</button>
+        <div class="col-3 text-right p-1">
+            <button class="btn btn-primary float-right" onclick="location.href='{% url 'rebs:docs:co.general_create' %}'">글쓰기</button>
         </div>
     </div>
 

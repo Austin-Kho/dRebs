@@ -3,7 +3,16 @@
 {% block board %}
     {% load static %}
 
-    {{ form }}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+
+        <div class="form-group text-right mt-3">
+            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
+                {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
+            </button>
+        </div>
+    </form>
 
 {% endblock %}
 
@@ -13,7 +22,17 @@
     <script src="{% static 'tinymce/tinymce.min.js' %}" referrerpolicy="origin"></script>
     <script>
       tinymce.init({
-        selector: '#id_content'
+        selector: '#id_content',
+        language: 'ko_KR',
+        menubar: false,
+        statusbar: false,
+        skin: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oxide-dark' : 'oxide'),
+        content_css: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'),
+        toolbar: 'bullist numlist code image table undo redo styleselect bold italic alignleft aligncenter alignright bullist numlist outdent indent code',
+        plugins: ['code', 'advlist', '	image', 'table'],
+        height: 430,
+        advlist_bullet_styles: 'square',
+        advlist_number_styles: 'lower-alpha,lower-roman,upper-alpha,upper-roman'
       });
     </script>
 

@@ -1,6 +1,7 @@
 import math
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
 from board.models import Board, Category, Post
@@ -79,15 +80,44 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
         return context
 
 
-class CompanyGeneralDocsCV(LoginRequiredMixin, CreateView):
+class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['is_notice', 'category', 'title', 'execution_date', 'content', 'is_hide_comment', 'password']
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "새 게시물이 등록되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
 
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.first()
         return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.user = self.request.user
+        return super(CompanyGeneralDocsCV, self).form_valid(form)
+
+
+class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "수정한 내용이 저장되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyGeneralDocsUV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.first()
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.user = self.request.user
+        return super(CompanyGeneralDocsUV, self).form_valid(form)
 
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
