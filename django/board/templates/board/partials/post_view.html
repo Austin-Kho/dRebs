@@ -109,13 +109,13 @@
                     <button type="button" class="btn btn-light" onclick="alert('준비중!')">삭제</button>
                 {% endif %}
                 <a href="{% if co %}
-                            {% if this_board.pk == '1' %}
+                            {% if this_board.pk == 1 %}
                                 {% url 'rebs:docs:co.general_list' %}
                             {% else %}
                                 {% url 'rebs:docs:co.lawsuit_list' %}
                             {% endif %}
                         {% else %}
-                            {% if this_board.pk == '1' %}
+                            {% if this_board.pk == 1 %}
                                 {% url 'rebs:docs:pr.general_list' %}
                             {% else %}
                                 {% url 'rebs:docs:pr.lawsuit_list' %}
