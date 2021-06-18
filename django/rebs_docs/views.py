@@ -312,11 +312,64 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
 
 
 class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    pass
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "새 게시물이 등록되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectGeneralDocsCV, self).get_context_data(**kwargs)
+        context['this_board'] = Board.objects.first()
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.project = self.get_project()
+        form.instance.user = self.request.user
+        return super(ProjectGeneralDocsCV, self).form_valid(form)
 
 
 class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    pass
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "수정한 내용이 저장되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectGeneralDocsUV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.first()
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.project = self.get_project()
+        form.instance.user = self.request.user
+        return super(ProjectGeneralDocsUV, self).form_valid(form)
 
 
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
@@ -401,8 +454,61 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 
 class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    pass
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "새 게시물이 등록되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitDocsCV, self).get_context_data(**kwargs)
+        context['this_board'] = Board.objects.get(id=2)
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.project = self.get_project()
+        form.instance.user = self.request.user
+        return super(ProjectLawsuitDocsCV, self).form_valid(form)
 
 
 class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    pass
+    model = Post
+    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    success_message = "수정한 내용이 저장되었습니다."
+
+    def get_success_url(self):
+        return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.get(id=2)
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.board = Board.objects.first()
+        form.instance.project = self.get_project()
+        form.instance.user = self.request.user
+        return super(ProjectLawsuitDocsUV, self).form_valid(form)
