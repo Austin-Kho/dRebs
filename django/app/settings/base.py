@@ -54,7 +54,6 @@ INSTALLED_APPS += [  # plugin
     'widget_tweaks',
     'django_markdown2',
     'mdeditor',
-    'django_summernote',
     'tinymce',
     'django.contrib.sites',
     'disqus',
