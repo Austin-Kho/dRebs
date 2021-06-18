@@ -3,30 +3,9 @@
     {{ form }}
 
     <div class="row col-12 mb-5">
-        <div class="col-9 p-1">
-            <div class="btn-group">
-                <a href="{% if co %}
-                            {% if this_board.pk == 1 %}
-                                {% url 'rebs:docs:co.general_list' %}
-                            {% else %}
-                                {% url 'rebs:docs:co.lawsuit_list' %}
-                            {% endif %}
-                        {% else %}
-                            {% if this_board.pk == 1 %}
-                                {% url 'rebs:docs:pr.general_list' %}
-                            {% else %}
-                                {% url 'rebs:docs:pr.lawsuit_list' %}
-                            {% endif %}
-                        {% endif %}">
-                    <button type="button" class="btn btn-light">목록</button>
-                </a>
-                <button type="button" class="btn btn-light" onclick="history.back()">뒤로</button>
-            </div>
-        </div>
-        <div class="col-3 text-right p-1">
-            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
-                {% if 'add' in request.path %}등록하기{% else %}수정하기{% endif %}
-            </button>
+        <div class="col-12 text-right p-0 mt-2">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
+            <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">작성완료</button>
         </div>
     </div>
 </form>
