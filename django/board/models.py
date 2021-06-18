@@ -81,7 +81,7 @@ class Post(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-execution_date', '-id']
+        ordering = ['-id']
         verbose_name = '04. 게시물 관리'
         verbose_name_plural = '04. 게시물 관리'
 
