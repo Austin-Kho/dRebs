@@ -15,9 +15,9 @@
         <div class="row mb-2 text-right">
             <label for="{{ form.is_notice.id_for_label }}"
                    class="col-2 col-form-label">{{ form.is_notice.label }}</label>
-            <div class="col-10 text-left pt-1">
-                {{ form.is_notice|add_class:"form-control"|attr:"placeholder:공지"|attr:"data-switch=none" }}
-                <label for="{{ form.is_notice.id_for_label }}" data-on-label="" data-off-label=""></label>
+            <div class="col-10 text-left pt-1 custom-control custom-switch" style="padding-left: 50px;">
+                {{ form.is_notice|add_class:"custom-control-input"|attr:"placeholder:공지" }}
+                <label for="{{ form.is_notice.id_for_label }}" class="custom-control-label" data-on-label="" data-off-label=""></label>
             </div>
         </div>
 
