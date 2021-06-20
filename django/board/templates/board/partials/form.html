@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" novalidate>
+<form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {{ form.errors }}
 
