@@ -1,5 +1,4 @@
 import math
-from django import forms
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -131,11 +130,31 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context = super(CompanyGeneralDocsUV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.first()
+        context['link_formset'] = LinkInlineFormSet(
+            instance=self.object,
+            queryset=Link.objects.filter(post=self.object, ))
+        context['file_formset'] = FileInlineFormSet(
+            instance=self.object,
+            queryset=File.objects.filter(post=self.object, ))
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
         form.instance.user = self.request.user
+
+        link_formset = LinkInlineFormSet(self.request.POST, )
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
+
+        with transaction.atomic():
+            self.object = form.save()
+
+            if link_formset.is_valid():
+                link_formset.instance = self.object
+                link_formset.save()
+
+            if file_formset.is_valid():
+                file_formset.instance = self.object
+                file_formset.save()
+
         return super(CompanyGeneralDocsUV, self).form_valid(form)
 
 
@@ -259,10 +278,15 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context = super(CompanyLawsuitDocsUV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.get(pk=2)
+        context['link_formset'] = LinkInlineFormSet(
+            instance=self.object,
+            queryset=Link.objects.filter(post=self.object, ))
+        context['file_formset'] = FileInlineFormSet(
+            instance=self.object,
+            queryset=File.objects.filter(post=self.object, ))
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.get(pk=2)
         form.instance.user = self.request.user
         return super(CompanyLawsuitDocsUV, self).form_valid(form)
 
@@ -419,11 +443,15 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
+        context['link_formset'] = LinkInlineFormSet(
+            instance=self.object,
+            queryset=Link.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+        context['file_formset'] = FileInlineFormSet(
+            instance=self.object,
+            queryset=File.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.first()
-        form.instance.project = self.get_project()
         form.instance.user = self.request.user
         return super(ProjectGeneralDocsUV, self).form_valid(form)
 
@@ -580,10 +608,14 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['this_board'] = Board.objects.get(id=2)
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
+        context['link_formset'] = LinkInlineFormSet(
+            instance=self.object,
+            queryset=Link.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+        context['file_formset'] = FileInlineFormSet(
+            instance=self.object,
+            queryset=File.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
         return context
 
     def form_valid(self, form):
-        form.instance.board = Board.objects.get(id=2)
-        form.instance.project = self.get_project()
         form.instance.user = self.request.user
         return super(ProjectLawsuitDocsUV, self).form_valid(form)

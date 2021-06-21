@@ -66,16 +66,18 @@
                 {% if forloop.first %}
                     <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
                         <div class="input-group">
-                            <label for="{{ field.id_for_label }}" class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
+                            <label for="{{ field.id_for_label }}"
+                                   class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
                             {{ field|add_class:"form-control" }}
                         </div>
                     </div>
-                {% endif %}
-                {% if 1 == 2 %}
-                    <div class="col mt-2 ml-3" style="padding: 8px;">
-                        <div class="input-group">
-                             {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
-                            <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    <div class="{% if not field.value %}d-none{% endif %}">
+                        {% elif forloop.last %}
+                        <div class="col mt-2 ml-3" style="padding: 8px;">
+                            <div class="input-group">
+                                {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
+                                <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                            </div>
                         </div>
                     </div>
                 {% endif %}
@@ -96,16 +98,18 @@
                 {% if forloop.first %}
                     <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
                         <div class="input-group">
-                            <label for="{{ field.id_for_label }}" class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
+                            <label for="{{ field.id_for_label }}"
+                                   class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
                             {{ field|add_class:"form-control" }}
                         </div>
                     </div>
-                {% endif %}
-                {% if 1 == 2 %}
-                    <div class="col mt-2 ml-3" style="padding: 8px;">
-                        <div class="input-group">
-                             {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
-                            <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    <div class="{% if not field.value %}d-none{% endif %}">
+                        {% elif forloop.last %}
+                        <div class="col mt-2 ml-3" style="padding: 8px;">
+                            <div class="input-group">
+                                {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
+                                <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                            </div>
                         </div>
                     </div>
                 {% endif %}
