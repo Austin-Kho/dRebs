@@ -100,7 +100,7 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.board = Board.objects.first()
         form.instance.user = self.request.user
-        file_formset = self.FileInlineFormSet(self.request.POST,)
+        file_formset = self.FileInlineFormSet(self.request.POST, self.request.FILES)
 
         with transaction.atomic():
             self.object = form.save()
