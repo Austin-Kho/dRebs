@@ -7,12 +7,14 @@ LinkInlineFormSet = forms.models.inlineformset_factory(
     Post,
     Link,
     fields=['link'],
-    extra=1
+    extra=1,
+    can_delete_extra=False
 )
 
 FileInlineFormSet = forms.models.inlineformset_factory(
     Post,
     File,
     fields=['file'],
-    extra=1
+    extra=1,
+    can_delete_extra=False
 )
