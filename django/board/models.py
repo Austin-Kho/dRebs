@@ -88,8 +88,8 @@ class Post(models.Model):
 
 def get_image_filename(instance, filename):
     today = datetime.today().strftime('%Y-%m-%d')
-    hash_value = hashlib.md5().hexdigest()
-    return f"{today}_{hash_value}_{filename}"
+    hash_value = hashlib.blake2b(digest_size=5).hexdigest()
+    return f"{today}__{hash_value}__{filename}"
 
 
 class Image(models.Model):
@@ -101,6 +101,14 @@ class Image(models.Model):
         return settings.MEDIA_URL
 
 
+class Link(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
+    link = models.URLField(max_length=500, verbose_name='링크')
+
+    def __str__(self):
+        return self.link
+
+
 class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
     file = models.FileField(upload_to=get_image_filename, verbose_name='파일')
@@ -108,14 +116,6 @@ class File(models.Model):
 
     def __str__(self):
         return settings.MEDIA_URL
-
-
-class Link(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물')
-    link = models.URLField(verbose_name='링크')
-
-    def __str__(self):
-        return self.link
 
 
 class Comment(models.Model):
