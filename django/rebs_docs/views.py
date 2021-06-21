@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, F
 
 from board.models import Board, Category, Post, File, Link
 from rebs_project.models import Project
+from .forms import LinkInlineFormSet, FileInlineFormSet
 
 
 class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -84,8 +85,6 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
 class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    LinkInlineFormSet = forms.models.inlineformset_factory(Post, Link, fields=['link'], extra=1)
-    FileInlineFormSet = forms.models.inlineformset_factory(Post, File, fields=['file'], extra=1)
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -95,16 +94,16 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context = super(CompanyGeneralDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.first()
-        context['link_formset'] = self.LinkInlineFormSet(queryset=Link.objects.none(),)
-        context['file_formset'] = self.FileInlineFormSet(queryset=File.objects.none(),)
+        context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(),)
+        context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(),)
         return context
 
     def form_valid(self, form):
         form.instance.board = Board.objects.first()
         form.instance.user = self.request.user
 
-        link_formset = self.LinkInlineFormSet(self.request.POST,)
-        file_formset = self.FileInlineFormSet(self.request.POST, self.request.FILES)
+        link_formset = LinkInlineFormSet(self.request.POST,)
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
 
         with transaction.atomic():
             self.object = form.save()
@@ -214,8 +213,6 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
 class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    LinkInlineFormSet = forms.models.inlineformset_factory(Post, Link, fields=['link'], extra=1)
-    FileInlineFormSet = forms.models.inlineformset_factory(Post, File, fields=['file'], extra=1)
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -225,16 +222,16 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context = super(CompanyLawsuitDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.get(pk=2)
-        context['link_formset'] = self.LinkInlineFormSet(queryset=Link.objects.none(), )
-        context['file_formset'] = self.FileInlineFormSet(queryset=File.objects.none(), )
+        context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(), )
+        context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(), )
         return context
 
     def form_valid(self, form):
         form.instance.board = Board.objects.get(pk=2)
         form.instance.user = self.request.user
 
-        link_formset = self.LinkInlineFormSet(self.request.POST, )
-        file_formset = self.FileInlineFormSet(self.request.POST, self.request.FILES)
+        link_formset = LinkInlineFormSet(self.request.POST, )
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
 
         with transaction.atomic():
             self.object = form.save()
@@ -354,8 +351,6 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
 class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    LinkInlineFormSet = forms.models.inlineformset_factory(Post, Link, fields=['link'], extra=1)
-    FileInlineFormSet = forms.models.inlineformset_factory(Post, File, fields=['file'], extra=1)
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -376,8 +371,8 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['link_formset'] = self.LinkInlineFormSet(queryset=Link.objects.none(), )
-        context['file_formset'] = self.FileInlineFormSet(queryset=File.objects.none(), )
+        context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(), )
+        context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(), )
         return context
 
     def form_valid(self, form):
@@ -385,8 +380,8 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
 
-        link_formset = self.LinkInlineFormSet(self.request.POST, )
-        file_formset = self.FileInlineFormSet(self.request.POST, self.request.FILES)
+        link_formset = LinkInlineFormSet(self.request.POST, )
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
 
         with transaction.atomic():
             self.object = form.save()
@@ -517,8 +512,6 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    LinkInlineFormSet = forms.models.inlineformset_factory(Post, Link, fields=['link'], extra=1)
-    FileInlineFormSet = forms.models.inlineformset_factory(Post, File, fields=['file'], extra=1)
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -539,8 +532,8 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['link_formset'] = self.LinkInlineFormSet(queryset=Link.objects.none(), )
-        context['file_formset'] = self.FileInlineFormSet(queryset=File.objects.none(), )
+        context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(), )
+        context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(), )
         return context
 
     def form_valid(self, form):
@@ -548,8 +541,8 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         form.instance.project = self.get_project()
         form.instance.user = self.request.user
 
-        link_formset = self.LinkInlineFormSet(self.request.POST, )
-        file_formset = self.FileInlineFormSet(self.request.POST, self.request.FILES)
+        link_formset = LinkInlineFormSet(self.request.POST, )
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
 
         with transaction.atomic():
             self.object = form.save()
