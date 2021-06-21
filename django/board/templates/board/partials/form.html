@@ -50,6 +50,14 @@
         {{ form.content|add_class:"form-control"|attr:"placeholder:문서 시행일자" }}
     </div>
 
+    {% for file in file_formset %}
+        <div class="col-12 pl-5">
+            {{ file }}
+            <label for="formFileMultiple" class="form-label">Multiple files input</label>
+            <input class="form-control" type="file" id="formFileMultiple" multiple>
+        </div>
+    {% endfor %}
+
     <div class="row col-12 mb-5">
         <div class="col-12 text-right p-0 mt-2">
             <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>

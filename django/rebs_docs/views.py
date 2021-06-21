@@ -1,10 +1,11 @@
 import math
+from django import forms
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
 
-from board.models import Board, Category, Post
+from board.models import Board, Category, Post, File, Link
 from rebs_project.models import Project
 
 
@@ -82,6 +83,7 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
 class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    FileInlineFormSet = forms.models.inlineformset_factory(Post, File, fields = ['file'], extra=1)
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -91,11 +93,19 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context = super(CompanyGeneralDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
         context['this_board'] = Board.objects.first()
+        context['file_formset'] = self.FileInlineFormSet(queryset=File.objects.none(),)
         return context
 
     def form_valid(self, form):
         form.instance.board = Board.objects.first()
         form.instance.user = self.request.user
+        file_formset = self.FileInlineFormSet(self.request.POST,)
+        if file_formset.is_valid():
+            for form in file_formset:
+                file = form.save(commit=False)
+                # file.post = Post.objects.get(pk=self.object.pk)
+                file.post = Post.objects.get(pk=1)
+                file.save()
         return super(CompanyGeneralDocsCV, self).form_valid(form)
 
 
