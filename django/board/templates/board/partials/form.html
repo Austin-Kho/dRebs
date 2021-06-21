@@ -1,10 +1,11 @@
 {% load widget_tweaks %}
 
-<form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" enctype="multipart/form-data" novalidate>
+<form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" enctype="multipart/form-data"
+      novalidate>
     {% csrf_token %}
     {{ form.errors }}
 
-    <div class="col-10">
+    <div class="col-12 col-lg-10">
         <div class="row mb-2 text-right">
             <label for="{{ form.title.id_for_label }}" class="col-2 col-form-label">{{ form.title.label }}</label>
             <div class="col-10">
@@ -17,7 +18,8 @@
                    class="col-2 col-form-label">{{ form.is_notice.label }}</label>
             <div class="col-10 text-left pt-1 custom-control custom-switch" style="padding-left: 50px;">
                 {{ form.is_notice|add_class:"custom-control-input"|attr:"placeholder:공지" }}
-                <label for="{{ form.is_notice.id_for_label }}" class="custom-control-label" data-on-label="" data-off-label=""></label>
+                <label for="{{ form.is_notice.id_for_label }}" class="custom-control-label" data-on-label=""
+                       data-off-label=""></label>
             </div>
         </div>
 
@@ -34,29 +36,52 @@
                 </div>
             {% endif %}
 
-            {% if this_board.pk == 1 %}<div class="col-12 col-md-6">{% endif %}
-                {% if this_board.pk == 1 %}<div class="row mb-2">{% endif %}
-                    <label for="{{ form.execution_date.id_for_label }}"
-                           class="{% if this_board.pk == 1 %}col-2 col-md-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
-                    <div class="{% if this_board.pk == 1 %}col-10 col-md-8{% else %}col-10{% endif %}">
-                        {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
-                    </div>
-                {% if this_board.pk == 1 %}</div>{% endif %}
+            {% if this_board.pk == 1 %}
+                <div class="col-12 col-md-6">{% endif %}
+            {% if this_board.pk == 1 %}
+                <div class="row mb-2">{% endif %}
+            <label for="{{ form.execution_date.id_for_label }}"
+                   class="{% if this_board.pk == 1 %}col-2 col-md-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
+            <div class="{% if this_board.pk == 1 %}col-10 col-md-8{% else %}col-10{% endif %}">
+                {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+            </div>
+            {% if this_board.pk == 1 %}</div>{% endif %}
             {% if this_board.pk == 1 %}</div>{% endif %}
         </div>
     </div>
-
     <div class="col-12">
-        {{ form.content|add_class:"form-control"|attr:"placeholder:문서 시행일자" }}
+        {{ form.content|add_class:"form-control" }}
     </div>
 
-    {% for file in file_formset %}
-        <div class="col-12 pl-5">
-            {{ file }}
-            <label for="formFileMultiple" class="form-label">Multiple files input</label>
-            <input class="form-control" type="file" id="formFileMultiple" multiple>
-        </div>
-    {% endfor %}
+    <div class="row offset-sm-1 mt-2 form-group">
+        {{ file_formset.management_form }}
+        {% for form in file_formset.forms %}
+            {# Include the hidden fields in the form #}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors.as_ul }}
+                {% if forloop.first %}
+                    <div class="col-8 pl-3 mt-2">
+                        <div class="input-group">
+                            <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if 1 == 2 %}
+                    <div class="col mt-2 ml-3" style="padding: 8px;">
+                        <div class="input-group">
+                             {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
+                            <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
 
     <div class="row col-12 mb-5">
         <div class="col-12 text-right p-0 mt-2">
