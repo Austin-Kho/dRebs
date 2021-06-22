@@ -12,7 +12,6 @@ from .forms import LinkInlineFormSet, FileInlineFormSet
 
 class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_board(self):
@@ -53,7 +52,6 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
 
 class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     model = Post
-    template_name = 'board/board_view.html'
 
     def get_object(self):
         post = super().get_object()
@@ -166,7 +164,6 @@ class CompanyGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteVi
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_board(self):
@@ -207,7 +204,6 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
 
 class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
     model = Post
-    template_name = 'board/board_view.html'
 
     def get_object(self):
         post = super().get_object()
@@ -320,7 +316,6 @@ class CompanyLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteVi
 
 class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_project(self):
@@ -364,8 +359,6 @@ class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
 
 class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
     model = Post
-    template_name = 'board/board_view.html'
-    paginate_by = 15
 
     def get_object(self):
         post = super().get_object()
@@ -498,7 +491,6 @@ class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteVi
 
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'board/board_list.html'
     paginate_by = 15
 
     def get_project(self):
@@ -542,8 +534,6 @@ class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
 
 class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
     model = Post
-    template_name = 'board/board_view.html'
-    paginate_by = 15
 
     def get_object(self):
         post = super().get_object()
