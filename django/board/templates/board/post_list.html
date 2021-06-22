@@ -11,7 +11,19 @@
 
         {% include 'board/partials/post_list_table.html' %}
 
-        {% include 'board/partials/tail_navigator.html' %}
+        <div class="row col-12">
+            <div class="col-12 text-right">
+                <a href="{% if co %}
+
+                    {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
+            {% else %}
+
+                    {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
+            {% endif %}">
+                    <button type="button" class="btn btn-primary">등록하기</button>
+                </a>
+            </div>
+        </div>
     </div>
 
     {% if is_paginated %}
@@ -21,3 +33,7 @@
     {% endif %}
 
 {% endblock %}
+{##}
+{#{% block third_party_js %}#}
+{##}
+{#{% endblock %}#}

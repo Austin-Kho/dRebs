@@ -1,6 +1,6 @@
 <ul class="col-12 nav nav-tabs nav-bordered mb-0">
     <li class="nav-item">
-        <a href="?category=" data-bs-toggle="tab" aria-expanded="false"
+        <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}{% endif %}{% endfor %}" data-bs-toggle="tab" aria-expanded="false"
            class="nav-link {% if not request.GET.category %}active{% endif %}">
             <i class="mdi mdi-home-variant d-md-none d-block"></i>
             <span class="d-none d-md-block">전 체</span>
@@ -8,7 +8,7 @@
     </li>
     {% for category in categories %}
         <li class="nav-item">
-            <a href="?category={{ category.pk }}" data-bs-toggle="tab" aria-expanded="false"
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}{% endif %}{% endfor %}&category={{ category.pk }}" data-bs-toggle="tab" aria-expanded="false"
                class="nav-link {% if request.GET.category == category.pk|slugify %}active{% endif %}">
                 <i class="mdi mdi-home-variant d-md-none d-block"></i>
                 <span class="d-none d-md-block">{{ category }}</span>
