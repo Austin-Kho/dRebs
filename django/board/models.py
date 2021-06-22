@@ -56,7 +56,6 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
-    # content = models.TextField('내용', blank=True)
     content = HTMLField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
@@ -71,11 +70,6 @@ class Post(models.Model):
     soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    # number = models.PositiveIntegerField()
-    # reply = models.CharField('댓글', max_length=10)
-    # link_count = models.PositiveIntegerField()
-    # receive_email = models.BooleanField()
-    # html_type = models.CharField('', choices=(('1', 'html'), ('2', 'text'), ('3', 'aa'), ('4', 'bb')))
 
     def __str__(self):
         return self.title
@@ -87,9 +81,9 @@ class Post(models.Model):
 
 
 def get_image_filename(instance, filename):
-    today = datetime.today().strftime('%Y-%m-%d')
-    hash_value = hashlib.blake2b(digest_size=5).hexdigest()
-    return f"{today}__{hash_value}__{filename}"
+    today = datetime.today().strftime('%y%m%d')
+    hash_value = hashlib.blake2b(digest_size=3).hexdigest()
+    return f"{today}_{hash_value}_{filename}"
 
 
 class Image(models.Model):
@@ -132,9 +126,6 @@ class Comment(models.Model):
     soft_delete = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    # number = models.PositiveIntegerField()
-    # reply = models.CharField('댓글', max_length=10)
-    # html_type = models.CharField('', choices=(('1', 'html'), ('2', 'text'), ('3', 'aa'), ('4', 'bb')))
 
     def __str__(self):
         return f"{self.post} -> {self.content}"
