@@ -1,6 +1,9 @@
-{% load humanize %}
+{% extends 'rebs_docs/docs_board.html' %}
 
-<div class="row">
+{% block board %}
+    {% load humanize %}
+
+    <div class="row">
     <div class="col-12 border-bottom mb-3">
         <h4>
             {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}
@@ -73,10 +76,20 @@
         {% endif %}
     </div>
 
-    <div class="col-12 pl-4 pr-4 mt-5 mb-4">
+    <div class="col-12 p-5">
 
-        <p>{{ object.content|safe }}</p>
-
+        <form method="post">{% csrf_token %}
+            <div class="offset-2">
+                <p class="font-16">선택한 다음 게시물을 정말 삭제하시겠습니까? 다음의 오브젝트와 연관 아이템들이 모두 삭제됩니다.</p>
+                <ul class="p-3">
+                    <li class="text-danger font-18">"{{ object }}"</li>
+                </ul>
+                <div class="col-12 mb-5">
+                    <input type="submit" class="btn btn-danger" value="삭제">
+                    <input type="button" class="btn btn-light" onclick="history.back()" value="취소">
+                </div>
+            </div>
+        </form>
     </div>
 
     <div class="col-12 mb-5 text-center">
@@ -104,65 +117,4 @@
         </div>
     </div>
 
-    <div class="row col-12 mb-5">
-        <div class="col-9 p-1">
-            <div class="btn-group">
-                {% if request.user.is_superuser or request.user == object.user %}
-                    <a href="{% if co %}
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_update' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_update' object.pk %}{% endif %}
-                    {% else %}
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_update' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_update' object.pk %}{% endif %}
-                    {% endif %}">
-                        <button type="button" class="btn btn-light">수정</button>
-                    </a>
-
-                    <a href="{% if co %}
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_delete' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_delete' object.pk %}{% endif %}
-                    {% else %}
-                        {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_delete' object.pk %}{% endif %}
-                    {% endif %}">
-                        <button type="button" class="btn btn-light">삭제</button>
-                    </a>
-                {% endif %}
-                <a href="{% if co %}
-                            {% if this_board.pk == 1 %}
-                                {% url 'rebs:docs:co.general_list' %}
-                            {% else %}
-                                {% url 'rebs:docs:co.lawsuit_list' %}
-                            {% endif %}
-                        {% else %}
-                            {% if this_board.pk == 1 %}
-                                {% url 'rebs:docs:pr.general_list' %}
-                            {% else %}
-                                {% url 'rebs:docs:pr.lawsuit_list' %}
-                            {% endif %}
-                        {% endif %}">
-                    <button class="btn btn-light">목록</button>
-                </a>
-
-                {% if prev %}
-                    <button class="btn btn-light" onclick="location.href='{{ prev }}'">이전글</button>{% endif %}
-                {% if next %}
-                    <button class="btn btn-light" onclick="location.href='{{ next }}'">다음글</button>{% endif %}
-            </div>
-        </div>
-        <div class="col-3 text-right p-1">
-            <a href="{% if co %}
-
-                {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
-            {% else %}
-
-                {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
-            {% endif %}">
-                <button type="button" class="btn btn-primary">등록하기</button>
-            </a>
-
-        </div>
-    </div>
-
-    <div class="col-12">
-        {% load disqus_tags %}
-        {% set_disqus_url post_absolute_url %}
-        {% disqus_show_comments %}
-    </div>
-</div>
+{% endblock %}

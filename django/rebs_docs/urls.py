@@ -23,6 +23,7 @@ urlpatterns = [
     path('general/<int:pk>/', CompanyGeneralDocsDV.as_view(), name='co.general_detail'),
     path('general/add/', CompanyGeneralDocsCV.as_view(), name='co.general_create'),
     path('general/update/<int:pk>/', CompanyGeneralDocsUV.as_view(), name='co.general_update'),
+    path('general/delete/<int:pk>/', CompanyGeneralDocsDelete.as_view(), name='co.general_delete'),
 
     path('lawsuit/', CompanyLawsuitDocsLV.as_view(), name='co.lawsuit_list'),
     path('lawsuit/<int:pk>/', CompanyLawsuitDocsDV.as_view(), name='co.lawsuit_detail'),

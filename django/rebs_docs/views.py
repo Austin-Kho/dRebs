@@ -3,7 +3,7 @@ from django.db import transaction
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from board.models import Board, Category, Post, File, Link
 from rebs_project.models import Project
@@ -151,6 +151,17 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
                 file_formset.save()
 
         return super(CompanyGeneralDocsUV, self).form_valid(form)
+
+
+class CompanyGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('rebs:docs:co.general_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyGeneralDocsDelete, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.first()
+        return context
 
 
 class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
