@@ -140,19 +140,14 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-
-        link_formset = LinkInlineFormSet(self.request.POST, )
-        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES)
+        link_formset = LinkInlineFormSet(self.request.POST, instance=self.object)
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES, instance=self.object)
 
         with transaction.atomic():
-            self.object = form.save()
-
             if link_formset.is_valid():
-                link_formset.instance = self.object
                 link_formset.save()
 
             if file_formset.is_valid():
-                file_formset.instance = self.object
                 file_formset.save()
 
         return super(CompanyGeneralDocsUV, self).form_valid(form)
@@ -288,6 +283,16 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        link_formset = LinkInlineFormSet(self.request.POST, instance=self.object)
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES, instance=self.object)
+
+        with transaction.atomic():
+            if link_formset.is_valid():
+                link_formset.save()
+
+            if file_formset.is_valid():
+                file_formset.save()
+
         return super(CompanyLawsuitDocsUV, self).form_valid(form)
 
 
@@ -445,14 +450,24 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['this_project'] = self.get_project()
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
-            queryset=Link.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+            queryset=Link.objects.filter(post=self.object, ))
         context['file_formset'] = FileInlineFormSet(
             instance=self.object,
-            queryset=File.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+            queryset=File.objects.filter(post=self.object, ))
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        link_formset = LinkInlineFormSet(self.request.POST, instance=self.object)
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES, instance=self.object)
+
+        with transaction.atomic():
+            if link_formset.is_valid():
+                link_formset.save()
+
+            if file_formset.is_valid():
+                file_formset.save()
+
         return super(ProjectGeneralDocsUV, self).form_valid(form)
 
 
@@ -610,12 +625,22 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context['this_project'] = self.get_project()
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
-            queryset=Link.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+            queryset=Link.objects.filter(post=self.object, ))
         context['file_formset'] = FileInlineFormSet(
             instance=self.object,
-            queryset=File.objects.filter(post=self.object, form_kwargs={'project': self.get_project()}))
+            queryset=File.objects.filter(post=self.object, ))
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        link_formset = LinkInlineFormSet(self.request.POST, instance=self.object)
+        file_formset = FileInlineFormSet(self.request.POST, self.request.FILES, instance=self.object)
+
+        with transaction.atomic():
+            if link_formset.is_valid():
+                link_formset.save()
+
+            if file_formset.is_valid():
+                file_formset.save()
+
         return super(ProjectLawsuitDocsUV, self).form_valid(form)
