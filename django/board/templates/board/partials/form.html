@@ -1,4 +1,4 @@
-{% load widget_tweaks %}
+{% load static widget_tweaks %}
 
 <form method="post" name="form1" id="form1" class="form-horizontal needs-validation p-0" enctype="multipart/form-data"
       novalidate>
@@ -56,9 +56,9 @@
     <div class="offset-sm-1 mb-1 form-group">
         {{ link_formset.management_form }}
 
-        <fieldset class="forms col-12 p-0">
+        <fieldset class="col-12 p-0">
             {% for form in link_formset.forms %}
-                {# Include the hidden fields in the form #}
+                 {# Include the hidden fields in the form #}
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
@@ -70,12 +70,12 @@
                             <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
                                 <div class="input-group">
                                     <label for="{{ field.id_for_label }}"
-                                           class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
+                                           class="col-2 col-xl-1 col-form-label">{{ field.label }}{{ forloop.parentloop.counter }}</label>
                                     {{ field|add_class:"form-control" }}
                                 </div>
                             </div>
                         {% elif forloop.last %}
-                            <div class="col mt-2 ml-3" style="padding: 8px;">
+                            <div class="col mt-2 ml-2" style="padding: 8px;">
                                 <div class="input-group">
                                     {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
                                     <label for="{{ field.id_for_label }}"
@@ -91,6 +91,18 @@
 
     <div class="offset-sm-1 mb-1 form-group">
         {{ file_formset.management_form }}
+
+        <fieldset class="empty-form" style="display: none">
+            <fieldset class="row col-12 p-0">
+                <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
+                    <div class="input-group">
+                        <label for="id_file_set-__prefix__-file" class="col-2 col-xl-1 col-form-label">파일</label>
+                        <input type="file" name="file_set-__prefix__-file" class="form-control" id="id_file_set-__prefix__-file">
+                        <button type="button" class="btn btn-danger" data-formset-remove-form>-</button>
+                    </div>
+                </div>
+            </fieldset>
+        </fieldset>
 
         <fieldset class="forms col-12 p-0">
             {% for form in file_formset.forms %}
@@ -111,7 +123,7 @@
                                 </div>
                             </div>
                         {% elif forloop.last %}
-                            <div class="col mt-2 ml-3" style="padding: 8px;">
+                            <div class="col mt-2 ml-2" style="padding: 8px;">
                                 <div class="input-group">
                                     {{ field|add_class:"form-check-input"|attr:"type:checkbox" }}
                                     <label for="{{ field.id_for_label }}"
@@ -128,11 +140,15 @@
     <div class="row col-12 mb-5">
         <div class="col-12 text-right p-0 mt-2">
             <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
-            <button type="button" class="btn btn-info">링크추가</button>
-            <button type="button" class="btn btn-info">파일추가</button>
+            <button type="button" class="btn btn-info" data-formset-add-form>파일추가</button>
             <button type="submit" class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
                 등록완료
             </button>
         </div>
     </div>
 </form>
+
+{% block third_party %}
+    {# formset add form script #}
+    <script src="{% static 'common/js/formset_add_form.js' %}"></script>
+{% endblock %}
