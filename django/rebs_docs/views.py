@@ -1,4 +1,5 @@
 import math
+from django.db.models import Q
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,6 +40,10 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
     def get_queryset(self):
         project = self.request.GET.get('project')
         category = self.request.GET.get('category')
+        q = self.request.GET.get('q')
+        filter = self.request.GET.get('filter')
+        order = self.request.GET.get('order')
+
         objects = self.get_post_list().filter(is_notice=False)
         if project:
             if project == 'co':
@@ -47,6 +52,24 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
                 objects = objects.filter(project=project)
         if category:
             objects = objects.filter(category=category)
+        if q:
+            if not filter or filter == '1': # 제목+내용
+                objects = objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
+            elif filter == '2': # 제목
+                objects = objects.filter(Q(title_icontains=q))
+            elif filter == '3': # 내용
+                objects = objects.filter(Q(content__icontains=q))
+            elif filter == '4': # 작성자
+                objects = objects.filter(user__username__icontains=q)
+        if order:
+            if order == '1': # 작성일자
+                objects = objects.order_by('-created')
+            if order == '2': # 시행일자
+                objects = objects.order_by('-execution_date')
+            if order == '3': # 조회수
+                objects = objects.order_by('-hit')
+            if order == '4': # 추천수
+                objects = objects.order_by('-like')
         return objects
 
 
@@ -191,6 +214,10 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     def get_queryset(self):
         project = self.request.GET.get('project')
         category = self.request.GET.get('category')
+        q = self.request.GET.get('q')
+        filter = self.request.GET.get('filter')
+        order = self.request.GET.get('order')
+
         objects = self.get_post_list().filter(is_notice=False)
         if project:
             if project == 'co':
@@ -199,6 +226,24 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
                 objects = objects.filter(project=project)
         if category:
             objects = objects.filter(category=category)
+        if q:
+            if not filter or filter == '1': # 제목+내용
+                objects = objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
+            elif filter == '2': # 제목
+                objects = objects.filter(Q(title_icontains=q))
+            elif filter == '3': # 내용
+                objects = objects.filter(Q(content__icontains=q))
+            elif filter == '4': # 작성자
+                objects = objects.filter(user__username__icontains=q)
+        if order:
+            if order == '1': # 작성일자
+                objects = objects.order_by('-created')
+            if order == '2': # 시행일자
+                objects = objects.order_by('-execution_date')
+            if order == '3': # 조회수
+                objects = objects.order_by('-hit')
+            if order == '4': # 추천수
+                objects = objects.order_by('-like')
         return objects
 
 
@@ -351,10 +396,32 @@ class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        object = self.get_post_list().filter(is_notice=False)
+        q = self.request.GET.get('q')
+        filter = self.request.GET.get('filter')
+        order = self.request.GET.get('order')
+
+        objects = self.get_post_list().filter(is_notice=False)
         if self.request.GET.get('category'):
-            object = object.filter(category=self.request.GET.get('category'))
-        return object
+            objects = objects.filter(category=self.request.GET.get('category'))
+        if q:
+            if not filter or filter == '1': # 제목+내용
+                objects = objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
+            elif filter == '2': # 제목
+                objects = objects.filter(Q(title_icontains=q))
+            elif filter == '3': # 내용
+                objects = objects.filter(Q(content__icontains=q))
+            elif filter == '4': # 작성자
+                objects = objects.filter(user__username__icontains=q)
+        if order:
+            if order == '1': # 작성일자
+                objects = objects.order_by('-created')
+            if order == '2': # 시행일자
+                objects = objects.order_by('-execution_date')
+            if order == '3': # 조회수
+                objects = objects.order_by('-hit')
+            if order == '4': # 추천수
+                objects = objects.order_by('-like')
+        return objects
 
 
 class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
@@ -526,10 +593,32 @@ class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        object = self.get_post_list().filter(is_notice=False)
+        q = self.request.GET.get('q')
+        filter = self.request.GET.get('filter')
+        order = self.request.GET.get('order')
+
+        objects = self.get_post_list().filter(is_notice=False)
         if self.request.GET.get('category'):
-            object = object.filter(category=self.request.GET.get('category'))
-        return object
+            objects = objects.filter(category=self.request.GET.get('category'))
+        if q:
+            if not filter or filter == '1': # 제목+내용
+                objects = objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
+            elif filter == '2': # 제목
+                objects = objects.filter(Q(title_icontains=q))
+            elif filter == '3': # 내용
+                objects = objects.filter(Q(content__icontains=q))
+            elif filter == '4': # 작성자
+                objects = objects.filter(user__username__icontains=q)
+        if order:
+            if order == '1': # 작성일자
+                objects = objects.order_by('-created')
+            if order == '2': # 시행일자
+                objects = objects.order_by('-execution_date')
+            if order == '3': # 조회수
+                objects = objects.order_by('-hit')
+            if order == '4': # 추천수
+                objects = objects.order_by('-like')
+        return objects
 
 
 class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):

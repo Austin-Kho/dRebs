@@ -6,8 +6,7 @@
                     <option value="" {% if not request.GET.order %}selected{% endif %}>정렬하기</option>
                     <option value="1" {% if request.GET.order == '1' %}selected{% endif %}>작성일자</option>
                     <option value="2" {% if request.GET.order == '2' %}selected{% endif %}>시행일자</option>
-                    <option value="3" {% if request.GET.order == '3' %}selected{% endif %}>조 회 수</option>
-                    <option value="4" {% if request.GET.order == '4' %}selected{% endif %}>추 천 순</option>
+                    <option value="3" {% if request.GET.order == '3' %}selected{% endif %}>조회수</option>
                 </select>
             </div>
         </div>
@@ -15,10 +14,10 @@
             <div class="d-none d-xl-block col-xl-4"></div>
             <div class="col-sm-4 col-md-4 col-xl-3">
                 <select name="filter" class="form-control form-select" id="filter">
-                    <option value="" {% if not request.GET.filter %}selected{% endif %}>제목+내용</option>
-                    <option value="1" {% if request.GET.filter == '1' %}selected{% endif %}>제목</option>
-                    <option value="2" {% if request.GET.filter == '2' %}selected{% endif %}>내용</option>
-                    <option value="3" {% if request.GET.filter == '3' %}selected{% endif %}>작성자</option>
+                    <option value="1" {% if not request.GET.filter or request.GET.filter == '1' %}selected{% endif %}>제목+내용</option>
+                    <option value="2" {% if request.GET.filter == '2' %}selected{% endif %}>제목</option>
+                    <option value="3" {% if request.GET.filter == '3' %}selected{% endif %}>내용</option>
+                    <option value="4" {% if request.GET.filter == '4' %}selected{% endif %}>작성자</option>
                 </select>
             </div>
             <div class="col-sm-8 col-md-8 col-xl-5">
