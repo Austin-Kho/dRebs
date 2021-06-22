@@ -307,6 +307,17 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(CompanyLawsuitDocsUV, self).form_valid(form)
 
 
+class CompanyLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitDocsDelete, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['this_board'] = Board.objects.get(pk=2)
+        return context
+
+
 class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'board/board_list.html'
@@ -445,20 +456,11 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
 
-    def get_project(self):
-        try:
-            project = self.request.user.staffauth.assigned_project
-        except:
-            project = Project.objects.first()
-        gp = self.request.GET.get('project')
-        project = Project.objects.get(pk=gp) if gp else project
-        return project
-
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsUV, self).get_context_data(**kwargs)
         context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
-        context['this_project'] = self.get_project()
+        context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
             queryset=Link.objects.filter(post=self.object, ))
@@ -480,6 +482,18 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
                 file_formset.save()
 
         return super(ProjectGeneralDocsUV, self).form_valid(form)
+
+
+class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('rebs:docs:pr.general_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectGeneralDocsDelete, self).get_context_data(**kwargs)
+        context['this_board'] = Board.objects.first()
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
+        context['this_project'] = Project.objects.get(pk=self.object.project.pk)
+        return context
 
 
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
@@ -620,20 +634,11 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
 
-    def get_project(self):
-        try:
-            project = self.request.user.staffauth.assigned_project
-        except:
-            project = Project.objects.first()
-        gp = self.request.GET.get('project')
-        project = Project.objects.get(pk=gp) if gp else project
-        return project
-
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
         context['this_board'] = Board.objects.get(id=2)
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
-        context['this_project'] = self.get_project()
+        context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
             queryset=Link.objects.filter(post=self.object, ))
@@ -655,3 +660,15 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
                 file_formset.save()
 
         return super(ProjectLawsuitDocsUV, self).form_valid(form)
+
+
+class ProjectLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('rebs:docs:pr.lawsuit_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitDocsDelete, self).get_context_data(**kwargs)
+        context['this_board'] = Board.objects.get(id=2)
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
+        context['this_project'] = Project.objects.get(pk=self.object.project.pk)
+        return context
