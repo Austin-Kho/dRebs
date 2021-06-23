@@ -1,6 +1,6 @@
 from django import forms
 
-from board.models import Post, Link, File
+from board.models import Post, Link, File, LawsuitCase
 
 LinkInlineFormSet = forms.models.inlineformset_factory(
     Post,
@@ -19,3 +19,13 @@ FileInlineFormSet = forms.models.inlineformset_factory(
     can_delete=True,
     can_delete_extra=False
 )
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('is_notice', 'lawsuit', 'title', 'execution_date', 'content')
+
+    def __init__(self, project, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['lawsuit'].queryset = LawsuitCase.objects.filter(project=project)

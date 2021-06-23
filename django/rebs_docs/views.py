@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from board.models import Board, Category, Post, File, Link
 from rebs_project.models import Project
-from .forms import LinkInlineFormSet, FileInlineFormSet
+from .forms import LinkInlineFormSet, FileInlineFormSet, PostForm
 
 
 class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -278,11 +278,16 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
+    form_class = PostForm
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.lawsuit_detail', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super(CompanyLawsuitDocsCV, self).get_form_kwargs()
+        kwargs['project'] = None
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsCV, self).get_context_data(**kwargs)
@@ -315,11 +320,16 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
+    form_class = PostForm
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super(CompanyLawsuitDocsUV, self).get_form_kwargs()
+        kwargs['project'] = None
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsUV, self).get_context_data(**kwargs)
@@ -658,11 +668,16 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
+    form_class = PostForm
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.lawsuit_detail', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super(ProjectLawsuitDocsCV, self).get_form_kwargs()
+        kwargs['project'] = self.get_project()
+        return kwargs
 
     def get_project(self):
         try:
@@ -707,11 +722,16 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
+    form_class = PostForm
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super(ProjectLawsuitDocsUV, self).get_form_kwargs()
+        kwargs['project'] = Project.objects.get(pk=self.object.project.pk)
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
