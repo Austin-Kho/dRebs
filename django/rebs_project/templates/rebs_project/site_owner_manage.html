@@ -77,6 +77,7 @@
 
                                             <div class="form-group col-12 mb-1">
                                                 {{ form.sites|add_class:"form-control select2"|attr:"data-placeholder:소유부지 지번 ❖ 필수 선택 ❖"|attr:"data-toggle=select2 required" }}
+                                                <div class="invalid-feedback">소유부지 지번을 선택하여 주십시요.</div>
                                             </div>
                                             <div class="form-group col-8 col-md-4 col-lg-1 mb-1">
                                                 {{ form.zipcode|add_class:"form-control"|attr:"placeholder:우편번호"|attr:"readonly"|attr:"onclick=sample2_execDaumPostcode('id_')" }}

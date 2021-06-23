@@ -61,6 +61,7 @@
                                         <div class="col-12 form-row mb-1">
                                             <div class="col-12 col-lg-2 mb-1">
                                                 {{ form.owner|add_class:"form-control select2"|attr:"data-placeholder:소유자 ❖ 필수 선택 ❖"|attr:"data-toggle=select2 required" }}
+                                                <div class="invalid-feedback">소유자를 선택하여 주십시요.</div>
                                             </div>
                                             <div class="col-xs-12 col-sm-6 col-lg-2 mb-1">
                                                 {{ form.contract_date|add_class:"form-control"|attr:"placeholder:계약체결일"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
