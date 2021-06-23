@@ -34,19 +34,30 @@
                         </div>
                     </div>
                 </div>
+            {% else %}
+                <div class="col-12 col-md-6">
+                    <div class="row mb-2">
+                        <label for="{{ form.lawsuit.id_for_label }}"
+                               class="col-2 col-md-4 col-form-label">{{ form.lawsuit.label }}</label>
+                        <div class="col-10 col-md-8 text-left">
+                            {{ form.lawsuit|add_class:"form-control select2"|attr:"data-toggle:select2"|attr:"placeholder:카테고리"|attr:"required" }}
+                            <div class="invalid-feedback">사건번호를 선택하여 주십시요.</div>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
 
-            {% if this_board.pk == 1 %}
-                <div class="col-12 col-md-6">{% endif %}
-            {% if this_board.pk == 1 %}
-                <div class="row mb-2">{% endif %}
-            <label for="{{ form.execution_date.id_for_label }}"
-                   class="{% if this_board.pk == 1 %}col-2 col-md-4{% else %}col-2{% endif %} col-form-label">{{ form.execution_date.label }}</label>
-            <div class="{% if this_board.pk == 1 %}col-10 col-md-8{% else %}col-10{% endif %}">
-                {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+            <div class="col-12 col-md-6">
+                <div class="row mb-2">
+                    <label for="{{ form.execution_date.id_for_label }}"
+                           class="col-2 col-md-4 col-form-label">{{ form.execution_date.label }}</label>
+                    <div class="col-10 col-md-8">
+                        {{ form.execution_date|add_class:"form-control"|attr:"placeholder:문서 시행일자"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
+                    </div>
+                </div>
             </div>
-            {% if this_board.pk == 1 %}</div>{% endif %}
-            {% if this_board.pk == 1 %}</div>{% endif %}
+
+
         </div>
     </div>
     <div class="col-12 mb-2">
@@ -58,7 +69,7 @@
 
         <fieldset class="col-12 p-0">
             {% for form in link_formset.forms %}
-                 {# Include the hidden fields in the form #}
+                {# Include the hidden fields in the form #}
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
@@ -70,7 +81,8 @@
                             <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
                                 <div class="input-group">
                                     <label for="{{ field.id_for_label }}"
-                                           class="col-2 col-xl-1 col-form-label">{{ field.label }}{{ forloop.parentloop.counter }}</label>
+                                           class="col-2 col-xl-1 col-form-label">
+                                        {{ field.label }}{{ forloop.parentloop.counter }}</label>
                                     {{ field|add_class:"form-control" }}
                                 </div>
                             </div>
@@ -97,7 +109,8 @@
                 <div class="col-12 col-xl-8 pl-3 pr-3 mt-2">
                     <div class="input-group">
                         <label for="id_file_set-__prefix__-file" class="col-2 col-xl-1 col-form-label">파일</label>
-                        <input type="file" name="file_set-__prefix__-file" class="form-control" id="id_file_set-__prefix__-file">
+                        <input type="file" name="file_set-__prefix__-file" class="form-control"
+                               id="id_file_set-__prefix__-file">
                         <button type="button" class="btn btn-danger" data-formset-remove-form>-</button>
                     </div>
                 </div>

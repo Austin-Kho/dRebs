@@ -278,7 +278,7 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -315,7 +315,7 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
@@ -658,7 +658,7 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -707,7 +707,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
+    fields = ['is_notice', 'lawsuit', 'title', 'execution_date', 'content']
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
