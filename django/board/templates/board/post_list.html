@@ -9,7 +9,11 @@
 
         {% include 'board/partials/category_select.html' %}
 
-        {% include 'board/partials/post_list_table.html' %}
+        {% if this_board.pk == 1 %}
+            {% include 'board/partials/list_docs_table.html' %}
+        {% else %}
+            {% include 'board/partials/list_lawsuit_table.html' %}
+        {% endif %}
 
         <div class="row col-12">
             <div class="col-12 text-right">
@@ -33,7 +37,3 @@
     {% endif %}
 
 {% endblock %}
-{##}
-{#{% block third_party_js %}#}
-{##}
-{#{% endblock %}#}
