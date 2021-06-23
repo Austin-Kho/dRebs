@@ -68,8 +68,8 @@ class LawsuitCase(models.Model):
 
     class Meta:
         ordering = ['-case_start_date', '-id']
-        verbose_name = '04. 소송 사건'
-        verbose_name_plural = '04. 소송 사건'
+        verbose_name = '04. 소송사건 관리'
+        verbose_name_plural = '04. 소송사건 관리'
 
 
 class Post(models.Model):

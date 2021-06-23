@@ -4,13 +4,12 @@
 
     <thead>
     <tr>
-        <th style="width: 6%">번호</th>
-        {% if co %}
-            <th style="width: 12%;">구분</th>{% endif %}
-        <th style="width: 12%">문서 시행일자</th>
-        <th style="width: {% if co %}30{% else %}42{% endif %}%">문서 제목</th>
-        <th style="width: 12%">등록자</th>
-        <th style="width: 20%">등록일시</th>
+        <th style="width: 8%">번호</th>
+        {% if co %}<th style="width: 10%">구분</th>{% endif %}
+        <th style="width: 22%">사건 번호</th>
+        <th style="width: 24%">문서 제목</th>
+        <th style="width: 10%">등록자</th>
+        <th style="width: 18%">등록일시</th>
         <th style="width: 8%">조회수</th>
     </tr>
     </thead>
@@ -18,8 +17,7 @@
     {% for notice in notices %}
         <tr>
             <td><span class="badge badge-dark pl-1 pr-1">공지</span></td>
-            {% if co %}
-                <td></td>{% endif %}
+            {% if co %}<td></td>{% endif %}
             <td>{{ notice.execution_date|date:"Y-m-d"|default:"" }}</td>
             <td style="white-space:nowrap; overflow:hidden; display:block;">
                 {% if co and notice.project %}
@@ -49,20 +47,20 @@
             <td>{{ forloop.revcounter|add:add_num }}</td>
             {% if co %}
                 <td>
-                    {% if co %}
-                        {% if object.project %}
-                            <a href="?project={{ object.project.pk }}&category={{ request.GET.category }}">
-                                <span class="badge badge-outline-success mr-1">{{ object.project }}</span>
-                            </a>
-                        {% else %}
-                            <a href="?project=co&category={{ request.GET.category }}">
-                                <span class="badge badge-primary-lighten mr-1">본사</span>
-                            </a>
-                        {% endif %}
+                {% if co %}
+                    {% if object.project %}
+                        <a href="?project={{ object.project.pk }}&category={{ request.GET.category }}">
+                            <span class="badge badge-outline-success mr-1">{{ object.project }}</span>
+                        </a>
+                    {% else %}
+                        <a href="?project=co&category={{ request.GET.category }}">
+                            <span class="badge badge-primary-lighten mr-1">본사</span>
+                        </a>
                     {% endif %}
+                {% endif %}
                 </td>
             {% endif %}
-            <td>{{ object.execution_date|date:"Y-m-d"|default:"-" }}</td>
+            <td class="text-dark">{{ object.lawsuit|default:"-" }}</td>
             <td style="white-space:nowrap; overflow:hidden; display:block;">
                 {% if object.category %}
                     <a href="?project={{ request.GET.project }}&category={{ object.category.pk }}">
