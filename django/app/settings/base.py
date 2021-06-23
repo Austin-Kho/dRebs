@@ -233,7 +233,6 @@ APP_ORDER = [
     'rebs_cash',
     'rebs',
     'board',
-    'rebs_docs',
     'books',
     'account'
 ]

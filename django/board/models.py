@@ -49,11 +49,35 @@ class Category(models.Model):
         verbose_name_plural = '03. 카테고리 관리'
 
 
+class LawsuitCase(models.Model):
+    project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
+    sort = models.CharField('구분', max_length=1, choices=(('1', '민사'), ('2', '형사')))
+    level = models.CharField('심급', max_length=1, choices=(('1', '1심'), ('2', '2심'), ('3', '3심')), null=True, blank=True)
+    related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건', help_text='본안사건인 경우 이전 심급 사건, 신청사건인 경우 관련 본안 사건 지정')
+    case_number = models.CharField('사건번호(사건명)', max_length=50)
+    plaintiff = models.CharField('원고(신청인)', max_length=20)
+    defendant = models.CharField('피고(피신청인)', max_length=20)
+    case_start_date = models.DateField('사건개시일', null=True, blank=True)
+    summary = models.TextField('개요 및 경과', null=True, blank=True)
+    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
+    created = models.DateTimeField('등록일시', auto_now_add=True)
+    updated = models.DateTimeField('수정일시', auto_now=True)
+
+    def __str__(self):
+        return self.case_number
+
+    class Meta:
+        ordering = ['-case_start_date', '-id']
+        verbose_name = '04. 소송 사건'
+        verbose_name_plural = '04. 소송 사건'
+
+
 class Post(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     is_notice = models.BooleanField('공지', default=False)
     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
+    lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
     content = HTMLField('내용', blank=True)
@@ -76,8 +100,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-id']
-        verbose_name = '04. 게시물 관리'
-        verbose_name_plural = '04. 게시물 관리'
+        verbose_name = '05. 게시물 관리'
+        verbose_name_plural = '05. 게시물 관리'
 
 
 def get_image_filename(instance, filename):
@@ -144,5 +168,5 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '05. 태그 관리'
-        verbose_name_plural = '05. 태그 관리'
+        verbose_name = '06. 태그 관리'
+        verbose_name_plural = '06. 태그 관리'

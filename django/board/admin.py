@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from . models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
+from . models import Group, Board, Category, LawsuitCase, Post, Image, File, Link, Comment, Tag
 
 
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -29,6 +29,14 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'parent', 'order')
     search_fields = ('name',)
     list_filter = ('board',)
+
+
+class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('project', 'sort', 'level', 'related_case', 'case_number', 'plaintiff', 'defendant', 'case_start_date')
+    list_display_links = ('case_number',)
+    list_editable = ('project', 'sort', 'level', 'related_case', 'case_start_date',)
+    list_filter = ('project', 'sort', 'level')
+    search_fields = ('case_number', 'plaintiff', 'defendant')
 
 
 class ImageInline(admin.TabularInline):
@@ -68,3 +76,4 @@ admin.site.register(Board, BoardAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(LawsuitCase, LawsuitCaseAdmin)
