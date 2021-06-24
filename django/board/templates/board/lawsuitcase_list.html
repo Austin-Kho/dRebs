@@ -1,0 +1,24 @@
+{% extends 'rebs_docs/docs_board.html' %}
+
+{% block board %}
+
+    <div class="row">
+        <div class="col-12 border-bottom mb-3"><h4>소송 사건 관리</h4></div>
+
+
+        <div class="row col-12">
+            <div class="col-12">
+                {% for object in object_list %}
+                    <div>{{ object }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+        {# to_first_last :: 맨처음 / 맨끝으로 버튼 사용 여부 #}
+        {# page_class ex:: pagination-rounded pagination-sm pagination-lg justify-content-center justify-content-end #}
+        {% include 'partials/pagination.html' with to_first_last="ok" page_class="pagination-rounded justify-content-end" %}
+    {% endif %}
+
+{% endblock %}

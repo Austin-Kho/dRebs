@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from board.models import Board, Category, Post, File, Link
+from board.models import Board, Category, LawsuitCase, Post, File, Link
 from rebs_project.models import Project
 from .forms import LinkInlineFormSet, FileInlineFormSet, PostForm
 
@@ -25,6 +25,7 @@ class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsLV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '1'
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] = self.get_post_list().filter(is_notice=True, project=None)
@@ -96,6 +97,7 @@ class CompanyGeneralDocsDV(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['prev'] = self.get_prev() if self.get_prev() else ''
         context['next'] = self.get_next() if self.get_next() else ''
@@ -113,6 +115,7 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(),)
         context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(),)
@@ -150,6 +153,7 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsUV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
@@ -177,10 +181,12 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class CompanyGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.general_list')
+    success_message = "삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDelete, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         return context
 
@@ -199,6 +205,7 @@ class CompanyLawsuitDocsLV(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsLV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '2'
         context['this_board'] = self.get_board()
         context['categories'] = Category.objects.filter(board=self.get_board()).order_by('order', 'id')
         context['notices'] = self.get_post_list().filter(is_notice=True, project=None)
@@ -270,6 +277,7 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsDV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(pk=2)
         context['prev'] = self.get_prev() if self.get_prev() else ''
         context['next'] = self.get_next() if self.get_next() else ''
@@ -292,6 +300,7 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsCV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(pk=2)
         context['link_formset'] = LinkInlineFormSet(queryset=Link.objects.none(), )
         context['file_formset'] = FileInlineFormSet(queryset=File.objects.none(), )
@@ -334,6 +343,7 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsUV, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(pk=2)
         context['link_formset'] = LinkInlineFormSet(
             instance=self.object,
@@ -361,12 +371,37 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class CompanyLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
+    success_message = "삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsDelete, self).get_context_data(**kwargs)
         context['co'] = True
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(pk=2)
         return context
+
+
+class CompanyLawsuitCaseLV(LoginRequiredMixin, ListView):
+    model = LawsuitCase
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitCaseLV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['menu_order'] = '2'
+        return context
+
+
+class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    pass
+
+
+class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    pass
+
+
+class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    pass
 
 
 class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -390,6 +425,7 @@ class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsLV, self).get_context_data(**kwargs)
+        context['menu_order'] = '1'
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
@@ -461,6 +497,7 @@ class ProjectGeneralDocsDV(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDV, self).get_context_data(**kwargs)
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
@@ -488,6 +525,7 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsCV, self).get_context_data(**kwargs)
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
@@ -528,6 +566,7 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsUV, self).get_context_data(**kwargs)
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
@@ -557,29 +596,15 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.general_list')
+    success_message = "삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDelete, self).get_context_data(**kwargs)
+        context['menu_order'] = '1'
         context['this_board'] = Board.objects.first()
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         return context
-
-
-class CompanyLawsuitCaseLV(SuccessMessageMixin, LoginRequiredMixin, ListView):
-    pass
-
-
-class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    pass
-
-
-class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    pass
-
-
-class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
-    pass
 
 
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
@@ -603,6 +628,7 @@ class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsLV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
@@ -674,6 +700,7 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(id=2)
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
@@ -706,6 +733,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsCV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(id=2)
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
@@ -751,6 +779,7 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsUV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(id=2)
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
@@ -780,17 +809,37 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class ProjectLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.lawsuit_list')
+    success_message = "삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDelete, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
         context['this_board'] = Board.objects.get(id=2)
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         return context
 
 
-class ProjectLawsuitCaseLV(SuccessMessageMixin, LoginRequiredMixin, ListView):
-    pass
+class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
+    model = LawsuitCase
+    paginate_by = 15
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitCaseLV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        return context
 
 
 class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
