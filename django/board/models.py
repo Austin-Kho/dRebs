@@ -292,7 +292,8 @@ class LawsuitCase(models.Model):
     updated = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
-        return f'{self.get_court_display()} {self.case_number} {self.case_name}'
+        agency = self.get_court_display() if self.get_court_display else self.other_agency
+        return f'{agency} {self.case_number} {self.case_name}'
 
     class Meta:
         ordering = ['-case_start_date', '-id']
