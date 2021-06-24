@@ -15,15 +15,15 @@
         </div>
 
         <div class="row table-responsive col-12">
-            <table class="table table-sm">
+            <table class="table table-sm table-hover">
                 <thead>
                 <tr class="bg-dragula">
                     <th>구분</th>
                     <th>심급</th>
                     <th>관련사건</th>
                     <th>사건명</th>
-                    <th>원고/신청인/고소인</th>
-                    <th>피고/피신청인/피고인</th>
+                    <th>원고/신청인</th>
+                    <th>피고/피신청인</th>
                     <th>제3채무자</th>
                 </tr>
                 </thead>
@@ -32,10 +32,14 @@
                     <tr>
                         <td>{{ object.get_sort_display }}</td>
                         <td>{{ object.get_level_display|default:"-" }}</td>
-                        <td>{{ object.related_case.case_number|default:"-" }}</td>
-                        <td><a href="">{{ object }}</a></td>
-                        <td>{{ object.plaintiff }}</td>
-                        <td>{{ object.defendant }}</td>
+                        <td>
+                            {% if object.related_case %}<a href="">{% endif %}
+                                {{ object.related_case.case_number|default:"-" }}
+                            {% if object.related_case %}</a>{% endif %}
+                        </td>
+                        <td><a href="">{{ object|truncatechars:30 }}</a></td>
+                        <td>{{ object.plaintiff|default:"-"|truncatechars:10 }}</td>
+                        <td>{{ object.defendant|truncatechars:10 }}</td>
                         <td>{{ object.related_debtor|default:"-" }}</td>
                     </tr>
                 {% endfor %}
