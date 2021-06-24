@@ -3,7 +3,20 @@
 {% block board %}
 
     <div class="row">
-        <div class="col-12 border-bottom mb-3"><h4>소송 사건 관리</h4></div>
+        <ul class="nav nav-tabs nav-bordered mb-3 col-12">
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}" data-bs-toggle="tab" aria-expanded="false" class="nav-link {% if 'case' not in request.path %}active{% endif %}">
+                    <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>{{ this_board|default:"소송 문서 관리" }}</h5></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}" data-bs-toggle="tab" aria-expanded="true" class="nav-link {% if 'case' in request.path %}active{% endif %}">
+                    <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                    <span class="d-none d-md-block"><h5>소송 사건 관리</h5></span>
+                </a>
+            </li>
+        </ul>
 
         <div class="col-12">
             <div class="text-right mb-1 mr-2">
@@ -34,7 +47,7 @@
                         <td>{{ object.get_level_display|default:"-" }}</td>
                         <td>
                             {% if object.related_case %}<a href="">{% endif %}
-                                {{ object.related_case.case_number|default:"-" }}
+                            {{ object.related_case.case_number|default:"-" }}
                             {% if object.related_case %}</a>{% endif %}
                         </td>
                         <td><a href="">{{ object|truncatechars:30 }}</a></td>
