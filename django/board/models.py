@@ -278,7 +278,8 @@ class LawsuitCase(models.Model):
         ('', '------------'),
         ('000110', '법원행정처')
     )
-    court = models.CharField('법원명', max_length=30, choices=CHOICES)
+    court = models.CharField('법원명', max_length=30, choices=CHOICES, null=True, blank=True)
+    other_agency = models.CharField('기타 처리기관', max_length=30, null=True, blank=True)
     case_number = models.CharField('사건번호', max_length=20)
     case_name = models.CharField('사건명', max_length=30, null=True, blank=True)
     plaintiff = models.CharField('원고(신청인)', max_length=20, null=True, blank=True)
