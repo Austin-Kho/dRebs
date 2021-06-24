@@ -833,6 +833,9 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
         project = Project.objects.get(pk=gp) if gp else project
         return project
 
+    def get_queryset(self):
+        return self.model.objects.filter(project=self.get_project())
+
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitCaseLV, self).get_context_data(**kwargs)
         context['menu_order'] = '2'

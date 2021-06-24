@@ -5,12 +5,49 @@
     <div class="row">
         <div class="col-12 border-bottom mb-3"><h4>소송 사건 관리</h4></div>
 
+        <div class="col-12">
+            <div class="text-right mb-1 mr-2">
+                <a href="" class="text-secondary">
+                    <i class="mdi mdi-file-excel-box"></i> Excel Export
+                    <i class="mdi mdi-download ml-1"></i>
+                </a>
+            </div>
+        </div>
 
-        <div class="row col-12">
-            <div class="col-12">
+        <div class="row table-responsive col-12">
+            <table class="table table-sm">
+                <thead>
+                <tr class="bg-dragula">
+                    <th>구분</th>
+                    <th>심급</th>
+                    <th>관련사건</th>
+                    <th>사건명</th>
+                    <th>원고/신청인/고소인</th>
+                    <th>피고/피신청인/피고인</th>
+                    <th>제3채무자</th>
+                </tr>
+                </thead>
+                <tbody>
                 {% for object in object_list %}
-                    <div>{{ object }}</div>
+                    <tr>
+                        <td>{{ object.get_sort_display }}</td>
+                        <td>{{ object.get_level_display|default:"-" }}</td>
+                        <td>{{ object.related_case.case_number|default:"-" }}</td>
+                        <td><a href="">{{ object }}</a></td>
+                        <td>{{ object.plaintiff }}</td>
+                        <td>{{ object.defendant }}</td>
+                        <td>{{ object.related_debtor|default:"-" }}</td>
+                    </tr>
                 {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row col-12 mt-3">
+            <div class="col-12 text-right">
+                <a href="">
+                    <button type="button" class="btn btn-primary">등록하기</button>
+                </a>
             </div>
         </div>
     </div>
