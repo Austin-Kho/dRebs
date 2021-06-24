@@ -283,6 +283,7 @@ class LawsuitCase(models.Model):
     case_name = models.CharField('사건명', max_length=30, null=True, blank=True)
     plaintiff = models.CharField('원고(신청인)', max_length=20, null=True, blank=True)
     defendant = models.CharField('피고(피신청인)', max_length=20)
+    related_debtor = models.CharField('제3채무자', max_length=20, null=True, blank=True)
     case_start_date = models.DateField('사건개시일', null=True, blank=True)
     summary = models.TextField('개요 및 경과', null=True, blank=True)
     register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
