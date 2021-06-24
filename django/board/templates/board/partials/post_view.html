@@ -115,16 +115,20 @@
             <div class="btn-group">
                 {% if request.user.is_superuser or request.user == object.user %}
                     <a href="{% if co %}
+
                         {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_update' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_update' object.pk %}{% endif %}
                     {% else %}
+
                         {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_update' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_update' object.pk %}{% endif %}
                     {% endif %}">
                         <button type="button" class="btn btn-light">수정</button>
                     </a>
 
                     <a href="{% if co %}
+
                         {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_delete' object.pk %}{% else %}{% url 'rebs:docs:co.lawsuit_delete' object.pk %}{% endif %}
                     {% else %}
+
                         {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.lawsuit_delete' object.pk %}{% endif %}
                     {% endif %}">
                         <button type="button" class="btn btn-light">삭제</button>
@@ -155,8 +159,10 @@
         <div class="col-3 text-right p-1">
             <a href="{% if co %}
 
+
                 {% if this_board.pk == 1 %}{% url 'rebs:docs:co.general_create' %}{% else %}{% url 'rebs:docs:co.lawsuit_create' %}{% endif %}
             {% else %}
+
 
                 {% if this_board.pk == 1 %}{% url 'rebs:docs:pr.general_create' %}{% else %}{% url 'rebs:docs:pr.lawsuit_create' %}{% endif %}
             {% endif %}">
@@ -166,9 +172,11 @@
         </div>
     </div>
 
-    <div class="col-12">
-        {% load disqus_tags %}
-        {% set_disqus_url post_absolute_url %}
-        {% disqus_show_comments %}
-    </div>
+    {% if not object.is_hide_comment %}
+        <div class="col-12">
+            {% load disqus_tags %}
+            {% set_disqus_url post_absolute_url %}
+            {% disqus_show_comments %}
+        </div>
+    {% endif %}
 </div>
