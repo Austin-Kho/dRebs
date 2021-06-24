@@ -566,6 +566,22 @@ class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteVi
         return context
 
 
+class CompanyLawsuitCaseLV(SuccessMessageMixin, LoginRequiredMixin, ListView):
+    pass
+
+
+class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    pass
+
+
+class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    pass
+
+
+class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    pass
+
+
 class ProjectLawsuitDocsLV(LoginRequiredMixin, ListView):
     model = Post
     paginate_by = 15
@@ -771,3 +787,19 @@ class ProjectLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteVi
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = Project.objects.get(pk=self.object.project.pk)
         return context
+
+
+class ProjectLawsuitCaseLV(SuccessMessageMixin, LoginRequiredMixin, ListView):
+    pass
+
+
+class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    pass
+
+
+class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    pass
+
+
+class ProjectLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    pass

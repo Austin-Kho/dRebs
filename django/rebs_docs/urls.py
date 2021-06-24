@@ -31,6 +31,11 @@ urlpatterns = [
     path('lawsuit/update/<int:pk>/', CompanyLawsuitDocsUV.as_view(), name='co.lawsuit_update'),
     path('lawsuit/delete/<int:pk>/', CompanyLawsuitDocsDelete.as_view(), name='co.lawsuit_delete'),
 
+    path('lawsuit/case/', CompanyLawsuitCaseLV.as_view(), name='co.case_list'),
+    path('lawsuit/case/add/', CompanyLawsuitCaseCV.as_view(), name='co.case_create'),
+    path('lawsuit/case/update/<int:pk>/', CompanyLawsuitCaseUV.as_view(), name='co.case_update'),
+    path('lawsuit/case/delete/<int:pk>/', CompanyLawsuitCaseDelete.as_view(), name='co.case_delete'),
+
     path('project/general/', ProjectGeneralDocsLV.as_view(), name='pr.general_list'),
     path('project/general/<int:pk>/', ProjectGeneralDocsDV.as_view(), name='pr.general_detail'),
     path('project/general/add/', ProjectGeneralDocsCV.as_view(), name='pr.general_create'),
@@ -42,4 +47,9 @@ urlpatterns = [
     path('project/lawsuit/add/', ProjectLawsuitDocsCV.as_view(), name='pr.lawsuit_create'),
     path('project/lawsuit/update/<int:pk>/', ProjectLawsuitDocsUV.as_view(), name='pr.lawsuit_update'),
     path('project/lawsuit/delete/<int:pk>/', ProjectLawsuitDocsDelete.as_view(), name='pr.lawsuit_delete'),
+
+    path('project/lawsuit/case/', ProjectLawsuitCaseLV.as_view(), name='pr.case_list'),
+    path('project/lawsuit/case/add/', ProjectLawsuitCaseCV.as_view(), name='pr.case_create'),
+    path('project/lawsuit/case/update/<int:pk>/', ProjectLawsuitCaseUV.as_view(), name='pr.case_update'),
+    path('project/lawsuit/case/delete/<int:pk>/', ProjectLawsuitCaseDelete.as_view(), name='pr.case_delete'),
 ]
