@@ -34,7 +34,7 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'sort', 'level', '__str__', 'plaintiff', 'defendant', 'case_start_date')
     list_display_links = ('__str__',)
-    list_editable = ('project', 'sort', 'level', 'case_start_date',)
+    list_editable = ('sort', 'level', 'case_start_date',)
     list_filter = ('project', 'sort', 'level')
     search_fields = ('case_number', 'plaintiff', 'defendant')
 
