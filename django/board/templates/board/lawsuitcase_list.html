@@ -69,7 +69,7 @@
 
         <div class="row col-12 mt-3">
             <div class="col-12 text-right">
-                <a href="{% if co %}{% url 'rebs:docs:co.case_create' %}{% else %}{% url 'rebs:docs:pr.case_create' %}{% endif %}">
+                <a href="{% if co %}{% url 'rebs:docs:co.case_create' %}{% else %}{% url 'rebs:docs:pr.case_create' %}{% endif %}{% if request.GET.project %}?project={{ this_project.pk }}{% endif %}">
                     <button type="button" class="btn btn-primary">등록하기</button>
                 </a>
             </div>

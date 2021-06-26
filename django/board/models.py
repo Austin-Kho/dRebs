@@ -281,7 +281,7 @@ class LawsuitCase(models.Model):
     court = models.CharField('법원명', max_length=30, choices=CHOICES, null=True, blank=True)
     other_agency = models.CharField('기타 처리기관', max_length=30, null=True, blank=True, help_text='사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재')
     case_number = models.CharField('사건번호', max_length=20)
-    case_name = models.CharField('사건명', max_length=30, null=True, blank=True)
+    case_name = models.CharField('사건명', max_length=30)
     plaintiff = models.CharField('원고(신청인)', max_length=20, null=True, blank=True)
     defendant = models.CharField('피고(피신청인)', max_length=20)
     related_debtor = models.CharField('제3채무자', max_length=20, null=True, blank=True)

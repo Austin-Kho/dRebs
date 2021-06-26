@@ -371,7 +371,7 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class CompanyLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
-    success_message = "삭제 되었습니다."
+    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsDelete, self).get_context_data(**kwargs)
@@ -427,7 +427,16 @@ class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 
 class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
-    pass
+    model = LawsuitCase
+    success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
+    success_message = "해당 소송 사건이 삭제 되었습니다."
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitCaseDelete, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['menu_order'] = '2'
+        context['this_board'] = Board.objects.get(pk=2)
+        return context
 
 
 class ProjectGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -874,7 +883,10 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
 class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
-    success_url = reverse_lazy('rebs:docs:pr.case_list')
+
+    def get_success_url(self):
+        project_str = '?project=' + self.get_project() if self.request.GET.get('project') else ''
+        return reverse_lazy('rebs:docs:pr.case_list') + project_str
 
     def get_project(self):
         try:
@@ -902,22 +914,19 @@ class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
-    success_url = reverse_lazy('rebs:docs:pr.case_list')
+
+    def get_success_url(self):
+        project_str = '' if self.get_project().pk == 1 else '?project=' + str(self.get_project().pk)
+        return reverse_lazy('rebs:docs:pr.case_list') + project_str
 
     def get_project(self):
-        try:
-            project = self.request.user.staffauth.assigned_project
-        except:
-            project = Project.objects.first()
-        gp = self.request.GET.get('project')
-        project = Project.objects.get(pk=gp) if gp else project
+        project = Project.objects.get(pk=self.object.project.pk)
         return project
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitCaseUV, self).get_context_data(**kwargs)
         context['menu_order'] = '2'
-        user = self.request.user
-        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         return context
 

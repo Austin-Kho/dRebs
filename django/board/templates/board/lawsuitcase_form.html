@@ -6,12 +6,7 @@
     <div class="row">
         <ul class="nav nav-tabs nav-bordered mb-3 col-12">
             <li class="nav-item">
-                <a href="
-
-
-
-
-                        {% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="false"
                    class="nav-link {% if 'case' not in request.path %}active{% endif %}">
                     <i class="mdi mdi-home-variant d-md-none d-block"></i>
@@ -65,6 +60,11 @@
                 {% endfor %}
                 <div class="justify-content-end row">
                     <div class="col-9">
+                        {% if 'update' in request.path %}
+                            <a href="{% url 'rebs:docs:co.case_delete' object.pk %}">
+                                <button type="button" class="btn btn-danger">삭제하기</button>
+                            </a>
+                        {% endif %}
                         <button type="submit"
                                 class="btn btn-{% if 'add' in request.path %}primary{% else %}success{% endif %}">
                             {% if 'add' in request.path %}등록{% else %}변경{% endif %}하기
