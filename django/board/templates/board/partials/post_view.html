@@ -27,17 +27,20 @@
     </div>
 
     <div class="col-12">
-        {% if object.execution_date %}
+        {% if this_board.pk == 1 and object.execution_date %}
             <table class="table-sm table-bordered border-primary mt-2 mb-3">
                 <tr>
-                    <td class="p-2 bg-dragula">{% if this_board.pk == 1 %}문서 시행일자{% else %}사건번호{% endif %}</td>
-                    <td class="p-2">
-                        {% if this_board.pk == 1 %}
-                            {{ object.execution_date|date:"Y-m-d" }}
-                        {% else %}
-                            {{ object.lawsuit|default:"---------" }}
-                        {% endif %}
-                    </td>
+                    <td class="p-2 bg-dragula">문서 시행일자</td>
+                    <td class="p-2">{{ object.execution_date|date:"Y-m-d" }}</td>
+                </tr>
+            </table>
+        {% endif %}
+
+        {% if this_board.pk == 2 or object.lawsuit %}
+            <table class="table-sm table-bordered border-primary mt-2 mb-3">
+                <tr>
+                    <td class="p-2 bg-dragula">사건번호</td>
+                    <td class="p-2">{{ object.lawsuit|default:"---------" }}</td>
                 </tr>
             </table>
         {% endif %}
