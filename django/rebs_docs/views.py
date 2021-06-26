@@ -181,7 +181,7 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class CompanyGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.general_list')
-    success_message = "삭제 되었습니다."
+    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDelete, self).get_context_data(**kwargs)
@@ -630,7 +630,7 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.general_list')
-    success_message = "삭제 되었습니다."
+    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDelete, self).get_context_data(**kwargs)
@@ -843,7 +843,7 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class ProjectLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.lawsuit_list')
-    success_message = "삭제 되었습니다."
+    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDelete, self).get_context_data(**kwargs)
