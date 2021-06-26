@@ -1,7 +1,7 @@
 {% extends 'rebs_docs/docs_board.html' %}
 
 {% block board %}
-    {% load static %}
+    {% load static widget_tweaks %}
 
     <div class="row">
         <div class="col-12 border-bottom mb-4">
@@ -13,21 +13,27 @@
         </div>
 
         <div class="col-12">
-            {% include 'board/partials/form.html' %}
+            <form action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row mb-3">
+                        <label for="{{ field.id_for_label }}" class="col-3 col-form-label">{{ field.label }}</label>
+                        <div class="col-9">
+                            {{ field|add_class:"form-control" }}
+{#                            {{ form.title|add_class:"form-control text-dark bg-dragula"|attr:"placeholder:제목" }}#}
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
         </div>
     </div>
-
-
 
 {% endblock %}
 
 
 {% block third_party_js %}
 
-    {# tinyMCE load Start #}
     <script src="{% static 'tinymce/tinymce.min.js' %}" referrerpolicy="origin"></script>
-    <script src="{% static 'tinymce/custom_tinymce.js' %}"></script>
-    {# tinyMCE load End #}
 
     <script>
       {% if not co %}

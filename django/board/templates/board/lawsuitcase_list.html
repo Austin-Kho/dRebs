@@ -20,7 +20,7 @@
 
         <div class="col-12">
             <div class="text-right mb-1 mr-2">
-                <a href="" class="text-secondary">
+                <a href="javascript:alert('준비중!')" class="text-dark">
                     <i class="mdi mdi-file-excel-box"></i> Excel Export
                     <i class="mdi mdi-download ml-1"></i>
                 </a>
@@ -50,7 +50,7 @@
                             {{ object.related_case.case_number|default:"-" }}
                             {% if object.related_case %}</a>{% endif %}
                         </td>
-                        <td><a href="">{{ object|truncatechars:30 }}</a></td>
+                        <td><a href="{% url 'rebs:docs:co.case_update' object.pk %}">{{ object|truncatechars:30 }}</a></td>
                         <td>{{ object.plaintiff|default:"-"|truncatechars:10 }}</td>
                         <td>{{ object.defendant|truncatechars:10 }}</td>
                         <td>{{ object.related_debtor|default:"-" }}</td>
@@ -62,7 +62,7 @@
 
         <div class="row col-12 mt-3">
             <div class="col-12 text-right">
-                <a href="">
+                <a href="{% url 'rebs:docs:co.case_create' %}">
                     <button type="button" class="btn btn-primary">등록하기</button>
                 </a>
             </div>

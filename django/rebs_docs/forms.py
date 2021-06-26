@@ -29,3 +29,9 @@ class PostForm(forms.ModelForm):
     def __init__(self, project, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields['lawsuit'].queryset = LawsuitCase.objects.filter(project=project)
+
+
+class LawsuitCaseFrom(forms.ModelForm):
+    class Meta:
+        model = LawsuitCase
+        exclude = ('project', 'register')

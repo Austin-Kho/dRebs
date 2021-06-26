@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from board.models import Board, Category, LawsuitCase, Post, File, Link
 from rebs_project.models import Project
-from .forms import LinkInlineFormSet, FileInlineFormSet, PostForm
+from .forms import LinkInlineFormSet, FileInlineFormSet, PostForm, LawsuitCaseFrom
 
 
 class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -393,11 +393,25 @@ class CompanyLawsuitCaseLV(LoginRequiredMixin, ListView):
 
 
 class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    pass
+    model = LawsuitCase
+    form_class = LawsuitCaseFrom
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitCaseCV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['menu_order'] = '2'
+        return context
 
 
 class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    pass
+    model = LawsuitCase
+    form_class = LawsuitCaseFrom
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyLawsuitCaseUV, self).get_context_data(**kwargs)
+        context['co'] = True
+        context['menu_order'] = '2'
+        return context
 
 
 class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
