@@ -32,7 +32,9 @@
 
         {% if messages %}
             {% for message in messages %}
-                <div id="alert-message" class="alert alert-{{ message.tags }}">{{ message }}</div>
+                <div id="alert-message" class="alert alert-{{ message.tags }} border-0 fade show" role="alert">
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endif %}
 
@@ -69,7 +71,7 @@
   function hideDiv() {
     document.getElementById("alert-message").style.display = "none";
   }
-  self.setTimeout("hideDiv()", 3000); // 초 지정
+  self.setTimeout("hideDiv()", 5000); // 초 지정
 </script>
 
 <!-- third party js -->

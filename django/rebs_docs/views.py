@@ -395,6 +395,8 @@ class CompanyLawsuitCaseLV(LoginRequiredMixin, ListView):
 class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
+    success_message = '소송 사건 정보가 등록되었습니다.'
+    success_url = reverse_lazy('rebs:docs:co.case_list')
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitCaseCV, self).get_context_data(**kwargs)
@@ -402,16 +404,26 @@ class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         context['menu_order'] = '2'
         return context
 
+    def form_valid(self, form):
+        form.instance.register = self.request.user
+        return super(CompanyLawsuitCaseCV, self).form_valid(form)
+
 
 class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
+    success_message = '소송 사건 정보가 변경되었습니다.'
+    success_url = reverse_lazy('rebs:docs:co.case_list')
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitCaseUV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
         return context
+
+    def form_valid(self, form):
+        form.instance.register = self.request.user
+        return super(CompanyLawsuitCaseUV, self).form_valid(form)
 
 
 class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
@@ -860,11 +872,59 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
 
 
 class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
-    pass
+    model = LawsuitCase
+    form_class = LawsuitCaseFrom
+    success_url = reverse_lazy('rebs:docs:pr.case_list')
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitCaseCV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.project = self.get_project()
+        form.instance.register = self.request.user
+        return super(ProjectLawsuitCaseCV, self).form_valid(form)
 
 
 class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    pass
+    model = LawsuitCase
+    form_class = LawsuitCaseFrom
+    success_url = reverse_lazy('rebs:docs:pr.case_list')
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitCaseUV, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        return context
+
+    def form_valid(self, form):
+        form.instance.project = self.get_project()
+        form.instance.register = self.request.user
+        return super(ProjectLawsuitCaseUV, self).form_valid(form)
 
 
 class ProjectLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):

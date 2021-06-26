@@ -241,6 +241,22 @@
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
+
+                                {% if 'project/lawsuit/case/add' in request.path and 'update' not in request.path %}
+                                    <li>
+                                        <a href="{{ request.get_full_path }}">소송 사건 등록
+                                            <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if 'project/lawsuit/case/update' in request.path %}
+                                    <li>
+                                        <a href="{{ request.get_full_path }}">소송 사건 변경
+                                            <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
                             </ul>
                         </li>
                     </ul>
@@ -448,6 +464,22 @@
                                         <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
                                     </a>
                                 </li>
+
+                                {% if 'docs/lawsuit/case/add' in request.path and 'update' not in request.path %}
+                                    <li>
+                                        <a href="{{ request.get_full_path }}">소송 사건 등록
+                                            <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if 'docs/lawsuit/case/update' in request.path %}
+                                    <li>
+                                        <a href="{{ request.get_full_path }}">소송 사건 변경
+                                            <span class="badge badge-pill badge-success-lighten font-10 float-right">ok</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
                             </ul>
 
 

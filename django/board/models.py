@@ -51,9 +51,9 @@ class Category(models.Model):
 
 class LawsuitCase(models.Model):
     project = models.ForeignKey('rebs_project.Project', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
-    sort = models.CharField('구분', max_length=1, choices=(('1', '민사'), ('2', '형사'), ('3', '행정'), ('4', '가사'), ('5', '신청/집행')))
+    sort = models.CharField('유형', max_length=1, choices=(('1', '민사'), ('2', '형사'), ('3', '행정'), ('4', '가사'), ('5', '신청/집행')))
     level = models.CharField('심급', max_length=1, choices=(('0', '신청/집행'), ('1', '1심'), ('2', '2심'), ('3', '3심')), null=True, blank=True)
-    related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건', help_text='본안사건인 경우 이전 심급 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')
+    related_case = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='관련사건', help_text='본안 사건인 경우 이전 심급 사건, 신청/집행 사건인 경우 관련 본안 사건 지정')
     CHOICES = (
         ('000100', '대법원'),
         ('000200', '서울고등법원'),
@@ -279,7 +279,7 @@ class LawsuitCase(models.Model):
         ('000110', '법원행정처')
     )
     court = models.CharField('법원명', max_length=30, choices=CHOICES, null=True, blank=True)
-    other_agency = models.CharField('기타 처리기관', max_length=30, null=True, blank=True)
+    other_agency = models.CharField('기타 처리기관', max_length=30, null=True, blank=True, help_text='사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재')
     case_number = models.CharField('사건번호', max_length=20)
     case_name = models.CharField('사건명', max_length=30, null=True, blank=True)
     plaintiff = models.CharField('원고(신청인)', max_length=20, null=True, blank=True)
