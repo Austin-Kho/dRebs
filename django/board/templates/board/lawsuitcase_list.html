@@ -45,10 +45,9 @@
                     <tr>
                         <td>{{ object.get_sort_display }}</td>
                         <td>{{ object.get_level_display|default:"-" }}</td>
-                        <td id="tooltip-container">
+                        <td {% if object.related_case %}data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ object.related_case }} ({{ object.related_case.get_level_display }})"{% endif %}>
                             {% if object.related_case %}
-                                <a href="{% if co %}{% url 'rebs:docs:co.case_update' object.related_case.pk %}{% else %}{% url 'rebs:docs:pr.case_update' object.related_case.pk %}{% endif %}"
-                                data-bs-container="#tooltip-container" data-bs-toggle="tooltip" title="{{ object.related_case }}">
+                                <a href="{% if co %}{% url 'rebs:docs:co.case_update' object.related_case.pk %}{% else %}{% url 'rebs:docs:pr.case_update' object.related_case.pk %}{% endif %}">
                             {% endif %}
                             {{ object.related_case.case_number|default:"-" }}
                             {% if object.related_case %}</a>{% endif %}
