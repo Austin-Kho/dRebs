@@ -428,14 +428,13 @@ class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = LawsuitCase
-    success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
+    success_url = reverse_lazy('rebs:docs:co.case_list')
     success_message = "해당 소송 사건이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitCaseDelete, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
-        context['this_board'] = Board.objects.get(pk=2)
         return context
 
 
@@ -885,7 +884,7 @@ class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     form_class = LawsuitCaseFrom
 
     def get_success_url(self):
-        project_str = '?project=' + self.get_project() if self.request.GET.get('project') else ''
+        project_str = '?project=' + str(self.get_project().pk) if self.request.GET.get('project') else ''
         return reverse_lazy('rebs:docs:pr.case_list') + project_str
 
     def get_project(self):
@@ -937,4 +936,20 @@ class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 
 class ProjectLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
-    pass
+    model = LawsuitCase
+    success_message = "해당 소송 사건이 삭제 되었습니다."
+
+    def get_success_url(self):
+        project_str = '' if self.get_project().pk == 1 else '?project=' + str(self.get_project().pk)
+        return reverse_lazy('rebs:docs:pr.case_list') + project_str
+
+    def get_project(self):
+        project = Project.objects.get(pk=self.object.project.pk)
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLawsuitCaseDelete, self).get_context_data(**kwargs)
+        context['menu_order'] = '2'
+        context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
+        context['this_project'] = self.get_project()
+        return context

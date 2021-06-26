@@ -14,12 +14,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="
-
-
-
-
-                        {% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}"
+                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="true"
                    class="nav-link {% if 'case' in request.path %}active{% endif %}">
                     <i class="mdi mdi-account-circle d-md-none d-block"></i>
@@ -61,7 +56,7 @@
                 <div class="justify-content-end row">
                     <div class="col-9">
                         {% if 'update' in request.path %}
-                            <a href="{% url 'rebs:docs:co.case_delete' object.pk %}">
+                            <a href="{% if co %}{% url 'rebs:docs:co.case_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.case_delete' object.pk %}{% endif %}">
                                 <button type="button" class="btn btn-danger">삭제하기</button>
                             </a>
                         {% endif %}
