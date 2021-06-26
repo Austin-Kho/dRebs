@@ -333,7 +333,7 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
-        return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
+        return reverse_lazy('rebs:docs:co.lawsuit_detail', args=(self.object.id,))
 
     def get_form_kwargs(self):
         kwargs = super(CompanyLawsuitDocsUV, self).get_form_kwargs()
@@ -804,7 +804,7 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     success_message = "수정한 내용이 저장되었습니다."
 
     def get_success_url(self):
-        return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
+        return reverse_lazy('rebs:docs:pr.lawsuit_detail', args=(self.object.id,))
 
     def get_form_kwargs(self):
         kwargs = super(ProjectLawsuitDocsUV, self).get_form_kwargs()
