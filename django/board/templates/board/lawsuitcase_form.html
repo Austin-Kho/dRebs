@@ -55,6 +55,7 @@
                 {% endfor %}
                 <div class="justify-content-end row">
                     <div class="col-9">
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
                         {% if 'update' in request.path %}
                             <a href="{% if co %}{% url 'rebs:docs:co.case_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.case_delete' object.pk %}{% endif %}">
                                 <button type="button" class="btn btn-danger">삭제하기</button>
