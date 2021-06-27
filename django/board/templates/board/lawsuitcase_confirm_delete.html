@@ -6,7 +6,8 @@
     <div class="row">
         <ul class="nav nav-tabs nav-bordered mb-3 col-12">
             <li class="nav-item">
-                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
+                <a href="
+                        {% if 'project' in request.path %}{% url 'rebs:docs:pr.lawsuit_list' %}{% else %}{% url 'rebs:docs:co.lawsuit_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="false"
                    class="nav-link {% if 'case' not in request.path %}active{% endif %}">
                     <i class="mdi mdi-home-variant d-md-none d-block"></i>
@@ -14,7 +15,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}"
+                <a href="
+                        {% if 'project' in request.path %}{% url 'rebs:docs:pr.case_list' %}{% else %}{% url 'rebs:docs:co.case_list' %}{% endif %}"
                    data-bs-toggle="tab" aria-expanded="true"
                    class="nav-link {% if 'case' in request.path %}active{% endif %}">
                     <i class="mdi mdi-account-circle d-md-none d-block"></i>
@@ -32,17 +34,17 @@
 
         <div class="col-12 p-5">
             <form method="post">{% csrf_token %}
-            <div class="offset-2">
-                <p class="font-16">선택한 다음 게시물을 정말 삭제하시겠습니까? 다음의 오브젝트와 연관 아이템들이 모두 삭제됩니다.</p>
-                <ul class="p-3">
-                    <li class="text-danger font-18">"{{ object }}"</li>
-                </ul>
-                <div class="col-12 mb-5">
-                    <input type="button" class="btn btn-light" onclick="history.back()" value="취소">
-                    <input type="submit" class="btn btn-danger" value="삭제">
+                <div class="offset-2">
+                    <p class="font-16">선택한 다음 게시물을 정말 삭제하시겠습니까? 다음의 오브젝트와 연관 아이템들이 모두 삭제됩니다.</p>
+                    <ul class="p-3">
+                        <li class="text-danger font-18">"{{ object }}"</li>
+                    </ul>
+                    <div class="col-12 mb-5">
+                        <input type="button" class="btn btn-light" onclick="history.back()" value="취소">
+                        <input type="submit" class="btn btn-danger" value="삭제">
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 

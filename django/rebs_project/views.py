@@ -40,6 +40,7 @@ class ProjectUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
 class ProjectDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Project
+    success_url = reverse_lazy('rebs:project:index')
 
 
 class SettingsOrderGroup(LoginRequiredMixin, FormView):
