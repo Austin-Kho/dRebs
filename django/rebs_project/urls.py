@@ -6,6 +6,9 @@ app_name = 'project'
 
 urlpatterns = [
     path('', ProjectList.as_view(), name='index'),
+    path('create/', ProjectCreate.as_view(), name='create'),
+    path('update/<int:pk>/', ProjectUpdate.as_view(), name='update'),
+    path('delete/<int:pk>/', ProjectDelete.as_view(), name='delete'),
     path('settings-ordergroup/', SettingsOrderGroup.as_view(), name='set-ordergroup'),
     path('settings-unit-type/', SettingsUnitType.as_view(), name='set-unit-type'),
     path('settings-floor-type/', SettingsFloorType.as_view(), name='set-floor-type'),

@@ -1,9 +1,15 @@
 from django import forms
 from django.forms.models import modelformset_factory
 from django.forms.widgets import TextInput
-from .models import UnitType, UnitFloorType, Site, SiteOwner, SiteContract
+from .models import Project, UnitType, UnitFloorType, Site, SiteOwner, SiteContract
 from rebs_contract.models import OrderGroup
 from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        exclude = ('company',)
 
 
 OrderGroupFormSet = modelformset_factory(OrderGroup, exclude=('project',))

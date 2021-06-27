@@ -1,12 +1,13 @@
-from django.db.utils import IntegrityError
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
 from django.db.models import Sum
+from django.urls import reverse_lazy
+from django.db.utils import IntegrityError
+from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
-from django.views.generic import ListView, FormView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 
-from rebs_project.forms import (OrderGroupFormSet, UnitTypeFormSet, UnitFloorTypeFormSet,
+from rebs_project.forms import (ProjectForm, OrderGroupFormSet, UnitTypeFormSet, UnitFloorTypeFormSet,
                                 SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                                 SiteForm, SiteOwnerForm, SiteContractForm)
 from rebs_project.models import (Project, UnitType, UnitFloorType, Site,
@@ -18,6 +19,20 @@ from rebs_cash.models import SalesPriceByGT, InstallmentPaymentOrder, DownPaymen
 class ProjectList(LoginRequiredMixin, ListView):
     model = Project
     paginate_by = 5
+
+
+class ProjectCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Project
+    form_class = ProjectForm
+
+
+class ProjectUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    model = Project
+    form_class = ProjectForm
+
+
+class ProjectDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Project
 
 
 class SettingsOrderGroup(LoginRequiredMixin, FormView):

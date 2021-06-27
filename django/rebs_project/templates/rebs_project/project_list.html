@@ -52,7 +52,7 @@
                                 <tbody>
                                 {% for object in object_list %}
                                     <tr>
-                                        <td class="text-center"><a href="#">{{ object }}</a></td>
+                                        <td class="text-center"><a href="{% url 'rebs:project:update' object.pk %}">{{ object }}</a></td>
                                         <td class="text-center">{{ object.get_kind_display }}</td>
                                         <td class="text-right">
                                             {% if object.num_unit %}{{ object.num_unit|intcomma|default:"" }}
@@ -74,6 +74,14 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <div class="row col-12 p-3">
+                        <div class="col-12 text-right">
+                            <a href="{% url 'rebs:project:create' %}">
+                                <button type="button" class="btn btn-primary">등록하기</button>
+                            </a>
                         </div>
                     </div>
 
