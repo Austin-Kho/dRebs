@@ -74,20 +74,7 @@
                                                     취소
                                                 </button>
                                                 {% if 'update' in request.path %}
-                                                    <a href="
-
-
-
-
-
-
-
-
-
-
-
-
-                                                            {% if co %}{% url 'rebs:docs:co.case_delete' object.pk %}{% else %}{% url 'rebs:docs:pr.case_delete' object.pk %}{% endif %}">
+                                                    <a href="{% if request.user.is_superuser %}{% url 'rebs:project:delete' object.pk %}{% else %}javascript:alert('최고관리자만 삭제할 수 있습니다.'){% endif %}">
                                                         <button type="button" class="btn btn-danger">삭제하기</button>
                                                     </a>
                                                 {% endif %}
@@ -105,7 +92,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     </div> <!-- container -->
 
