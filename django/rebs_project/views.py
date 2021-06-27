@@ -10,6 +10,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, F
 from rebs_project.forms import (ProjectForm, OrderGroupFormSet, UnitTypeFormSet, UnitFloorTypeFormSet,
                                 SalesPriceByGTFormSet, InstallmentPaymentOrderFormSet, DownPaymentFormSet,
                                 SiteForm, SiteOwnerForm, SiteContractForm)
+from rebs_company.models import Company
 from rebs_project.models import (Project, UnitType, UnitFloorType, Site,
                                  SiteOwner, SiteContract, SiteOwnshipRelationship)
 from rebs_contract.models import OrderGroup
@@ -24,11 +25,17 @@ class ProjectList(LoginRequiredMixin, ListView):
 class ProjectCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
+    success_url = reverse_lazy('rebs:project:index')
+
+    def form_valid(self, form):
+        form.instance.company = Company.objects.first()
+        return super(ProjectCreate, self).form_valid(form)
 
 
 class ProjectUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
+    success_url = reverse_lazy('rebs:project:index')
 
 
 class ProjectDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):

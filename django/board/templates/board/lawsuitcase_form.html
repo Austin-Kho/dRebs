@@ -40,12 +40,14 @@
                             {% if field.field.widget.input_type == 'select' %}
                                 {{ field|add_class:"form-control select2"|attr:"data-toggle:select2" }}
                             {% elif field.field.widget.input_type == 'checkbox' %}
-                                {{ field|add_class:"custom-control-input" }}
+                                {{ field|add_class:"form-check-input" }}
+                                    <label class="form-check-label"
+                                           for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {% elif 'date' in field.name %}
                                 {{ field|add_class:"form-control"|attr:"data-provide=datepicker data-date-format=yyyy-mm-dd data-date-autoclose=true data-toggle=input-mask data-mask-format=0000-00-00" }}
                             {% elif not field.field.widget.input_type %}
                                 {{ field|add_class:"form-control"|attr:"rows:5" }}
-                            {% elif field.field.widget.input_type == 'text' %}
+                            {% else %}
                                 {{ field|add_class:"form-control" }}
                             {% endif %}
                             <small class="text-black-50">{{ field.help_text }}</small>
