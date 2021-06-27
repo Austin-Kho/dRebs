@@ -54,7 +54,7 @@
                         </td>
                         <td>
                             <a href="{% if co %}{% url 'rebs:docs:co.case_update' object.pk %}{% else %}{% url 'rebs:docs:pr.case_update' object.pk %}{% endif %}">
-                                {{ object|truncatechars:30 }}
+                                {{ object|truncatechars:32 }}
                             </a>
                         </td>
                         <td>{{ object.plaintiff|default:"-"|truncatechars:10 }}</td>

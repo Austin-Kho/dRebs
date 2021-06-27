@@ -60,7 +60,7 @@
                 {% endif %}
                 </td>
             {% endif %}
-            <td class="text-dark">{{ object.lawsuit|default:"-" }}</td>
+            <td class="text-dark">{{ object.lawsuit|default:"-"|truncatechars:29 }}</td>
             <td style="white-space:nowrap; overflow:hidden; display:block;">
                 {% if object.category %}
                     <a href="?project={{ request.GET.project }}&category={{ object.category.pk }}">
@@ -81,7 +81,7 @@
                             {% url 'rebs:docs:pr.lawsuit_detail' object.pk %}
                         {% endif %}
                     {% endif %}" class="text-secondary">
-                    {{ object }}
+                    {{ object|truncatechars:30 }}
                 </a>
 
             </td>
