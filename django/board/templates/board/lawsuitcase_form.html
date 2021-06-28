@@ -51,7 +51,8 @@
                                 {{ field|add_class:"form-control" }}
                             {% endif %}
                             <small class="text-black-50">{{ field.help_text }}</small>
-                            <div class="invalid-feedback">상기 {{ field.label }} 폼을 입력 또는 선택하여 주십시요.</div>
+                            <div class="invalid-feedback">상기 {{ field.label }} 폼을 입력 양식에 맞게 입력(선택)하여 주십시요.</div>
+                            <div class="text-danger">{{ field.errors }}</div>
                         </div>
                     </div>
                 {% endfor %}
