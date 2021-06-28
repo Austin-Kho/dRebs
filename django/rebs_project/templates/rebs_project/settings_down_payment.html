@@ -66,19 +66,19 @@
                                             <tr>
                                                 <td class="text-center">
                                                     {{ form.order_group|add_class:"form-control select2"|attr:"data-toggle:select2" }}
-                                                    <span class="text-danger">{{ form.order_group.errors }}</span>
+                                                    <small class="text-danger">{{ form.order_group.errors }}</small>
                                                 </td>
                                                 <td class="text-center">
                                                     {{ form.unit_type|add_class:"form-control select2"|attr:"data-toggle:select2" }}
-                                                    <span class="text-danger">{{ form.unit_type.errors }}</span>
+                                                    <small class="text-danger">{{ form.unit_type.errors }}</small>
                                                 </td>
                                                 <td class="text-center">
                                                     {{ form.number_payments|add_class:"form-control text-right"|attr:"placeholder:분할 납부회수" }}
-                                                    <span class="text-danger">{{ form.number_payments.errors }}</span>
+                                                    <small class="text-danger">{{ form.number_payments.errors }}</small>
                                                 </td>
                                                 <td class="text-center">
                                                     {{ form.payment_amount|add_class:"form-control text-right"|attr:"placeholder:납부 계약금액" }}
-                                                    <span class="text-danger">{{ form.payment_amount.errors }}</span>
+                                                    <small class="text-danger">{{ form.payment_amount.errors }}</small>
                                                 </td>
                                             </tr>
                                         {% endfor %}

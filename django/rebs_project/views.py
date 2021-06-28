@@ -293,8 +293,6 @@ class SettingsDownPayment(LoginRequiredMixin, TemplateView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
-        context['order_groups'] = OrderGroup.objects.filter(project=self.get_project())
-        context['types_sel'] = UnitType.objects.filter(project=self.get_project())
         context['formset'] = DownPaymentFormSet(queryset=DownPayment.objects.filter(project=self.get_project()))
 
         return context
@@ -312,10 +310,8 @@ class SettingsDownPayment(LoginRequiredMixin, TemplateView):
                 except IntegrityError:
                     pass
 
-        project = str(self.get_project().id)
-        order_group = self.request.GET.get('group') if self.request.GET.get('group') else ''
-        type = self.request.GET.get('type') if self.request.GET.get('type') else ''
-        query_string = '?project='+ project +'&group=' + order_group + '&type=' + type
+        project = self.request.GET.get('project')
+        query_string = '?project='+ project if project else ''
         return redirect(reverse_lazy('rebs:project:set-down-payment') + query_string)
 
 
