@@ -11,6 +11,27 @@
                     <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
                 </a>
             </li>
+            {% if 'project/create' in request.path %}
+                <li>
+                    <a href="{{ request.path }}">프로젝트 등록
+                        <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if 'project/update' in request.path %}
+                <li>
+                    <a href="{{ request.path }}">프로젝트 수정
+                        <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if 'project/delete' in request.path %}
+                <li>
+                    <a href="{{ request.path }}">프로젝트 삭제
+                        <span class="badge badge-pill badge-success-lighten font-10 float-right">Ok</span>
+                    </a>
+                </li>
+            {% endif %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" aria-expanded="false">
                     세부 정보 관리
