@@ -46,7 +46,7 @@ class ProjectDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
 class SettingsOrderGroup(LoginRequiredMixin, FormView):
     """차수 분류 등록"""
     form_class = OrderGroupFormSet
-    template_name = 'rebs_project/settings_ordergroup.html'
+    template_name = 'rebs_project/settings_order_group.html'
 
     def get_project(self):
         try:
@@ -85,7 +85,7 @@ class SettingsOrderGroup(LoginRequiredMixin, FormView):
 class SettingsUnitType(LoginRequiredMixin, FormView):
     """타입 정보 등록"""
     form_class = UnitTypeFormSet
-    template_name = 'rebs_project/settings_unittype.html'
+    template_name = 'rebs_project/settings_unit_type.html'
 
     def get_project(self):
         try:
@@ -124,7 +124,7 @@ class SettingsUnitType(LoginRequiredMixin, FormView):
 class SettingsFloorType(LoginRequiredMixin, FormView):
     """층별 조건 등록"""
     form_class = UnitFloorTypeFormSet
-    template_name = 'rebs_project/settings_floor.html'
+    template_name = 'rebs_project/settings_floor_type.html'
 
     def get_project(self):
         try:
@@ -162,7 +162,7 @@ class SettingsFloorType(LoginRequiredMixin, FormView):
 
 class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
     """분양가 등록"""
-    template_name = 'rebs_project/settings_price.html'
+    template_name = 'rebs_project/settings_sales_price.html'
 
     def get_project(self):
         try:
@@ -239,7 +239,7 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
 class SettingsPaymentOrder(LoginRequiredMixin, FormView):
     """납입회차 등록"""
     form_class = InstallmentPaymentOrderFormSet
-    template_name = 'rebs_project/settings_installment_order.html'
+    template_name = 'rebs_project/settings_payment_order.html'
 
     def get_project(self):
         try:
