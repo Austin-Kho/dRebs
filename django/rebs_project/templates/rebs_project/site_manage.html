@@ -159,7 +159,7 @@
                                         <tr>
                                             <td class="text-center">{{ object.order }}</td>
                                             <td class="text-center">{{ object.district }}</td>
-                                            <td class="pl-3"><a href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}site={{ object.id }}">{{ object.lot_number }}</a></td>
+                                            <td class="pl-3"><a href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}{% if request.GET.project %}project={{ request.GET.project }}&{% endif %}site={{ object.id }}">{{ object.lot_number }}</a></td>
                                             <td class="text-center">{{ object.site_purpose }}</td>
                                             <td class="text-right">{{ object.official_area|floatformat:2|intcomma|default:"-" }}</td>
                                             <td class="text-right bg-warning-lighten">{{ object.official_area|mul:0.3025|floatformat:2|intcomma|default:"-" }}</td>

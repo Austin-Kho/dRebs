@@ -77,8 +77,8 @@ class SettingsOrderGroup(LoginRequiredMixin, FormView):
                     instance.save()
                 except IntegrityError:
                     pass
-
-            return redirect(reverse_lazy('rebs:project:set-ordergroup'))
+            project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
+            return redirect(reverse_lazy('rebs:project:set-ordergroup') + project_query)
         return render(request, 'rebs_project/settings_ordergroup.html', {'formset': formset})
 
 
@@ -116,8 +116,8 @@ class SettingsUnitType(LoginRequiredMixin, FormView):
                     instance.save()
                 except IntegrityError:
                     pass
-
-            return redirect(reverse_lazy('rebs:project:set-unit-type'))
+            project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
+            return redirect(reverse_lazy('rebs:project:set-unit-type') + project_query)
         return render(request, 'rebs_project/settings_unittype.html', {'formset': formset})
 
 
@@ -155,8 +155,8 @@ class SettingsFloorType(LoginRequiredMixin, FormView):
                     instance.save()
                 except IntegrityError:
                     pass
-
-            return redirect(reverse_lazy('rebs:project:set-floor-type'))
+            project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
+            return redirect(reverse_lazy('rebs:project:set-floor-type') + project_query)
         return render(request, 'rebs_project/settings_floor.html', {'formset': formset})
 
 
@@ -270,8 +270,8 @@ class SettingsPaymentOrder(LoginRequiredMixin, FormView):
                     instance.save()
                 except IntegrityError:
                     pass
-
-            return redirect(reverse_lazy('rebs:project:set-payment-order'))
+            project_query = '?project=' + self.request.GET.get('project') if self.request.GET.get('project') else ''
+            return redirect(reverse_lazy('rebs:project:set-payment-order') + project_query)
         return render(request, 'rebs_project/settings_installment_order.html', {'formset': formset})
 
 
@@ -368,8 +368,12 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
 
         if form.is_valid():
             form.save()  # PostForm 클래스에 정의된 save() 메소드 호출
-            page = '?page=' + self.request.GET.get('page') if self.request.GET.get('page') else ''
-            return redirect(reverse_lazy('rebs:project:site') + page)
+            query_str = '?'
+            if self.request.GET.get('page'):
+                query_str += 'page=' + self.request.GET.get('page') + '&' if self.request.GET.get('page') else ''
+            if self.request.GET.get('project'):
+                query_str += 'project=' + self.request.GET.get('project')
+            return redirect(reverse_lazy('rebs:project:site') + query_str)
         return render(request, 'rebs_project/site_manage.html', {'form': form})
 
 
@@ -437,8 +441,12 @@ class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
 
         if form.is_valid():
             form.save()  # 클래스에 정의된 save() 메소드 호출
-            page = '?page=' + self.request.GET.get('page') if self.request.GET.get('page') else ''
-            return redirect(reverse_lazy('rebs:project:site-owner') + page)
+            query_str = '?'
+            if self.request.GET.get('page'):
+                query_str += 'page=' + self.request.GET.get('page') + '&' if self.request.GET.get('page') else ''
+            if self.request.GET.get('project'):
+                query_str += 'project=' + self.request.GET.get('project')
+            return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
         return render(request, 'rebs_project/site_owner_manage.html', {'form': form})
 
 
@@ -541,8 +549,12 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
 
         if form.is_valid():
             form.save()  # 클래스에 정의된 save() 메소드 호출
-            page = '?page=' + self.request.GET.get('page') if self.request.GET.get('page') else ''
-            return redirect(reverse_lazy('rebs:project:site-contract') + page)
+            query_str = '?'
+            if self.request.GET.get('page'):
+                query_str += 'page=' + self.request.GET.get('page') + '&' if self.request.GET.get('page') else ''
+            if self.request.GET.get('project'):
+                query_str += 'project=' + self.request.GET.get('project')
+            return redirect(reverse_lazy('rebs:project:site-contract') + query_str)
         return render(request, 'rebs_project/site_contract_manage.html', {'form': form})
 
 
