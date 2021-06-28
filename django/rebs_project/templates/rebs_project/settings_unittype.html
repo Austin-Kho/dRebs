@@ -40,19 +40,9 @@
 
                                 <div class="col-12 mb-3">
                                     <!-- Button Group -->
-                                    <div class="btn-group mb-2">
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-ordergroup' %}'">차수 분류 등록</button>
-                                        <button type="button" class="btn btn-primary">타입 정보 등록</button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-floor-type' %}'">층별 조건 등록</button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-sales-price' %}'">분양 가격 등록</button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-payment-order' %}'">납부 회차 등록</button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:set-down-payment' %}'">계약 금액 등록</button>
-                                    </div>
+                                    {% with sub_menu_order='2' %}
+                                        {% include 'rebs_project/partials/second_menu.html' %}
+                                    {% endwith %}
                                 </div>
 
                                 <div class="col-12 bg-nav-pills form-row p-2">
