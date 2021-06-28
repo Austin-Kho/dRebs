@@ -22,7 +22,7 @@ class Project(models.Model):
     is_returned_area = models.BooleanField('토지환지여부', default=False, help_text='환지방식 도시개발사업구역인 경우 체크')
     is_unit_set = models.BooleanField('동호지정여부', default=False, help_text='동호수를 지정하지 않는 경우 체크하지 않음')
     local_zipcode = models.CharField('우편번호', max_length=5, blank=True)
-    local_address1 = models.CharField('주소', max_length=50, blank=True)
+    local_address1 = models.CharField('대표부지 주소', max_length=50, blank=True)
     local_address2 = models.CharField('상세주소', max_length=25, blank=True)
     local_address3 = models.CharField('참고항목', max_length=20, blank=True)
     buy_land_extent = models.DecimalField('대지매입면적', max_digits=12, decimal_places=4, null=True, blank=True)
