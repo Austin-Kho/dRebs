@@ -44,14 +44,14 @@
 
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group row mb-3">
-                                        <label for="id_order_group"
+                                        <label for="id_group"
                                                class="col-4 col-form-label text-center bg-info-lighten">차수선택</label>
                                         <div class="col-8">
-                                            <select name="order_group" id="id_order_group" class="form-control select2"
+                                            <select name="group" id="id_group" class="form-control select2"
                                                     data-toggle="select2">
                                                 {% for order in order_groups %}
                                                     <option value="{{ order.id }}"
-                                                            {% if order.id|stringformat:"s" is request.GET.order_group %}
+                                                            {% if order.id|stringformat:"s" is request.GET.group %}
                                                             selected
                                                             {% endif %}>
                                                         {{ order }}
@@ -229,7 +229,7 @@
     <script>
       window.onload = function () {
         document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
-        document.getElementById('id_order_group').setAttribute('onchange', 'submit()')
+        document.getElementById('id_group').setAttribute('onchange', 'submit()')
         document.getElementById('id_type').setAttribute('onchange', 'submit()')
       }
     </script>

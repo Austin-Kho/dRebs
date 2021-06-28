@@ -191,8 +191,8 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        og = OrderGroup.objects.get(pk=self.request.GET.get('order_group')) \
-            if self.request.GET.get('order_group') else OrderGroup.objects.first()
+        og = OrderGroup.objects.get(pk=self.request.GET.get('group')) \
+            if self.request.GET.get('group') else OrderGroup.objects.first()
         types_sel = UnitType.objects.filter(project=self.get_project())
         types = types_sel.filter(pk=self.request.GET.get('type')) if self.request.GET.get('type') else types_sel
         floor_types = UnitFloorType.objects.filter(project=self.get_project())
@@ -232,7 +232,7 @@ class SettingsSalesPrice(LoginRequiredMixin, TemplateView):
                     sales_price.save()
 
         type = request.GET.get('type') if request.GET.get('type') else ''
-        query_string = '?project=' + str(self.get_project().id) + '&order_group=' + str(og.id) + '&type=' + type
+        query_string = '?project=' + str(self.get_project().id) + '&group=' + str(og.id) + '&type=' + type
         return redirect(reverse_lazy('rebs:project:set-sales-price') + query_string)
 
 
