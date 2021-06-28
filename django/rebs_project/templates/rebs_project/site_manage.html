@@ -38,16 +38,9 @@
                             <div class="row">
                                 <div class="col mb-3">
                                     <!-- Button Group -->
-                                    <div class="btn-group mb-2">
-                                        <button type="button" class="btn btn-primary">지번 별 토지관리</button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:site-owner' %}'">소유자별 토지관리
-                                        </button>
-                                        <button type="button" class="btn btn-light"
-                                                onclick="location.href='{% url 'rebs:project:site-contract' %}'">사업부지
-                                            매입관리
-                                        </button>
-                                    </div>
+                                    {% with sub_menu_order='1' %}
+                                        {% include 'rebs_project/partials/site_sub_menu.html' %}
+                                    {% endwith %}
                                 </div>
                             </div>
 
@@ -92,17 +85,20 @@
                                             </div>
                                             {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
                                                 <div class="col-6 col-lg-1 text-center m-auto">
-                                                    {% if request.GET.site %}<a href="{% url 'rebs:project:site' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">Reset</a>{% endif %}
+                                                    {% if request.GET.site %}<a href="
+                                                            {% url 'rebs:project:site' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">Reset</a>{% endif %}
                                                 </div>
                                             {% endif %}
                                             <div class="col-6 col-lg-{% if request.user.is_superuser or request.user.staffauth.project > '1' %}1{% else %}2{% endif %} text-right m-auto">
                                                 {% if request.user.is_superuser or request.user.staffauth.project > '1' %}
-                                                    <button type="submit" class="btn btn-{% if request.GET.site %}success{% else %}primary{% endif %}">
+                                                    <button type="submit"
+                                                            class="btn btn-{% if request.GET.site %}success{% else %}primary{% endif %}">
                                                         {% if request.GET.site %}변경{% else %}신규{% endif %}등록
                                                     </button>
                                                 {% else %}
                                                     <button type="button" class="btn btn-outline-secondary"
-                                                            onclick="alert('토지 정보 관리 권한이 없습니다. 관리자에게 문의하여 주십시요.')">조회권한 사용자
+                                                            onclick="alert('토지 정보 관리 권한이 없습니다. 관리자에게 문의하여 주십시요.')">조회권한
+                                                        사용자
                                                     </button>
                                                 {% endif %}
                                             </div>
@@ -159,7 +155,9 @@
                                         <tr>
                                             <td class="text-center">{{ object.order }}</td>
                                             <td class="text-center">{{ object.district }}</td>
-                                            <td class="pl-3"><a href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}{% if request.GET.project %}project={{ request.GET.project }}&{% endif %}site={{ object.id }}">{{ object.lot_number }}</a></td>
+                                            <td class="pl-3"><a
+                                                    href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}{% if request.GET.project %}project={{ request.GET.project }}&{% endif %}site={{ object.id }}">{{ object.lot_number }}</a>
+                                            </td>
                                             <td class="text-center">{{ object.site_purpose }}</td>
                                             <td class="text-right">{{ object.official_area|floatformat:2|intcomma|default:"-" }}</td>
                                             <td class="text-right bg-warning-lighten">{{ object.official_area|mul:0.3025|floatformat:2|intcomma|default:"-" }}</td>
@@ -173,9 +171,11 @@
                                                 {% endfor %}
                                             </td>
                                             <td class="text-center bg-dragula">
-                                                <a href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}site={{ object.id }}" class="action-icon">
+                                                <a href="{% url 'rebs:project:site' %}?{% if request.GET.page %}page={{ request.GET.page }}&{% endif %}site={{ object.id }}"
+                                                   class="action-icon">
                                                     <i class="mdi mdi-pencil"></i></a>
-                                                <a href="javascript: site_del('{{ object }}', '{{ object.id }}');" class="action-icon">
+                                                <a href="javascript: site_del('{{ object }}', '{{ object.id }}');"
+                                                   class="action-icon">
                                                     <i class="mdi mdi-delete"></i></a>
                                             </td>
                                         </tr>
