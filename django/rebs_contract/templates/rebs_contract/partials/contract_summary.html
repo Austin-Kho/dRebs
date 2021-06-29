@@ -52,7 +52,7 @@
             <th class="text-right">{{ total_unit_num|default:"-"|intcomma }} 세대</th>
             <th class="text-right">{{ total_reserv_num|default:"-"|intcomma }}</th>
             {% for og in groups %}
-                <th class="text-right">{{ ocn.pop|default:"-"|intcomma }}</th>
+                <th class="text-right">{% if ocn %}{{ ocn.pop|default:"-"|intcomma }}{% endif %}</th>
             {% endfor %}
             <th class="text-right">{{ total_tcn|default:"-"|intcomma }}</th>
             <th class="text-right">{{ total_unit_num|sub:total_tcn|default:"-"|intcomma }}</th>
