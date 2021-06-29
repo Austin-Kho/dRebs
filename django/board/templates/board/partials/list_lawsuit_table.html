@@ -34,7 +34,7 @@
                     {% else %}
                         {% url 'rebs:docs:pr.lawsuit_detail' notice.pk %}
                     {% endif %}
-                {% endif %}" class="text-secondary">{{ notice }}</a>
+                {% endif %}" class="text-secondary">{{ notice|truncatechars:30 }}</a>
             </td>
             <td>{{ notice.user }}</td>
             <td>{{ notice.updated|default:notice.created }}</td>
