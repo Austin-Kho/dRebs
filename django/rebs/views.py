@@ -115,18 +115,21 @@ class PdfExportBill(View):
             for po in cont['paid_orders']:
                 if po.pay_time == 1 or po.pay_code == 1:
                     due_date = contract.contractor.contract_date
+                    delay_dates = due_date
                 elif po.pay_time == 2 or po.pay_code == 2:
                     due_date = contract.contractor.contract_date + timedelta(days=30)
+                    delay_dates = delay_dates if due_date > po.pay_due_date else po.pay_due_date
                 else:
                     due_date = po.pay_due_date
+                    delay_dates = due_date
 
                 due_dates.append(due_date) # 회차별 납부일자
                 pl = paid_list.filter(installment_order=po)
                 pld = pl.latest('deal_date').deal_date if pl else None
                 paid_dates.append(pld) # 회차별 최종 수납일자
                 payments.append(pl.aggregate(Sum('income'))['income__sum']) # 회차별 납부금액
-                ad = pl.latest('deal_date').deal_date - due_date if pl else None
-                add = None# ad.days if pl else None
+                ad = pl.latest('deal_date').deal_date - delay_dates if pl else None
+                add = ad.days if pl else None
                 adj_days.append(add)  # 회차별 지연일수
 
             cont['due_dates'] = list(reversed(due_dates)) # 회차별 납부일자
