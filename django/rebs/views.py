@@ -261,7 +261,7 @@ class PdfExportPayments(View):
             if po.pay_time == 1 or po.pay_code == 1:
                 due_date = contract.contractor.contract_date
             elif po.pay_time == 2 or po.pay_code == 2:
-                due_date = context['second_pay']
+                due_date = context['second_pay'] if context['second_pay'] > po.pay_due_date else po.pay_due_date
             else:
                 due_date = po.pay_due_date
 
