@@ -25,6 +25,7 @@ class ProjectList(LoginRequiredMixin, ListView):
 class ProjectCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
+    success_message = '새 프로젝트가 등록되었습니다.'
     success_url = reverse_lazy('rebs:project:index')
 
     def form_valid(self, form):
@@ -35,10 +36,11 @@ class ProjectCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class ProjectUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
+    success_message = '해당 프로젝트의 수정사항이 적용되었습니다.'
     success_url = reverse_lazy('rebs:project:index')
 
 
-class ProjectDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class ProjectDelete(LoginRequiredMixin, DeleteView):
     model = Project
     success_url = reverse_lazy('rebs:project:index')
 
