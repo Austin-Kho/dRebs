@@ -145,7 +145,7 @@ class CompanyGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    success_message = "수정한 내용이 저장되었습니다."
+    success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.general_detail', args=(self.object.id,))
@@ -178,10 +178,9 @@ class CompanyGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(CompanyGeneralDocsUV, self).form_valid(form)
 
 
-class CompanyGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class CompanyGeneralDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.general_list')
-    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyGeneralDocsDelete, self).get_context_data(**kwargs)
@@ -330,7 +329,7 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    success_message = "수정한 내용이 저장되었습니다."
+    success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:co.lawsuit_detail', args=(self.object.id,))
@@ -368,10 +367,9 @@ class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(CompanyLawsuitDocsUV, self).form_valid(form)
 
 
-class CompanyLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class CompanyLawsuitDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:co.lawsuit_list')
-    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitDocsDelete, self).get_context_data(**kwargs)
@@ -412,7 +410,7 @@ class CompanyLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
-    success_message = '소송 사건 정보가 변경되었습니다.'
+    success_message = '수정 사항이 적용되었습니다.'
     success_url = reverse_lazy('rebs:docs:co.case_list')
 
     def get_context_data(self, **kwargs):
@@ -426,10 +424,9 @@ class CompanyLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(CompanyLawsuitCaseUV, self).form_valid(form)
 
 
-class CompanyLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class CompanyLawsuitCaseDelete(LoginRequiredMixin, DeleteView):
     model = LawsuitCase
     success_url = reverse_lazy('rebs:docs:co.case_list')
-    success_message = "해당 소송 사건이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitCaseDelete, self).get_context_data(**kwargs)
@@ -593,7 +590,7 @@ class ProjectGeneralDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['is_notice', 'category', 'title', 'execution_date', 'content']
-    success_message = "수정한 내용이 저장되었습니다."
+    success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.general_detail', args=(self.object.id,))
@@ -627,10 +624,9 @@ class ProjectGeneralDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(ProjectGeneralDocsUV, self).form_valid(form)
 
 
-class ProjectGeneralDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class ProjectGeneralDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.general_list')
-    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectGeneralDocsDelete, self).get_context_data(**kwargs)
@@ -801,7 +797,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    success_message = "수정한 내용이 저장되었습니다."
+    success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
         return reverse_lazy('rebs:docs:pr.lawsuit_detail', args=(self.object.id,))
@@ -840,10 +836,9 @@ class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(ProjectLawsuitDocsUV, self).form_valid(form)
 
 
-class ProjectLawsuitDocsDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class ProjectLawsuitDocsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('rebs:docs:pr.lawsuit_list')
-    success_message = "해당 게시물이 삭제 되었습니다."
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitDocsDelete, self).get_context_data(**kwargs)
@@ -882,6 +877,7 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
 class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = LawsuitCase
     form_class = LawsuitCaseFrom
+    success_message = '소송 사건 정보가 등록되었습니다.'
 
     def get_success_url(self):
         project_str = '?project=' + str(self.get_project().pk) if self.request.GET.get('project') else ''
@@ -912,6 +908,7 @@ class ProjectLawsuitCaseCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = LawsuitCase
+    success_message = '수정 사항이 적용되었습니다.'
     form_class = LawsuitCaseFrom
 
     def get_success_url(self):
@@ -935,9 +932,8 @@ class ProjectLawsuitCaseUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return super(ProjectLawsuitCaseUV, self).form_valid(form)
 
 
-class ProjectLawsuitCaseDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class ProjectLawsuitCaseDelete(LoginRequiredMixin, DeleteView):
     model = LawsuitCase
-    success_message = "해당 소송 사건이 삭제 되었습니다."
 
     def get_success_url(self):
         project_str = '' if self.get_project().pk == 1 else '?project=' + str(self.get_project().pk)
