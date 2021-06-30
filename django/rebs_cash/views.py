@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, FormView
 
@@ -196,6 +197,12 @@ class CashInoutUV(LoginRequiredMixin, UpdateView):
     model = CashBook
 
 
+def CashInoutDV(request, *args, **kwargs):
+    cash_inout = CashBook.objects.get(pk=kwargs['pk'])
+    cash_inout.delete()
+    return redirect(reverse_lazy('rebs:cash-inout:index'))
+
+
 class ProjectCashReport(LoginRequiredMixin, TemplateView):
     template_name = 'rebs_cash/projectcashbook_report.html'
 
@@ -383,8 +390,9 @@ class ProjectCashInoutLV(LoginRequiredMixin, ListView, FormView):
         return results
 
 
-class ProjectCashInoutCV(LoginRequiredMixin, CreateView):
+class ProjectCashInoutCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = ProjectCashBook
+    success_message = '해당 거래가 등록되었습니다.'
     fields = ('deal_date',)
 
     def get_project(self):
@@ -432,8 +440,54 @@ class ProjectCashInoutCV(LoginRequiredMixin, CreateView):
         return super(ProjectCashInoutCV, self).form_valid(form)
 
 
-class ProjectCashInoutUV(LoginRequiredMixin, UpdateView):
+class ProjectCashInoutUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = ProjectCashBook
+    success_message = '해당 거래가 수정되었습니다.'
+    fields = ('deal_date',)
+
+    def get_project(self):
+        try:
+            project = self.request.user.staffauth.assigned_project
+        except:
+            project = Project.objects.first()
+        gp = self.request.GET.get('project')
+        project = Project.objects.get(pk=gp) if gp else project
+        return project
+
+    def get_success_url(self):
+        project_query = '?project=' + self.request.POST.get('project')
+        return reverse_lazy('rebs:cash-inout:project-index') + project_query
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectCashInoutUV, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
+        context['this_project'] = self.get_project()
+        context['pa_d1_inc'] = ProjectAccountD1.objects.filter(sort=1)
+        context['pa_d1_out'] = ProjectAccountD1.objects.filter(sort=2)
+        context['pa_d1_trans'] = ProjectAccountD1.objects.filter(sort=3)
+        context['pa_d2_inc'] = ProjectAccountD2.objects.filter(d1__sort=1)
+        context['pa_d2_out'] = ProjectAccountD2.objects.filter(d1__sort=2)
+        context['pa_d2_trans'] = ProjectAccountD2.objects.filter(d1__sort=3)
+        context['d1s'] = ProjectAccountD1.objects.all()
+        for d1 in context['d1s']:
+            context['d2_' + str(d1.id)] = ProjectAccountD2.objects.filter(d1=d1.id)
+        project_id = self.get_project().id if self.get_project() else None
+        context['pb_account'] = ProjectBankAccount.objects.filter(project=project_id)
+        context['formset'] = ProjectCashBookFormSet(queryset=ProjectCashBook.objects.none(),
+                                                    form_kwargs={'project': self.get_project()})
+        return context
+
+    def form_valid(self, form):
+        formset = ProjectCashBookFormSet(self.request.POST, form_kwargs={'project': self.request.POST.get('project')})
+        if formset.is_valid():
+            for form in formset:
+                instance = form.save(commit=False)
+                instance.project = Project.objects.get(pk=self.request.POST.get('project'))
+                instance.deal_date = self.request.POST.get('deal_date')
+                instance.recoder = self.request.user
+                instance.save()
+        return super(ProjectCashInoutUV, self).form_valid(form)
 
 
 def ProjectCashInoutDV(request, *args, **kwargs):

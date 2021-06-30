@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import DaylyCashReport, CashInoutLV, CashInoutCV, CashInoutUV
-from .views import ProjectCashReport, ProjectCashInoutLV, ProjectCashInoutCV, ProjectCashInoutUV, ProjectCashInoutDV
-from .views import SalesPaymentLV, SalesPaymentRegister, paymentDeleteView
+from .views import *
 
 app_name = 'cash-inout'
 
@@ -10,6 +8,7 @@ urlpatterns = [
     path('', CashInoutLV.as_view(), name='index'),
     path('create/', CashInoutCV.as_view(), name='create'),
     path('update/<int:pk>/', CashInoutUV.as_view(), name='update'),
+    path('delete/<int:pk>/', CashInoutDV, name='delete'),
 
     path('project/report/', ProjectCashReport.as_view(), name='project-report'),
     path('project/', ProjectCashInoutLV.as_view(), name='project-index'),

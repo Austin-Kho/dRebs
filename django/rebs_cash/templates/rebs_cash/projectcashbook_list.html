@@ -51,19 +51,19 @@
                                 <div class="form-group col-md-1">
                                     <label for="{{ form.d1.id_for_label }}" class="d-none d-md-block col-form-label">&nbsp;</label>
                                     <select name="d1" class="form-control" id="id_d1">
-                                      <option value="" selected="">---------</option>
-                                      {% for d1 in pa_d1 %}
-                                          <option value="{{ d1.id }}">{{ d1.name }}</option>
-                                      {% endfor %}
+                                        <option value="" selected="">---------</option>
+                                        {% for d1 in pa_d1 %}
+                                            <option value="{{ d1.id }}">{{ d1.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group col-md-1">
                                     <label for="{{ form.d2.id_for_label }}" class="d-none d-md-block col-form-label">&nbsp;</label>
                                     <select name="d2" class="form-control" id="id_d2">
-                                      <option value="" selected="">---------</option>
-                                      {% for d2 in pa_d2 %}
-                                          <option value="{{ d2.id }}">{{ d2.name }}</option>
-                                      {% endfor %}
+                                        <option value="" selected="">---------</option>
+                                        {% for d2 in pa_d2 %}
+                                            <option value="{{ d2.id }}">{{ d2.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group col-md-2">
@@ -132,7 +132,8 @@
                                                 <td class="text-right bg-info-lighten">{{ inout.outlay|floatformat:"0"|intcomma|default:"-" }}</td>
                                                 <td class="text-center">{{ inout.get_evidence_display }}</td>
                                                 <td class="text-center">
-                                                    <a href="javascript:auth_chk({% if request.user.staffauth.project_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:project-update' inout.pk %}', '')"
+                                                    {# <a href="javascript:auth_chk({% if request.user.staffauth.project_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:project-update' inout.pk %}', '')"#}
+                                                    <a href="javascript:alert('준비중입니다!')"
                                                        class="action-icon"><i class="mdi mdi-pencil"></i></a>
                                                     <a href="javascript:auth_chk({% if request.user.staffauth.project_cash == '2' and inout.deal_date >= auth_date or request.user.is_superuser %}1{% else %}0{% endif %}, '{% url 'rebs:cash-inout:project-delete' inout.pk %}', 'del')"
                                                        class="action-icon"><i class="mdi mdi-delete"></i></a>
@@ -186,23 +187,23 @@
 
       function sort_change(sort) {
         if (sort.value === '1') {
-            pa_d1.length = '{{ pa_d1_inc.count|add:"1" }}'
-            {% for d1 in pa_d1_inc %}
-              pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
-              pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
-            {% endfor %}
+          pa_d1.length = '{{ pa_d1_inc.count|add:"1" }}'
+          {% for d1 in pa_d1_inc %}
+            pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
+            pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
+          {% endfor %}
         } else if (sort.value === '2') {
-            pa_d1.length = '{{ pa_d1_out.count|add:"1" }}'
-            {% for d1 in pa_d1_out %}
-              pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
-              pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
-            {% endfor %}
+          pa_d1.length = '{{ pa_d1_out.count|add:"1" }}'
+          {% for d1 in pa_d1_out %}
+            pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
+            pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
+          {% endfor %}
         } else {
-            pa_d1.length = '{{ pa_d1_trans.count|add:"1" }}'
-            {% for d1 in pa_d1_trans %}
-              pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
-              pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
-            {% endfor %}
+          pa_d1.length = '{{ pa_d1_trans.count|add:"1" }}'
+          {% for d1 in pa_d1_trans %}
+            pa_d1.options[{{ forloop.counter }}].text = "{{ d1.name }}";   //2-1번째 셀렉트바 텍스트 정의
+            pa_d1.options[{{ forloop.counter }}].value = "{{ d1.id }}";     //2-1번째 셀렉트바 값 정의
+          {% endfor %}
         }
       }
 
