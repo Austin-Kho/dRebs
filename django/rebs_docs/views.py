@@ -383,10 +383,18 @@ class CompanyLawsuitCaseLV(LoginRequiredMixin, ListView):
     model = LawsuitCase
     paginate_by = 15
 
+    def get_queryset(self):
+        queryset = self.model.objects.all()
+        related = self.request.GET.get('related')
+        if related:
+            queryset = queryset.filter(Q(pk=related)|Q(related_case=related))
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super(CompanyLawsuitCaseLV, self).get_context_data(**kwargs)
         context['co'] = True
         context['menu_order'] = '2'
+        context['lawcases'] = self.model.objects.all()
         return context
 
 
@@ -863,7 +871,11 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
         return project
 
     def get_queryset(self):
-        return self.model.objects.filter(project=self.get_project())
+        queryset = self.model.objects.filter(project=self.get_project())
+        related = self.request.GET.get('related')
+        if related:
+            queryset = queryset.filter(Q(pk=related)|Q(related_case=related))
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLawsuitCaseLV, self).get_context_data(**kwargs)
@@ -871,6 +883,7 @@ class ProjectLawsuitCaseLV(LoginRequiredMixin, ListView):
         user = self.request.user
         context['project_list'] = Project.objects.all() if user.is_superuser else user.staffauth.allowed_projects.all()
         context['this_project'] = self.get_project()
+        context['lawcases'] = self.model.objects.filter(project=self.get_project())
         return context
 
 
