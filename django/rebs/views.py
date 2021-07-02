@@ -112,22 +112,33 @@ class PdfExportBill(View):
             paid_dates = [] # 회차별 최종 수납일자
             payments = [] # 회차별 납부금액
             adj_days = [] # 회차별 지연일수
+            # penalties = [] # 회차별 가산금
+            # penalty_sum = 0
             for po in cont['paid_orders']:
                 if po.pay_time == 1 or po.pay_code == 1:
-                    due_date = contract.contractor.contract_date
-                    delay_dates = due_date
+                    due_date = contract.contractor.contract_date # 납부기한
+                    delay_dates = due_date # 지연일수
+                    # amount_overdue = 0  # 지연금액
+                    # overdue_rate = 0 # 지연이율
                 elif po.pay_time == 2 or po.pay_code == 2:
                     due_date = contract.contractor.contract_date + timedelta(days=30)
                     if po.pay_due_date:
                         delay_dates = due_date if due_date > po.pay_due_date else po.pay_due_date
                     else:
                         delay_dates = due_date
+                    # amount_overdue = 0 # 지연금액
+                    # overdue_rate = 0  # 지연이율
                 else:
                     due_date = po.pay_due_date
                     if po.pay_due_date:
                         delay_dates = due_date if due_date > contract.contractor.contract_date else contract.contractor.contract_date
                     else:
                         delay_dates = None
+                    # amount_overdue = 0  # 지연금액
+                    # overdue_rate = 0  # 지연이율
+
+                # penalty = amount_overdue * overdue_rate * delay_dates # 가산금
+                # penalty_sum += penalty
 
                 due_dates.append(due_date) # 회차별 납부일자
                 pl = paid_list.filter(installment_order=po)
@@ -140,11 +151,14 @@ class PdfExportBill(View):
                 else:
                     add = ad.days if pl else None
                 adj_days.append(add)  # 회차별 지연일수
+                # penalties.append(penalty)
 
             cont['due_dates'] = list(reversed(due_dates)) # 회차별 납부일자
             cont['paid_dates'] = list(reversed(paid_dates)) # 회차별 최종 수납일자
             cont['payments'] = list(reversed(payments)) # 회차별 납부금액
             cont['adj_days'] = list(reversed(adj_days)) # 회차별 지연일수
+            # cont['penalties'] = list(reversed(penalties)) # 회차별 가산금
+            # cont['penalty_sum'] = penalty_sum # 가산금 합계
             # --------------------------------------------------------------
 
             # 3. 미납 회차 (지정회차 - 완납회차)

@@ -170,3 +170,20 @@ class DownPayment(models.Model):
         ordering = ('id',)
         verbose_name = '07. 타입별 계약금 관리'
         verbose_name_plural = '07. 타입별 계약금 관리'
+
+
+class OverDueRule(models.Model):
+    project = models.ForeignKey('rebs_project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    term_start = models.IntegerField('최소연체일', null=True, blank=True, help_text='비어있을 경우 최대 음수')
+    term_end = models.IntegerField('최대연체일', null=True, blank=True, help_text='비어있을 경우 최대 양수')
+    rate_year = models.DecimalField('연체이율', max_digits=4, decimal_places=2)
+
+    def __str__(self):
+        ts = str(self.term_start) + '일' if self.term_start != None else 'Min'
+        te = str(self.term_end) + '일' if self.term_end != None else 'Max'
+        return f'{ts} - {te}'
+
+    class Meta:
+        ordering = ('-id',)
+        verbose_name = '08. 선납할인/연체이율 관리'
+        verbose_name_plural = '08. 선납할인/연체이율 관리'
