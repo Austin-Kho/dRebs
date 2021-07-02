@@ -21,13 +21,13 @@ FileInlineFormSet = forms.models.inlineformset_factory(
 )
 
 
-class PostForm(forms.ModelForm):
+class LawsuitPostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('is_notice', 'lawsuit', 'title', 'execution_date', 'content')
 
     def __init__(self, project, *args, **kwargs):
-        super(PostForm, self).__init__(*args, **kwargs)
+        super(LawsuitPostForm, self).__init__(*args, **kwargs)
         self.fields['lawsuit'].queryset = LawsuitCase.objects.filter(project=project)
 
 

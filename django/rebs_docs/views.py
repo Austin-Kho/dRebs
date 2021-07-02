@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from board.models import Board, Category, LawsuitCase, Post, File, Link
 from rebs_project.models import Project
-from .forms import LinkInlineFormSet, FileInlineFormSet, PostForm, LawsuitCaseFrom
+from .forms import LinkInlineFormSet, FileInlineFormSet, LawsuitPostForm, LawsuitCaseFrom
 
 
 class CompanyGeneralDocsLV(LoginRequiredMixin, ListView):
@@ -285,7 +285,7 @@ class CompanyLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    form_class = PostForm
+    form_class = LawsuitPostForm
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -328,7 +328,7 @@ class CompanyLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class CompanyLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    form_class = PostForm
+    form_class = LawsuitPostForm
     success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
@@ -749,7 +749,7 @@ class ProjectLawsuitDocsDV(LoginRequiredMixin, DetailView):
 
 class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Post
-    form_class = PostForm
+    form_class = LawsuitPostForm
     success_message = "새 게시물이 등록되었습니다."
 
     def get_success_url(self):
@@ -804,7 +804,7 @@ class ProjectLawsuitDocsCV(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 class ProjectLawsuitDocsUV(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Post
-    form_class = PostForm
+    form_class = LawsuitPostForm
     success_message = "수정 사항이 적용되었습니다."
 
     def get_success_url(self):
