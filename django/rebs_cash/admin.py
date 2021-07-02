@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
-from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
-from .models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from .models import (CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook,
+                     SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule)
 
 
 class CompanyBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -73,6 +73,13 @@ class DownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('order_group', 'unit_type')
 
 
+class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', '__str__', 'term_start', 'term_end', 'rate_year')
+    list_display_links = ('__str__',)
+    list_editable = ('term_start', 'term_end', 'rate_year')
+    list_filter = ('project',)
+
+
 admin.site.register(CompanyBankAccount, CompanyBankAccountAdmin)
 admin.site.register(ProjectBankAccount, ProjectBankAccountAdmin)
 admin.site.register(CashBook, CashBookAdmin)
@@ -80,3 +87,4 @@ admin.site.register(ProjectCashBook, ProjectCashBookAdmin)
 admin.site.register(SalesPriceByGT, SalesPriceByGTAdmin)
 admin.site.register(InstallmentPaymentOrder, InstallmentPaymentOrderAdmin)
 admin.site.register(DownPayment, DownPaymentAdmin)
+admin.site.register(OverDueRule, OverDueRuleAdmin)

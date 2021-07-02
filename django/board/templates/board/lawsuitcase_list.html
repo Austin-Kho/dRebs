@@ -18,8 +18,16 @@
             </li>
         </ul>
 
-        <div class="col-12">
-            <div class="text-right mb-1 mr-2">
+        <div class="row col-12 mt-3">
+            <div class="col-12 col-sm-8 col-lg-6 col-xl-4 mb-2">
+                <select name="" id="" class="form-control select2" data-toggle="select2" onchange="location.href='{{ request.path }}?related='+this.value">
+                    <option value="">---------</option>
+                    {% for case in lawcases %}
+                        <option value="{{ case.pk }}" {% if request.GET.related == case.pk|slugify %}selected{% endif %}>{{ case }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col d-flex align-items-end justify-content-end mb-2 mr-2">
                 <a href="javascript:alert('준비중!')" class="text-dark">
                     <i class="mdi mdi-file-excel-box"></i> Excel Export
                     <i class="mdi mdi-download ml-1"></i>
@@ -47,7 +55,7 @@
                         <td>{{ object.get_level_display|default:"-" }}</td>
                         <td {% if object.related_case %}data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ object.related_case }} ({{ object.related_case.get_level_display }})"{% endif %}>
                             {% if object.related_case %}
-                                <a href="{% if co %}{% url 'rebs:docs:co.case_update' object.related_case.pk %}{% else %}{% url 'rebs:docs:pr.case_update' object.related_case.pk %}{% endif %}">
+                                <a href="{{ request.path }}?related={{ object.related_case.pk }}">
                             {% endif %}
                             {{ object.related_case.case_number|default:"-" }}
                             {% if object.related_case %}</a>{% endif %}
