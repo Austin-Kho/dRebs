@@ -1,4 +1,4 @@
-{% load humanize %}
+{% load humanize mathfilters %}
 
 <div class="row">
     <div class="col-12 border-bottom mb-3">
@@ -53,10 +53,10 @@
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">
                                 <i class="dripicons-link mr-1"></i>
-                                <a href="{{ link }}" target="_blank">{{ link }}</a>
+                                <a href="{% url 'rebs:docs:link_hit' link.pk %}" target="_blank">{{ link }}</a>
                             </div>
                         </div>
-                        <span class="badge bg-secondary rounded-pill text-white">{{ 0 }}</span>
+                        <span class="badge bg-secondary rounded-pill text-white">{{ link.hit }}</span>
                     </li>
                 {% endfor %}
             </ul>
@@ -70,12 +70,13 @@
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">
                                 <i class="dripicons-download mr-1"></i>
-                                <a href="{{ file }}{{ file.file.name }}" target="_blank">{{ file.file.name }}</a> (143 Bytes)
+                                <a href="{% url 'rebs:docs:file_download' file.pk %}" target="_blank">{{ file.file.name }}</a>
+                                ({% if file.file.size < 1024 %}{{ file.file.size|floatformat }} Bytes{% elif file.file.size < 1048576 %}{{ file.file.size|div:1024|floatformat }} KB{% else %}{{ file.file.size|div:1048576|floatformat }} MB{% endif %})
                                 <i class="dripicons-clock ml-2"></i>
                                 <small>{{ object.created|date:"y-m-d H:m" }}</small>
                             </div>
                         </div>
-                        <span class="badge bg-secondary rounded-pill text-white">{{ 0 }}</span>
+                        <span class="badge bg-secondary rounded-pill text-white">{{ file.hit }}</span>
                     </li>
                 {% endfor %}
             </ul>

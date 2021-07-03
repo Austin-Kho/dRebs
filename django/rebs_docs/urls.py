@@ -52,4 +52,7 @@ urlpatterns = [
     path('project/lawsuit/case/add/', ProjectLawsuitCaseCV.as_view(), name='pr.case_create'),
     path('project/lawsuit/case/update/<int:pk>/', ProjectLawsuitCaseUV.as_view(), name='pr.case_update'),
     path('project/lawsuit/case/delete/<int:pk>/', ProjectLawsuitCaseDelete.as_view(), name='pr.case_delete'),
+
+    path('link/<int:pk>/', link_hit, name='link_hit'),
+    path('file/<int:pk>/', file_download, name='file_download'),
 ]

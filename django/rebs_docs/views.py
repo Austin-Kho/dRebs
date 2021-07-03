@@ -2,6 +2,7 @@ import math
 from django.db.models import Q
 from django.db import transaction
 from django.urls import reverse_lazy
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -962,3 +963,17 @@ class ProjectLawsuitCaseDelete(LoginRequiredMixin, DeleteView):
         context['project_list'] = Project.objects.filter(pk=self.object.project.pk)
         context['this_project'] = self.get_project()
         return context
+
+
+def link_hit(self, pk):
+    link = get_object_or_404(Link, pk=pk)
+    link.hit += 1
+    link.save()
+    return redirect(str(link))
+
+
+def file_download(self, pk):
+    file = get_object_or_404(File, pk=pk)
+    file.hit += 1
+    file.save()
+    return redirect(str(file) + str(file.file.name))
