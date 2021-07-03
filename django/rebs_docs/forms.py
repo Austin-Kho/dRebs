@@ -6,7 +6,7 @@ LinkInlineFormSet = forms.models.inlineformset_factory(
     Post,
     Link,
     fields=['link'],
-    extra=2,
+    extra=3,
     can_delete=True,
     can_delete_extra=False
 )

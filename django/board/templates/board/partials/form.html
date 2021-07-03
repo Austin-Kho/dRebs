@@ -132,7 +132,7 @@
                                 <div class="input-group">
                                     <label for="{{ field.id_for_label }}"
                                            class="col-2 col-xl-1 col-form-label">{{ field.label }}</label>
-                                    {{ field|add_class:"form-control" }}
+                                    {{ field|add_class:"form-control"|attr:"onchange:sizeCheck(this)" }}
                                 </div>
                             </div>
                         {% elif forloop.last %}
@@ -164,4 +164,13 @@
 {% block third_party %}
     {# formset add form script #}
     <script src="{% static 'common/js/formset_add_form.js' %}"></script>
+
+    <script>
+      function  sizeCheck(fileForm) {
+        if (fileForm.files[0].size > (20 * 1024 * 1024)) {
+          alert("업로드 가능한 최대 크기(20M)를 초과합니다. \n\n구글드라이브 등에 업로드 후 다운로드 주소를 상기 링크 폼에 등록 하세요.");
+          fileForm.value = "";
+        }
+      }
+    </script>
 {% endblock %}
