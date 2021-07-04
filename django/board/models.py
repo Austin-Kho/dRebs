@@ -1,6 +1,6 @@
 import hashlib
 from django.db import models
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from tinymce.models import HTMLField
 
@@ -326,6 +326,11 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def is_new(self):
+        today = datetime.today().strftime('%Y %d %m %H %M %S')
+        created = self.created + timedelta(days=3)
+        return today <= created.strftime('%Y %d %m %H %M %S')
 
     class Meta:
         ordering = ['-id']
