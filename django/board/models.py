@@ -328,9 +328,9 @@ class Post(models.Model):
         return self.title
 
     def is_new(self):
-        today = datetime.today().strftime('%Y %d %m %H %M %S')
+        today = datetime.today().strftime('%Y-%m-%d %H:%M')
         created = self.created + timedelta(days=3)
-        return today <= created.strftime('%Y %d %m %H %M %S')
+        return today < created.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
         ordering = ['-id']
