@@ -91,7 +91,7 @@
 
             </td>
             <td>{{ object.user }}</td>
-            <td>{{ object.updated|default:object.created }}</td>
+            <td>{{ object.created }}</td>
             <td>{{ object.hit|default:"-"|intcomma }}</td>
         </tr>
     {% endfor %}
