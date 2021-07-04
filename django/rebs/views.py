@@ -94,8 +94,6 @@ class PdfExportBill(View):
             due_dates = []  # 회차별 납부일자
             paid_dates = []  # 회차별 최종 수납일자
             payments = []  # 회차별 납부금액
-
-
             delay_days = []  # 회차별 지연일수
             penalties = [] # 회차별 가산금
             penalty_sum = 0 # 가산금 총액
@@ -130,32 +128,43 @@ class PdfExportBill(View):
                         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
 
                     # 현재까지 납부된 payments를 구한다.
-                    now_payments = paid_list.filter(installment_order__lte=2)  # 당 회차까지 납부 데이터
+                    second_payment = paid_list.filter(installment_order__lte=2)  # 당 회차까지 납부 데이터
                     now_due_payment = paid_order_amount  # 당 회차까지 납부할 금액
                     now_pay = 0  # 당 회차까지 납부액 누계
                     now_penalty = 0 # 당회 가산금 총액
 
-                    for np in now_payments:  # 1 - 2회차 납부 데이터
+                    for np in second_payment:  # 1 - 2회차 납부 데이터
                         now_pay += np.income  # 당회 납부액 누계
-                        if now_pay < paid_order_amount:
+
+                        if now_pay < paid_order_amount and np.deal_date > due_date: # 납부 연체 시
                             amount_overdue = now_due_payment - now_pay  # 지연금액
                             dates_overdue = np.deal_date - due_date  # 지연일수
-                            if np.deal_date > due_date:
-                                pass
-                                # penalty_sum += self.overdue_rate(amount_overdue, dates_overdue)
-                                # now_penalty += self.overdue_rate(amount_overdue, dates_overdue)
+                            penalty_sum += self.overdue_rate(amount_overdue, dates_overdue.days)
+                            now_penalty += self.overdue_rate(amount_overdue, dates_overdue.days)
+                    penalties.append(now_penalty)
 
-                else:  # 2회차 이후 납부회차인 경우
+                else:  # 3회차 이후 납부회차인 경우
                     due_date = to.pay_due_date
                     if to.pay_due_date:
                         due_date = due_date if due_date > contract.contractor.contract_date else contract.contractor.contract_date
                     else:
                         due_date = None
-                    # amount_overdue = 0  # 지연금액
-                    # overdue_rate = 0  # 지연이율
 
-                # penalty = amount_overdue * overdue_rate * delay_dates # 가산금
-                # penalty_sum += penalty
+                    # # 현재까지 납부된 payments를 구한다.
+                    # other_payment = now_payment  # 당 회차까지 납부 데이터
+                    # now_due_payment = paid_order_amount  # 당 회차까지 납부할 금액
+                    # now_pay = 0  # 당 회차까지 납부액 누계
+                    # now_penalty = 0  # 당회 가산금 총액
+                    #
+                    # for np in other_payment:  # 3회차 이상 납부 데이터
+                    #     now_pay += np.income  # 당회 납부액 누계
+                    #
+                    #     if now_pay < paid_order_amount and np.deal_date > due_date:  # 납부 연체 시
+                    #         amount_overdue = now_due_payment - now_pay  # 지연금액
+                    #         dates_overdue = np.deal_date - due_date  # 지연일수
+                    #         penalty_sum += self.overdue_rate(amount_overdue, dates_overdue.days)
+                    #         now_penalty += self.overdue_rate(amount_overdue, dates_overdue.days)
+                    # penalties.append(now_penalty)
 
                 due_dates.append(due_date)  # 회차별 납부일자
 
@@ -165,7 +174,6 @@ class PdfExportBill(View):
                 else:
                     delay_day = delay.days if now_payment else None
                 delay_days.append(delay_day)  # 회차별 지연일수
-                # penalties.append(penalty)
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
@@ -175,8 +183,8 @@ class PdfExportBill(View):
             cont['paid_dates'] = list(reversed(paid_dates))  # 회차별 최종 수납일자
             cont['payments'] = list(reversed(payments))  # 회차별 납부금액
             cont['delay_days'] = list(reversed(delay_days))  # 회차별 지연일수
-            # cont['penalties'] = list(reversed(penalties)) # 회차별 가산금
-            # cont['penalty_sum'] = penalty_sum # 가산금 합계
+            cont['penalties'] = list(reversed(penalties)) # 회차별 가산금
+            cont['penalty_sum'] = penalty_sum # 가산금 합계
             # --------------------------------------------------------------
 
             # 4. 미납 회차 (지정회차 - 완납회차)
@@ -231,7 +239,7 @@ class PdfExportBill(View):
             penalty = (amount * 29 * 0.08) + (amount * (days - 29) * 0.1) + (amount * (days - 89) * 0.11)
         else:
             penalty = (amount * 29 * 0.08) + (amount * (days - 29) * 0.1) + (amount * (days - 89) * 0.11) + (amount * (days - 179) * 0.12)
-        return penalty
+        return int(penalty)
 
 
 class PdfExportPayments(View):
