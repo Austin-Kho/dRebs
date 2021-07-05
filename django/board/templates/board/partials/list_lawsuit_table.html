@@ -82,6 +82,9 @@
                         {% endif %}
                     {% endif %}" class="text-secondary">
                     {{ object|truncatechars:30 }}
+                    {% if object.link_set.all %}<i class="mdi mdi-link-variant text-dark"></i>{% endif %}
+                    {% if object.file_set.all %}<i class="mdi mdi-download text-dark"></i>{% endif %}
+                    {% if object.is_new %}<span class="badge badge-success">New</span>{% endif %}
                 </a>
 
             </td>
