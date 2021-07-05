@@ -127,7 +127,7 @@ class PdfExportBill(View):
                     if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
                         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
 
-                    # 현재까지 납부된 payments를 구한다.
+                    # 지연가산금 계산 로직 ---------------------------------------------------------------
                     second_payment = paid_list.filter(installment_order__lte=2)  # 당 회차까지 납부 데이터
                     now_due_payment = paid_order_amount  # 당 회차까지 납부할 금액
                     now_pay = 0  # 당 회차까지 납부액 누계
@@ -137,10 +137,10 @@ class PdfExportBill(View):
                         now_pay += np.income  # 당회 납부액 누계
 
                         if now_pay < paid_order_amount and np.deal_date > due_date: # 납부 연체 시
-                            amount_overdue = now_due_payment - now_pay  # 지연금액
-                            dates_overdue = np.deal_date - due_date  # 지연일수
-                            penalty_sum += self.overdue_rate(amount_overdue, dates_overdue.days)
-                            now_penalty += self.overdue_rate(amount_overdue, dates_overdue.days)
+                            amount_delay = now_due_payment - now_pay  # 지연금액
+                            dates_delay = np.deal_date - due_date  # 지연일수
+                            penalty_sum += self.overdue_rate(amount_delay, dates_delay.days)
+                            now_penalty += self.overdue_rate(amount_delay, dates_delay.days)
                     penalties.append(now_penalty)
 
                 else:  # 3회차 이후 납부회차인 경우
@@ -150,21 +150,21 @@ class PdfExportBill(View):
                     else:
                         due_date = None
 
-                    # # 현재까지 납부된 payments를 구한다.
-                    # other_payment = now_payment  # 당 회차까지 납부 데이터
-                    # now_due_payment = paid_order_amount  # 당 회차까지 납부할 금액
-                    # now_pay = 0  # 당 회차까지 납부액 누계
-                    # now_penalty = 0  # 당회 가산금 총액
-                    #
-                    # for np in other_payment:  # 3회차 이상 납부 데이터
-                    #     now_pay += np.income  # 당회 납부액 누계
-                    #
-                    #     if now_pay < paid_order_amount and np.deal_date > due_date:  # 납부 연체 시
-                    #         amount_overdue = now_due_payment - now_pay  # 지연금액
-                    #         dates_overdue = np.deal_date - due_date  # 지연일수
-                    #         penalty_sum += self.overdue_rate(amount_overdue, dates_overdue.days)
-                    #         now_penalty += self.overdue_rate(amount_overdue, dates_overdue.days)
-                    # penalties.append(now_penalty)
+                    # 지연가산금 계산 로직 ---------------------------------------------------------------
+                    other_payment = now_payment  # 당 회차까지 납부 데이터
+                    now_due_payment = paid_order_amount  # 당 회차까지 납부할 금액
+                    now_pay = 0  # 당 회차까지 납부액 누계
+                    now_penalty = 0  # 당회 가산금 총액
+
+                    for np in other_payment:  # 3회차 이상 납부 데이터
+                        now_pay += np.income  # 당회 납부액 누계
+
+                        if now_pay < paid_order_amount and np.deal_date > due_date:  # 납부 연체 시
+                            amount_delay = now_due_payment - now_pay  # 지연금액
+                            dates_delay = np.deal_date - due_date  # 지연일수
+                            penalty_sum += self.overdue_rate(amount_delay, dates_delay.days)
+                            now_penalty += self.overdue_rate(amount_delay, dates_delay.days)
+                    penalties.append(now_penalty)
 
                 due_dates.append(due_date)  # 회차별 납부일자
 
@@ -232,13 +232,13 @@ class PdfExportBill(View):
 
     def overdue_rate(self, amount, days):
         if days < 30:
-            penalty = amount * days * 0.08
+            penalty = amount * days * 0.08 / 365
         elif days < 90:
-            penalty = (amount * 29 * 0.08) + (amount * (days - 29) * 0.1)
+            penalty = (amount * 29 * 0.08 / 365) + (amount * (days - 29) * 0.1 / 365)
         elif days < 180:
-            penalty = (amount * 29 * 0.08) + (amount * (days - 29) * 0.1) + (amount * (days - 89) * 0.11)
+            penalty = (amount * 29 * 0.08 / 365) + (amount * (days - 29) * 0.1 / 365) + (amount * (days - 89) * 0.11 / 365)
         else:
-            penalty = (amount * 29 * 0.08) + (amount * (days - 29) * 0.1) + (amount * (days - 89) * 0.11) + (amount * (days - 179) * 0.12)
+            penalty = (amount * 29 * 0.08 / 365) + (amount * (days - 29) * 0.1 / 365) + (amount * (days - 89) * 0.11 / 365) + (amount * (days - 179) * 0.12 / 365)
         return int(penalty)
 
 
