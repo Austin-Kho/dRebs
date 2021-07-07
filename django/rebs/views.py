@@ -97,9 +97,11 @@ class PdfExportBill(View):
             delay_days = []  # 회차별 지연일수
             penalties = [] # 회차별 가산금
             penalty_sum = 0 # 가산금 총액
+            first_paid_date = None # 최초 계약금 완납일
+            def_pay = 0 # 지연금 = 납부할 금액 - 납부한 금액
 
             for to in this_orders:
-                pay_amount = 0
+                pay_amount = 0 # 납부할 금액
                 if to.pay_sort == '1':
                     pay_amount = down
                 if to.pay_sort == '2':
@@ -115,15 +117,29 @@ class PdfExportBill(View):
                     pm_cost_sum += pay_amount  # pm 용역비 누계
 
                 now_payment = paid_list.filter(installment_order=to)
+                paid_amount = now_payment.aggregate(Sum('income'))['income__sum']
                 paid_date = now_payment.latest('deal_date').deal_date if now_payment else None
-                payments.append(now_payment.aggregate(Sum('income'))['income__sum'])  # 회차별 납부금액
+                if to.pay_code == 1:
+                    first_paid_date = paid_date
+                payments.append(paid_amount) # 회차별 납부금액
                 paid_dates.append(paid_date)  # 회차별 최종 수납일자
 
+                # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
+                reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
+
                 if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
+
+
+                    ### acc_def_pay = 0  # 지연금 누계 = 1회차일때는 항상 0
+
+
                     due_date = contract.contractor.contract_date  # 납부기한
 
                 elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
-                    due_date = contract.contractor.contract_date + timedelta(days=30)  # 납부기한 = 계약 30일 후
+
+                    ### acc_def_pay = def_pay + acc_def_pay # 지연금 누계
+
+                    due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
                     if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
                         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
 
@@ -144,9 +160,11 @@ class PdfExportBill(View):
                     penalties.append(now_penalty)
 
                 else:  # 3회차 이후 납부회차인 경우
-                    due_date = to.pay_due_date
+
+                    ### acc_def_pay = def_pay + acc_def_pay # 지연금 누계
+
                     if to.pay_due_date:
-                        due_date = due_date if due_date > contract.contractor.contract_date else contract.contractor.contract_date
+                        due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
                     else:
                         due_date = None
 
@@ -174,6 +192,8 @@ class PdfExportBill(View):
                 else:
                     delay_day = delay.days if now_payment else None
                 delay_days.append(delay_day)  # 회차별 지연일수
+
+                ### def_pay = pay_amount - paid_amount  # 지연금 = 납부할 금액 - 납부한 금액
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
