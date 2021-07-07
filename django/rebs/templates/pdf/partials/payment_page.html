@@ -137,7 +137,7 @@
                     <td class="title center bt2">추가납부연체료</td>
                 </tr>
                 {% for po in paid_orders %}
-                    {% with due_date=due_dates.pop paid_date=paid_dates.pop paid_cash=payments.pop ad_days=adj_days.pop %}
+                    {% with due_date=due_dates.pop paid_date=due_date_list.pop paid_cash=payments.pop ad_days=adj_days.pop %}
                         <tr>
                             <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ po.alias_name|default:po.pay_name }}</td>
                             <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ paid_date|date:"Y/m/d" }}</td>

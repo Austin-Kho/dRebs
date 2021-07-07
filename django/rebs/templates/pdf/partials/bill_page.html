@@ -214,7 +214,7 @@
     </tr>
 
     {% for paid_order in data.paid_orders %}
-        {% with due_date=data.due_dates.pop paid_date=data.paid_dates.pop paid_cash=data.payments.pop ad_days=data.delay_days.pop %}
+        {% with due_date=data.due_date_list.pop paid_date=data.paid_date_list.pop paid_cash=data.payment_list.pop ad_days=data.delay_day_list.pop def_pay=data.def_pay_list.pop %}
             <tr>
                 <td style="text-align:center; border-left: solid 1px;">
                     {# 구분 #}
@@ -247,7 +247,7 @@
                 </td>
                 <td style="padding-right:5px; text-align:right;">
                     {# 선납-지연 적용금액 #}
-                    {% if not forloop.first %}{{ data.modifi|default:"-"|intcomma }}{% endif %}
+                    {{ def_pay|default:"-"|intcomma }}
                 </td>
                 <td style="text-align:right;">
                     {# 수납 원금 #}
@@ -290,7 +290,7 @@
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;"
             colspan="2">{{ data.paid_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.test|default:"-" }}</td>
-        <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.modifi_sum|default:"-" }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right;">{{ data.penalty_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ data.total_cont_amount|default:"-"|intcomma }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
     </tr>
