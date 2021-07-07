@@ -1,8 +1,9 @@
+import math
 from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -81,8 +82,8 @@ class PdfExportBill(View):
             # --------------------------------------------------------------
 
             # 2. 완납금액 및 완납회차 구하기
-            paid_list = ProjectCashBook.objects.filter(is_contract_payment=True, contract=contract).order_by(
-                'installment_order', 'deal_date')
+            paid_list = ProjectCashBook.objects.filter(is_contract_payment=True, contract=contract,
+                                                       income__isnull=False).order_by('installment_order', 'deal_date')
             paid_sum = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
             cont['paid_sum'] = paid_sum if paid_sum else 0  # 기 납부총액(None 이면 0)
 
@@ -94,19 +95,18 @@ class PdfExportBill(View):
             due_date_list = []  # 회차별 납부기한
             paid_date_list = []  # 회차별 최종 수납일자
 
-            def_payment = 0  # 지연금 = 납부할 금액 - 납부한 금액
-            dates_delay = 0  # 회차별 지연일수
-
             payment_list = []  # 회차별 납부금액
-            def_pay_list = []
+            def_pay_list = []  # 회차별 지연금액 리스트
             delay_day_list = []  # 회차별 지연일수
 
-            penalty_sum = 0 # 가산금 총액
+            def_payment = 0  # 지연금액 = 납부할 금액 - 납부한 금액
+            delay_dates = 0  # 회차별 지연일수
+            penalty_sum = 0  # 가산금 총액
 
-            first_paid_date = None # 최초 계약금 완납일
+            first_paid_date = None  # 최초 계약금 완납일
 
             for to in this_orders:
-                pay_amount = 0 # 납부할 금액
+                pay_amount = 0  # 납부할 금액
                 if to.pay_sort == '1':
                     pay_amount = down
                 if to.pay_sort == '2':
@@ -121,62 +121,62 @@ class PdfExportBill(View):
                 if to.is_pm_cost:
                     pm_cost_sum += pay_amount  # pm 용역비 누계
 
-                now_payment = paid_list.filter(installment_order=to)
-                paid_amount = now_payment.aggregate(Sum('income'))['income__sum']
-                paid_date = now_payment.latest('deal_date').deal_date if now_payment else None
+                now_payment = paid_list.filter(installment_order=to) # 현재 회차 납부 데이터
+                paid_amount = now_payment.aggregate(Sum('income'))['income__sum'] # 현재 회차 납부액 합계
+                paid_date = now_payment.latest('deal_date').deal_date if now_payment else None # 현재회차 최종 납부일
                 if to.pay_code == 1:
-                    first_paid_date = paid_date
-                payment_list.append(paid_amount) # 회차별 납부금액
+                    first_paid_date = paid_date # 계약금 납부일
+                payment_list.append(paid_amount)  # 회차별 납부금액
                 paid_date_list.append(paid_date)  # 회차별 최종 수납일자
-
-                def_payment = pay_amount - paid_amount  # 지연금 = 납부할 금액 - 납부한 금액
-                def_pay_list.append(def_payment) # 지연금 리스트
 
                 # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
                 reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
+                extra_date = reference_date if reference_date > datetime.strptime("2019-07-30", "%Y-%m-%d").date() else datetime.strptime("2019-07-30", "%Y-%m-%d").date()
 
                 if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
                     due_date = contract.contractor.contract_date  # 납부기한
 
                 elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
-                    # acc_def_payment = def_payment + acc_def_payment # 지연금 누계
                     due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
+                    extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
                     if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
                         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
 
-                    # 지연가산금 계산 로직 ---------------------------------------------------------------
-                    second_payment = paid_list.filter(installment_order__lte=2)  # 당 회차까지 납부 데이터
-                    now_pay = 0  # 당 회차까지 납부액 누계
-
-                    for np in second_payment:  # 1 - 2회차 납부 데이터
-                        now_pay += np.income  # 당회 납부액 누계
-
-                        if now_pay < paid_order_amount and np.deal_date > due_date: # 납부 연체 시
-                            delay = np.deal_date - due_date
-                            dates_delay = delay.days  # 지연일수
-                            penalty_sum += self.overdue_rate(def_payment, dates_delay)
-
                 else:  # 3회차 이후 납부회차인 경우
-                    # acc_def_payment = def_payment + acc_def_payment # 지연금 누계
                     if to.pay_due_date:
                         due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
                     else:
                         due_date = None
-
-                    # 지연가산금 계산 로직 ---------------------------------------------------------------
-                    other_payment = now_payment  # 당 회차까지 납부 데이터
-                    now_pay = 0  # 당 회차까지 납부액 누계
-
-                    for np in other_payment:  # 3회차 이상 납부 데이터
-                        now_pay += np.income  # 당회 납부액 누계
-
-                        if now_pay < paid_order_amount and np.deal_date > due_date:  # 납부 연체 시
-                            delay = np.deal_date - due_date
-                            dates_delay = delay.days  # 지연일수
-                            penalty_sum += self.overdue_rate(def_payment, dates_delay)
+                    extra_date = due_date
 
                 due_date_list.append(due_date)  # 회차별 납부일자
-                delay_day_list.append(dates_delay)  # 회차별 지연일수
+
+                # 지연일수 및 가산금 구하기
+                def_payment = pay_amount - paid_amount  # 지연금 = 납부할 금액 - 납부한 금액
+                def_pay_list.append(def_payment)  # 지연금 리스트
+
+                delay_paid = paid_list.filter(installment_order__gt=to)
+                delay_paid_sum = 0  # 지연금 총 납부액
+                delay_paid_date = date.today() # 지연 기준일
+
+                if def_payment > 0:
+                    for dp in delay_paid:
+                        delay_paid_sum += dp.income
+                        if delay_paid_sum > def_payment:
+                            delay_paid_date = dp.deal_date  # 지연금 완납일자
+                            break
+
+                extra_paid_date = paid_date if paid_date > extra_date else extra_date
+
+                if extra_date > delay_paid_date:
+                    delay_dates = 0   # 지연일수
+                else:
+                    delay = delay_paid_date - extra_paid_date  # 미수 완납일 - 미수 발생일
+                    delay_dates = delay.days  # 지연일수
+
+                penalty_sum += self.overdue_rate(def_payment, delay_dates)
+
+                delay_day_list.append(delay_dates)  # 회차별 지연일수
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
@@ -186,14 +186,15 @@ class PdfExportBill(View):
             cont['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
             cont['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
             cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
-            cont['def_pay_list'] = list(reversed(def_pay_list)) # 회차별 지연금 리스트
-            cont['penalty_sum'] = penalty_sum # 가산금 합계
+            cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
+            cont['penalty_sum'] = penalty_sum  # 가산금 합계
             # --------------------------------------------------------------
 
             # 4. 미납 회차 (지정회차 - 완납회차)
             cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
             unpaid_orders_all = this_orders.filter(pay_code__gt=paid_order)  # 최종 기납부회차 이후 납부회차
-            cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+            cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(
+                pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
             cont['unpaid_amounts_sum'] = unpaid_amounts_sum = total_cont_amount - paid_order_amount
             # --------------------------------------------------------------
 
@@ -234,15 +235,18 @@ class PdfExportBill(View):
         return response
 
     def overdue_rate(self, amount, days):
-        if days > 0 and days < 30:
-            penalty = amount * 0.08 * days / 365
-        elif days < 90:
-            penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * (days - 29) / 365)
-        elif days < 180:
-            penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 59 / 365) + (amount * 0.11 * (days - 89) / 365)
+        if amount < 0:
+            penalty = (amount * 0.04 * days / 365) * -1
         else:
-            penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 59 / 365) + (amount * 0.11 * 89 / 365) + (amount * 0.12 * (days - 179) / 365)
-        return int(penalty)
+            if days < 30:
+                penalty = amount * 0.08 * days / 365
+            elif days < 90:
+                penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * (days - 29) / 365)
+            elif days < 180:
+                penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * (days - 89) / 365)
+            else:
+                penalty = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * 90 / 365) + (amount * 0.12 * (days - 179) / 365)
+        return math.floor(penalty / 1000) * 1000
 
 
 class PdfExportPayments(View):
