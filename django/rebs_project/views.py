@@ -375,10 +375,15 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'rebs_project/site_manage.html', {'form': form})
 
 
-def siteDelete(*args, **kwargs):
+def siteDelete(request, *args, **kwargs):
     site = Site.objects.get(pk=kwargs['pk'])
     site.delete()
-    return redirect(reverse_lazy('rebs:project:site'))
+    query_str = '?'
+    if request.GET.get('page'):
+        query_str += 'page=' + request.GET.get('page')
+    if request.GET.get('project'):
+        query_str += 'project=' + request.GET.get('project')
+    return redirect(reverse_lazy('rebs:project:site') + query_str)
 
 
 class SiteOwnerManage(LoginRequiredMixin, ListView, FormView):
@@ -457,15 +462,23 @@ def siteRelationshipUpdate(request):
     if request.GET.get('date'):
         instance.acquisition_date = request.GET.get('date')
     instance.save()
-    page = '?page=' + request.GET.get('page') if request.GET.get('page') else ''
-    return redirect(reverse_lazy('rebs:project:site-owner') + page)
+    query_str = '?'
+    if request.GET.get('page'):
+        query_str += 'page=' + request.GET.get('page')
+    if request.GET.get('project'):
+        query_str += 'project=' + request.GET.get('project')
+    return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
 
 
 def siteRelationshipDelete(request, *args, **kwargs):
     instance = SiteOwnshipRelationship.objects.get(pk=kwargs['pk'])
     instance.delete()
-    page = '?page=' + request.GET.get('page') if request.GET.get('page') else ''
-    return redirect(reverse_lazy('rebs:project:site-owner') + page)
+    query_str = '?'
+    if request.GET.get('page'):
+        query_str += 'page=' + request.GET.get('page')
+    if request.GET.get('project'):
+        query_str += 'project=' + request.GET.get('project')
+    return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
 
 
 class SiteContractManage(LoginRequiredMixin, ListView, FormView):
@@ -559,5 +572,9 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
 def siteContractDelete(request, *args, **kwargs):
     instance = SiteContract.objects.get(pk=kwargs['pk'])
     instance.delete()
-    page = '?page=' + request.GET.get('page') if request.GET.get('page') else ''
-    return redirect(reverse_lazy('rebs:project:site-contract') + page)
+    query_str = '?'
+    if request.GET.get('page'):
+        query_str += 'page=' + request.GET.get('page')
+    if request.GET.get('project'):
+        query_str += 'project=' + request.GET.get('project')
+    return redirect(reverse_lazy('rebs:project:site-contract') + query_str)
