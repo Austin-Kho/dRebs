@@ -173,27 +173,32 @@ class PdfExportBill(View):
 
                 delay_paid_sum = 0  # 지연금 총 납부액
                 delay_paid_date = date.today() # 지연 기준일
-                delay_paid = paid_list.filter(installment_order__gt=to)
 
-                if unpaid > 0:
+                early_days = 0
+
+                if unpaid >= 0:
+                    delay_paid = paid_list.filter(installment_order__gt=to)
                     for dp in delay_paid:
                         delay_paid_sum += dp.income
                         if delay_paid_sum > unpaid:
                             delay_paid_date = dp.deal_date  # 지연금 완납일자
                             break
+                else: # 약정금 초과 납부(선납) 시
+                    next_order = installment_payment_order.filter(pay_code__gt=to.pay_code).first()
+                    if next_order.pay_due_date:
+                        early = next_order.pay_due_date - paid_date
+                        early_days = early.days if early.days > 0 else 0
 
-                if paid_date:
-                    extra_paid_date = paid_date if paid_date > extra_date else extra_date
-                else:
-                    extra_paid_date = extra_date
+                # if paid_date:
+                #     extra_paid_date = paid_date if paid_date < extra_date else extra_date
+                # else:
+                # extra_paid_date = extra_date
 
                 if extra_date > delay_paid_date:
                     delay_days = 0   # 지연일수
                 else:
-                    delay = delay_paid_date - extra_paid_date  # 미수 완납일 - 미수 발생일
+                    delay = delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
                     delay_days = delay.days  # 지연일수
-
-                early_days = 0
 
                 late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
                 if to.pay_code <= paid_pay_code + 1:
@@ -201,7 +206,10 @@ class PdfExportBill(View):
                 else:
                     current_late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
 
-                delay_day_list.append(delay_days)  # 회차별 지연일수
+                if unpaid >= 0:
+                    delay_day_list.append(delay_days)  # 회차별 지연일수
+                else:
+                    delay_day_list.append(early_days)  # 회차별 선납일수
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break

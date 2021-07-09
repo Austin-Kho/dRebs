@@ -146,6 +146,7 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
     alias_name = models.CharField('별칭 이름', max_length=20, blank=True, default='')
     is_pm_cost = models.BooleanField('PM용역비 여부', default=False)
     pay_due_date = models.DateField('납부기한일', null=True, blank=True)
+    extra_due_date = models.DateField('납부유예일', null=True, blank=True, help_text='연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우 납부유예일을 연체료 계산 기준으로 한다.')
 
     def __str__(self):
         return f'[{self.get_pay_sort_display()}] - {self.pay_name}'
