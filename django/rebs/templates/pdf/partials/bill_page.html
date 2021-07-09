@@ -227,7 +227,7 @@
     </tr>
 
     {% for paid_order in data.paid_orders %}
-        {% with due_date=data.due_date_list.pop paid_date=data.paid_date_list.pop paid_cash=data.payment_list.pop ad_days=data.delay_day_list.pop def_pay=data.def_pay_list.pop %}
+        {% with due_date=data.due_date_list.pop paid_date=data.paid_date_list.pop paid_cash=data.payment_list.pop def_pay=data.def_pay_list.pop delay_dates=data.delay_day_list.pop late_fee=data.late_fee_list.pop %}
             <tr>
                 <td style="text-align:center; border-left: solid 1px;">
                     {# 구분 #}
@@ -244,25 +244,25 @@
                 </td>
 
                 <td style="text-align:center; padding-right:1px;">
-                    {# 회차별 최종 수납일자 #}
+                    {# 실 수납일자 #}
                     {{ paid_date|date:"Y-m-d" }}
                 </td>
 
                 <td style="text-align:right;">
-{#                     실 수납금액#}
+                {# 실 수납금액 #}
                     {{ paid_cash|default:"-"|intcomma }}
                 </td>
                 <td style="padding-right:5px; text-align:right;">
-{#                     선납-지연 적용금액#}
+                    {# 선납-지연 적용금액 #}
                     {{ def_pay|default:"-"|intcomma }}
                 </td>
                 <td style="text-align:right;">
-{#                     선납-지연 일수#}
-                    {{ ad_days|default:"-"|intcomma }}
+                    {# 선납-지연 일수 #}
+                    {{ delay_dates|default:"-"|intcomma }}
                 </td>
-                <td style="text-align:right; background: lightyellow">
-{#                     할인(-)/가산금#}
-
+                <td style="text-align:right;">
+                    {# 할인(-)/가산금 #}
+                    {{ late_fee|default:"-"|intcomma }}
                 </td>
                 <td style="border-right: solid 1px"></td>
             </tr>
@@ -300,7 +300,7 @@
             colspan="2">{{ data.paid_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;"></td>
         <td style="padding: 3px 5px; border:1px solid black; text-align:right;"></td>
-        <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ data.penalty_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 5px; border:1px solid black; text-align:right; ">{{ data.late_fee_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;"></td>
     </tr>
 </table>

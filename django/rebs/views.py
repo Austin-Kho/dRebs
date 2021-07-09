@@ -103,18 +103,16 @@ class PdfExportBill(View):
             paid_pay_code = 0  # 완납회차
             pm_cost_sum = 0  # pm 용역비 누계
 
-            late_fee_list = [] # 연체료 리스트
             payment_list = []  # 회차별 납부금액
             paid_date_list = []  # 회차별 최종 수납일자
             due_date_list = []  # 회차별 납부기한
 
             first_paid_date = None  # 최초 계약금 완납일
 
-            # ---------------------------------------------------------------------- 미정리 코드
-            # def_pay_list = []  # 회차별 지연금액 리스트
-            # delay_day_list = []  # 회차별 지연일수
-            # late_fee_sum = 0  # 연체료 총액
+            def_pay_list = []  # 회차별 지연금액 리스트
+            delay_day_list = []  # 회차별 지연일수
 
+            late_fee_list = [] # 연체료 리스트
 
             for to in installment_payment_order:
                 pay_amount = 0                       # 약정금액
@@ -147,14 +145,14 @@ class PdfExportBill(View):
 
                 # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
                 reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
-                # extra_date = reference_date if reference_date > datetime.strptime("2019-07-30", "%Y-%m-%d").date() else datetime.strptime("2019-07-30", "%Y-%m-%d").date()
+                extra_date = reference_date if reference_date > datetime.strptime("2019-07-30", "%Y-%m-%d").date() else datetime.strptime("2019-07-30", "%Y-%m-%d").date()
 
                 if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
                     due_date = contract.contractor.contract_date  # 납부기한
 
                 elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
                     due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
-                    # extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
+                    extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
                     if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
                         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
 
@@ -163,37 +161,39 @@ class PdfExportBill(View):
                         due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
                     else:
                         due_date = None
-                #     extra_date = due_date
+                    extra_date = due_date
 
                 due_date_list.append(due_date)  # 회차별 납부일자
 
                 # 지연일수 및 가산금 구하기
                 unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
-                late_fee_list.append(unpaid)  # 지연금 리스트
-                #
-                # delay_paid = paid_list.filter(installment_order__gt=to)
-                # delay_paid_sum = 0  # 지연금 총 납부액
-                # delay_paid_date = date.today() # 지연 기준일
-                #
-                # if unpaid > 0:
-                #     for dp in delay_paid:
-                #         delay_paid_sum += dp.income
-                #         if delay_paid_sum > unpaid:
-                #             delay_paid_date = dp.deal_date  # 지연금 완납일자
-                #             break
-                #
-                # extra_paid_date = paid_date if paid_date > extra_date else extra_date
-                #
-                # if extra_date > delay_paid_date:
-                #     delay_dates = 0   # 지연일수
-                # else:
-                #     delay = delay_paid_date - extra_paid_date  # 미수 완납일 - 미수 발생일
-                #     delay_dates = delay.days  # 지연일수
-                #
-                # late_fee_sum += self.get_late_fee(unpaid, delay_dates)
-                #
-                # delay_day_list.append(delay_dates)  # 회차별 지연일수
-                #
+                def_pay_list.append(unpaid)  # 지연금 리스트
+
+                delay_paid = paid_list.filter(installment_order__gt=to)
+                delay_paid_sum = 0  # 지연금 총 납부액
+                delay_paid_date = date.today() # 지연 기준일
+
+                if unpaid > 0:
+                    for dp in delay_paid:
+                        delay_paid_sum += dp.income
+                        if delay_paid_sum > unpaid:
+                            delay_paid_date = dp.deal_date  # 지연금 완납일자
+                            break
+
+                if paid_date:
+                    extra_paid_date = paid_date if paid_date > extra_date else extra_date
+                else:
+                    extra_paid_date = extra_date
+
+                if extra_date > delay_paid_date:
+                    delay_dates = 0   # 지연일수
+                else:
+                    delay = delay_paid_date - extra_paid_date  # 미수 완납일 - 미수 발생일
+                    delay_dates = delay.days  # 지연일수
+
+                late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                delay_day_list.append(delay_dates)  # 회차별 지연일수
+
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
 
@@ -218,9 +218,6 @@ class PdfExportBill(View):
                 cont['pay_amount_sum'] += cont['pay_amount']
             cont['cal_unpaid'] = pay_amount_paid - paid_sum_total
             cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total # 미납액 = 약정액 - 납부액
-
-            cont['late_fee_list'] = list(reversed(late_fee_list))
-            cont['late_fee_sum'] = sum(late_fee_list)  # 가산금 합계
             # --------------------------------------------------------------
 
             # ■ 계좌번호 안내--------------------------------------------------
@@ -240,8 +237,11 @@ class PdfExportBill(View):
                     cont['pay_amount'] = balance
             cont['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
             cont['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
-            # cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
-            # cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
+            cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
+            cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
+            cont['late_fee_list'] = list(reversed(late_fee_list))  # 연체료 리스트
+            cont['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
+
             # cont['paid_sum_total'] = paid_sum_total if paid_sum_total else 0
 
             # 잔여 약정 목록
@@ -253,10 +253,6 @@ class PdfExportBill(View):
             rem_blank = 0 if cont['unit'] else remaining_orders.count()
             blank_line = (15 - (num + installment_payment_order.count())) + rem_blank
             cont['blank_line'] = '.' * blank_line
-
-            # cont['modi_dates'] = 0  # 선납 or 지연 일수
-            # cont['modifi'] = 0  # 선납할인 or 연체 가산금계산
-            # cont['modifi_sum'] = 0  # 가감액 합계
             # --------------------------------------------------------------
 
             context['data_list'].append(cont)
