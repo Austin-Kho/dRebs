@@ -171,9 +171,9 @@ class PdfExportBill(View):
                 unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
                 def_pay_list.append(unpaid)  # 지연금 리스트
 
-                delay_paid = paid_list.filter(installment_order__gt=to)
                 delay_paid_sum = 0  # 지연금 총 납부액
                 delay_paid_date = date.today() # 지연 기준일
+                delay_paid = paid_list.filter(installment_order__gt=to)
 
                 if unpaid > 0:
                     for dp in delay_paid:
@@ -188,19 +188,20 @@ class PdfExportBill(View):
                     extra_paid_date = extra_date
 
                 if extra_date > delay_paid_date:
-                    delay_dates = 0   # 지연일수
+                    delay_days = 0   # 지연일수
                 else:
                     delay = delay_paid_date - extra_paid_date  # 미수 완납일 - 미수 발생일
-                    delay_dates = delay.days  # 지연일수
+                    delay_days = delay.days  # 지연일수
 
-                late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                early_days = 0
+
+                late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
                 if to.pay_code <= paid_pay_code + 1:
-                    past_late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                    past_late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
                 else:
-                    current_late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                    current_late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
 
-
-                delay_day_list.append(delay_dates)  # 회차별 지연일수
+                delay_day_list.append(delay_days)  # 회차별 지연일수
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
@@ -255,9 +256,6 @@ class PdfExportBill(View):
             cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
             cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
             cont['late_fee_list'] = list(reversed(late_fee_list))  # 연체료 리스트
-            cont['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
-
-            # cont['paid_sum_total'] = paid_sum_total if paid_sum_total else 0
 
             # 잔여 약정 목록
             cont['remaining_orders'] = remaining_orders = installment_payment_order.filter(pay_code__gt=now_due_order)
@@ -268,6 +266,8 @@ class PdfExportBill(View):
             rem_blank = 0 if cont['unit'] else remaining_orders.count()
             blank_line = (15 - (num + installment_payment_order.count())) + rem_blank
             cont['blank_line'] = '.' * blank_line
+
+            cont['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
             # --------------------------------------------------------------
 
             context['data_list'].append(cont)
@@ -284,18 +284,19 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_late_fee(self, amount, days):
+    def get_late_fee(self, amount, delay, early):
         if amount < 0:
-            late_fee = (amount * 0.04 * days / 365) * -1
+            late_fee = amount * 0.04 * early / 365
         else:
-            if days < 30:
-                late_fee = amount * 0.08 * days / 365
-            elif days < 90:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * (days - 29) / 365)
-            elif days < 180:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * (days - 89) / 365)
+            if delay < 30:
+                late_fee = amount * 0.08 * delay / 365
+            elif delay < 90:
+                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * (delay - 29) / 365)
+            elif delay < 180:
+                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * (delay - 89) / 365)
             else:
-                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * 90 / 365) + (amount * 0.12 * (days - 179) / 365)
+                late_fee = (amount * 0.08 * 29 / 365) + (amount * 0.1 * 60 / 365) + (amount * 0.11 * 90 / 365) + (amount * 0.12 * (delay - 179) / 365)
+
         return math.floor(late_fee / 1000) * 1000
 
 
