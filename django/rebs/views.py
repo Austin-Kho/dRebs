@@ -63,7 +63,7 @@ class PdfExportBill(View):
                 this_price = prices.get(unit_floor_type=floor).price
             # ---------------------------------------------------------------------------
 
-            # 계약금 구하기
+            # 계약금 구하기 ----------------------------------------------------------------
             down_num = installment_payment_order.filter(pay_sort='1').count()
             try:
                 dp = DownPayment.objects.get(
@@ -78,18 +78,18 @@ class PdfExportBill(View):
             down_total = down * down_num
             # ---------------------------------------------------------------------------
 
-            # 중도금 구하기
+            # 중도금 구하기 ----------------------------------------------------------------
             med_num = installment_payment_order.filter(pay_sort='2').count()
             medium = int(this_price * 0.1)
             medium_total = medium * med_num
             # ---------------------------------------------------------------------------
 
-            # 잔금 구하기
+            # 잔금 구하기 -----------------------------------------------------------------
             bal_num = installment_payment_order.filter(pay_sort='3').count()
             balance = int((this_price - down_total - medium_total) / bal_num)
             # ---------------------------------------------------------------------------
 
-            # 완납금액 구하기
+            # 완납금액 구하기 --------------------------------------------------------------
             paid_list = ProjectCashBook.objects.filter(
                 is_contract_payment=True,
                 contract=contract,
@@ -107,15 +107,14 @@ class PdfExportBill(View):
             paid_date_list = []  # 회차별 최종 수납일자
             due_date_list = []  # 회차별 납부기한
 
-            first_paid_date = None  # 최초 계약금 완납일
-
             def_pay_list = []  # 회차별 지연금액 리스트
             delay_day_list = []  # 회차별 지연일수
-
             late_fee_list = [] # 연체료 리스트
 
+            first_paid_date = None  # 최초 계약금 완납일
+
             for to in installment_payment_order:
-                pay_amount = 0                       # 약정금액
+                pay_amount = 0                          # 약정금액
                 if to.pay_sort == '1':
                     pay_amount = down
                 if to.pay_sort == '2':
@@ -208,6 +207,7 @@ class PdfExportBill(View):
             cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
             cont['pay_amount'] = 0
             cont['pay_amount_sum'] = 0
+            summary_late_fee_list = []
             for uo in cont['unpaid_orders']:
                 if uo.pay_sort == '1':
                     cont['pay_amount'] = down
@@ -216,8 +216,11 @@ class PdfExportBill(View):
                 else:
                     cont['pay_amount'] = balance
                 cont['pay_amount_sum'] += cont['pay_amount']
+                summary_late_fee_list.append(1)
             cont['cal_unpaid'] = pay_amount_paid - paid_sum_total
             cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total # 미납액 = 약정액 - 납부액
+            cont['summary_late_fee_list'] = list(reversed(summary_late_fee_list))
+            cont['summary_late_fee_sum'] = sum(summary_late_fee_list)
             # --------------------------------------------------------------
 
             # ■ 계좌번호 안내--------------------------------------------------

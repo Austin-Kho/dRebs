@@ -86,7 +86,7 @@
         <td style="padding: 3px 10px; border:1px solid black; text-align:center;" width="20%;">납부 금액</td>
     </tr>
     {% for un_order in data.unpaid_orders %}
-        {% with late_fee=late_fee_list.pop %}
+        {% with summary_late_fee=data.summary_late_fee_list.pop %}
             <tr>
                 <!--납부 회차-->
                 <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_order }}</td>
@@ -106,26 +106,14 @@
                 </td>
                 <!--연체가산금-->
                 <td style="padding: 3px 10px; border:1px solid black; text-align:right; background: lightyellow;">
-                    {{ late_fee|default:"-"|intcomma }}
+                    {{ summary_late_fee|default:"-"|intcomma }}
                 </td>
                 <!--납부 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right; background: lightyellow">
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                     {% if forloop.first %}
-                        {% if un_order.pay_sort == '1' %}
-                            {{ data.down|add:data.cal_unpaid|add:late_fee|intcomma }}
-                        {% elif un_order.pay_sort == '2' %}
-                            {{ data.medium|add:data.cal_unpaid|add:late_fee|intcomma }}
-                        {% else %}
-                            {{ data.balance|add:data.cal_unpaid|add:late_fee|intcomma }}
-                        {% endif %}
+                        {{ data.pay_amount|add:data.cal_unpaid|add:summary_late_fee|intcomma }}
                     {% else %}
-                        {% if un_order.pay_sort == '1' %}
-                            {{ data.down|add:late_fee|intcomma }}
-                        {% elif un_order.pay_sort == '2' %}
-                            {{ data.medium|add:late_fee|intcomma }}
-                        {% else %}
-                            {{ data.balance|add:late_fee|intcomma }}
-                        {% endif %}
+                        {{ data.pay_amount|add:summary_late_fee|intcomma }}
                     {% endif %}
                 </td>
             </tr>
@@ -135,16 +123,8 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center;" colspan="2">합 계</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount_sum|default:"-"|intcomma }}</td>
         <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|default:"-"|intcomma }}</td>
-
-
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right; background: lightyellow">
-{#            {{ data.late_fee_sum|default:"-"|intcomma }}#}
-        </td>
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right; background: lightyellow">
-{#            {{ data.cal_unpaid_sum|add:data.late_fee_sum|default:"-"|intcomma }}#}
-        </td>
-
-
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.summary_late_fee_sum|default:"-"|intcomma }}</td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|default:"-"|intcomma }}</td>
     </tr>
 </table>
 
@@ -167,10 +147,7 @@
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_account1 }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; ">{{ bill.bank_number1 }}</td>
         <td style="padding: 3px 0px; border:1px solid black; text-align:center; " colspan="2">{{ bill.bank_host1 }}</td>
-
-        <td style="padding: 3px 10px; border:1px solid black; text-align:right; background: lightyellow">
-{#            {{ data.cal_unpaid_sum|add:data.penalty_sum|sub:data.pm_cost_sum|default:"-"|intcomma }}#}
-        </td>
+        <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.cal_unpaid_sum|add:data.summary_late_fee_sum|sub:data.pm_cost_sum|default:"-"|intcomma }}</td>
     </tr>
     {% if data.pm_cost_sum %}
         <tr>
@@ -252,15 +229,15 @@
                 {# 실 수납금액 #}
                     {{ paid_cash|default:"-"|intcomma }}
                 </td>
-                <td style="padding-right:5px; text-align:right;">
+                <td style="padding-right:5px; text-align:right; background: lightyellow">
                     {# 선납-지연 적용금액 #}
                     {{ def_pay|default:"-"|intcomma }}
                 </td>
-                <td style="text-align:right;">
+                <td style="text-align:right; background: lightyellow">
                     {# 선납-지연 일수 #}
                     {{ delay_dates|default:"-"|intcomma }}
                 </td>
-                <td style="text-align:right;">
+                <td style="text-align:right; background: lightyellow">
                     {# 할인(-)/가산금 #}
                     {{ late_fee|default:"-"|intcomma }}
                 </td>
