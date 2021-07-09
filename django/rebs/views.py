@@ -189,11 +189,6 @@ class PdfExportBill(View):
                         early = next_order.pay_due_date - paid_date
                         early_days = early.days if early.days > 0 else 0
 
-                # if paid_date:
-                #     extra_paid_date = paid_date if paid_date < extra_date else extra_date
-                # else:
-                # extra_paid_date = extra_date
-
                 if extra_date > delay_paid_date:
                     delay_days = 0   # 지연일수
                 else:
@@ -275,6 +270,9 @@ class PdfExportBill(View):
             blank_line = (15 - (num + installment_payment_order.count())) + rem_blank
             cont['blank_line'] = '.' * blank_line
 
+            cont['paid_sum'] = paid_sum_total # 납부액 합계
+            cont['def_pay_sum'] = sum(def_pay_list) # 미납금 합계
+            cont['delay_day_sum'] = sum(delay_day_list)
             cont['late_fee_sum'] = sum(late_fee_list)  # 연체료 합계
             # --------------------------------------------------------------
 
@@ -340,7 +338,7 @@ class PdfExportPayments(View):
 
         # 2. 실입금액
         paid_list = ProjectCashBook.objects.filter(contract=contract)
-        context['now_payments'] = paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        context['now_payments'] = paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
 
         # 3. 납부원금 (현재 지정회차 + 납부해야할 금액 합계)
         ## 계약금 구하기
