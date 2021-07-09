@@ -106,11 +106,11 @@ class PdfExportBill(View):
             late_fee_list = [] # 연체료 리스트
             payment_list = []  # 회차별 납부금액
             paid_date_list = []  # 회차별 최종 수납일자
+            due_date_list = []  # 회차별 납부기한
 
             first_paid_date = None  # 최초 계약금 완납일
 
             # ---------------------------------------------------------------------- 미정리 코드
-            # due_date_list = []  # 회차별 납부기한
             # def_pay_list = []  # 회차별 지연금액 리스트
             # delay_day_list = []  # 회차별 지연일수
             # late_fee_sum = 0  # 연체료 총액
@@ -140,32 +140,32 @@ class PdfExportBill(View):
                 now_paied_sum = now_payment.aggregate(Sum('income'))['income__sum'] # 현재 회차 납부액 합계
                 paid_amount = now_paied_sum if now_paied_sum else 0
 
-                # if to.pay_code == 1:
-                    # first_paid_date = paid_date # 계약금 납부일
+                if to.pay_code == 1:
+                    first_paid_date = paid_date # 계약금 납부일
                 payment_list.append(paid_amount)  # 회차별 납부금액
                 paid_date_list.append(paid_date)  # 회차별 최종 수납일자
 
                 # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
-                # reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
+                reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
                 # extra_date = reference_date if reference_date > datetime.strptime("2019-07-30", "%Y-%m-%d").date() else datetime.strptime("2019-07-30", "%Y-%m-%d").date()
 
-                # if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
-                #     due_date = contract.contractor.contract_date  # 납부기한
-                #
-                # elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
-                #     due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
-                #     extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
-                #     if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
-                #         due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
-                #
-                # else:  # 3회차 이후 납부회차인 경우
-                #     if to.pay_due_date:
-                #         due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
-                #     else:
-                #         due_date = None
+                if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
+                    due_date = contract.contractor.contract_date  # 납부기한
+
+                elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
+                    due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
+                    # extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
+                    if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
+                        due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
+
+                else:  # 3회차 이후 납부회차인 경우
+                    if to.pay_due_date:
+                        due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
+                    else:
+                        due_date = None
                 #     extra_date = due_date
-                #
-                # due_date_list.append(due_date)  # 회차별 납부일자
+
+                due_date_list.append(due_date)  # 회차별 납부일자
 
                 # 지연일수 및 가산금 구하기
                 unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
@@ -204,7 +204,8 @@ class PdfExportBill(View):
 
             # ■ 당회 납부대금 안내----------------------------------------------
             unpaid_orders_all = installment_payment_order.filter(pay_code__gt=paid_pay_code)  # 최종 기납부회차 이후 납부회차
-            cont['unpaid_orders'] = unpaid_orders_all.filter(pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+            cont['unpaid_orders'] = unpaid_orders = unpaid_orders_all.filter(pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+            cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
             cont['pay_amount'] = 0
             cont['pay_amount_sum'] = 0
             for uo in cont['unpaid_orders']:
@@ -223,41 +224,40 @@ class PdfExportBill(View):
             # --------------------------------------------------------------
 
             # ■ 계좌번호 안내--------------------------------------------------
-
+            # cont['pay_amount_total'] = pay_amount_total
+            cont['pm_cost_sum'] = pm_cost_sum
             # --------------------------------------------------------------
 
             # ■ 납부약정 및 납입내역--------------------------------------------
-
-            # --------------------------------------------------------------
-            # cont['paid_orders'] = installment_payment_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
-            # cont['due_date_list'] = list(reversed(due_date_list))  # 회차별 납부일자
-            # cont['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
-            # cont['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
+            cont['paid_orders'] = installment_payment_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
+            cont['due_date_list'] = list(reversed(due_date_list))  # 회차별 납부일자
+            for po in cont['paid_orders']:
+                if po.pay_sort == '1':
+                    cont['pay_amount'] = down
+                elif po.pay_sort == '2':
+                    cont['pay_amount'] = medium
+                else:
+                    cont['pay_amount'] = balance
+            cont['paid_date_list'] = list(reversed(paid_date_list))  # 회차별 최종 수납일자
+            cont['payment_list'] = list(reversed(payment_list))  # 회차별 납부금액
             # cont['delay_day_list'] = list(reversed(delay_day_list))  # 회차별 지연일수
             # cont['def_pay_list'] = list(reversed(def_pay_list))  # 회차별 지연금 리스트
             # cont['paid_sum_total'] = paid_sum_total if paid_sum_total else 0
-            # --------------------------------------------------------------
 
-            # 4. 미납 회차 (지정회차 - 완납회차)
-            cont['second_date'] = contract.contractor.contract_date + timedelta(days=30)
-            # --------------------------------------------------------------
+            # 잔여 약정 목록
+            cont['remaining_orders'] = remaining_orders = installment_payment_order.filter(pay_code__gt=now_due_order)
+            if not cont['unit']:
+                cont['remaining_orders'] = remaining_orders.filter(pay_sort='1')
 
-            # 5. 미납 금액 (약정금액 - 납부금액)
-            # cont['pay_amount_total'] = pay_amount_total
-            # cont['pm_cost_sum'] = pm_cost_sum
+            num = unpaid_orders.count() + 1 if pm_cost_sum else unpaid_orders.count()
+            rem_blank = 0 if cont['unit'] else remaining_orders.count()
+            blank_line = (15 - (num + installment_payment_order.count())) + rem_blank
+            cont['blank_line'] = '.' * blank_line
 
-            # 6. 잔여 약정 목록
-            # cont['remaining_orders'] = remaining_orders = installment_payment_order.filter(pay_code__gt=now_due_order)
-            # if not cont['unit']:
-            #     cont['remaining_orders'] = remaining_orders.filter(pay_sort='1')
             # cont['modi_dates'] = 0  # 선납 or 지연 일수
             # cont['modifi'] = 0  # 선납할인 or 연체 가산금계산
             # cont['modifi_sum'] = 0  # 가감액 합계
-
-            # num = unpaid_orders.count() + 1 if cont['pm_cost_sum'] else unpaid_orders.count()
-            # rem_blank = 0 if cont['unit'] else remaining_orders.count()
-            # blank_line = (15 - (num + installment_payment_order.count())) + rem_blank
-            # cont['blank_line'] = '*' * blank_line
+            # --------------------------------------------------------------
 
             context['data_list'].append(cont)
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
