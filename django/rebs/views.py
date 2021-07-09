@@ -136,11 +136,12 @@ class PdfExportBill(View):
 
                 # 회차별 납부 해야할 금액 ----------------------------------------------------------
                 now_payment = paid_list.filter(installment_order=to) # 현재 회차 납부 데이터
-                paid_amount = now_payment.aggregate(Sum('income'))['income__sum'] # 현재 회차 납부액 합계
                 paid_date = now_payment.latest('deal_date').deal_date if now_payment else None # 현재회차 최종 납부일
+                now_paied_sum = now_payment.aggregate(Sum('income'))['income__sum'] # 현재 회차 납부액 합계
+                paid_amount = now_paied_sum if now_paied_sum else 0
 
-                if to.pay_code == 1:
-                    first_paid_date = paid_date # 계약금 납부일
+                # if to.pay_code == 1:
+                    # first_paid_date = paid_date # 계약금 납부일
                 payment_list.append(paid_amount)  # 회차별 납부금액
                 paid_date_list.append(paid_date)  # 회차별 최종 수납일자
 
@@ -165,12 +166,10 @@ class PdfExportBill(View):
                 #     extra_date = due_date
                 #
                 # due_date_list.append(due_date)  # 회차별 납부일자
-                #
-                # # 지연일수 및 가산금 구하기
-                # unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
-                cont['test1'] = pay_amount
-                cont['test2'] = paid_amount
-                # late_fee_list.append(unpaid)  # 지연금 리스트
+
+                # 지연일수 및 가산금 구하기
+                unpaid = pay_amount - paid_amount  # 지연금 = 약정 금액 - 납부한 금액
+                late_fee_list.append(unpaid)  # 지연금 리스트
                 #
                 # delay_paid = paid_list.filter(installment_order__gt=to)
                 # delay_paid_sum = 0  # 지연금 총 납부액
@@ -206,15 +205,21 @@ class PdfExportBill(View):
             # ■ 당회 납부대금 안내----------------------------------------------
             unpaid_orders_all = installment_payment_order.filter(pay_code__gt=paid_pay_code)  # 최종 기납부회차 이후 납부회차
             cont['unpaid_orders'] = unpaid_orders_all.filter(pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
-
-            cont['down'] = down
-            cont['medium'] = medium
-            cont['balance'] = balance
-
+            cont['pay_amount'] = 0
+            cont['pay_amount_sum'] = 0
+            for uo in cont['unpaid_orders']:
+                if uo.pay_sort == '1':
+                    cont['pay_amount'] = down
+                elif uo.pay_sort == '2':
+                    cont['pay_amount'] = medium
+                else:
+                    cont['pay_amount'] = balance
+                cont['pay_amount_sum'] += cont['pay_amount']
             cont['cal_unpaid'] = pay_amount_paid - paid_sum_total
-            cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total #  약정액 - 납부액
-            # cont['late_fee_list'] = list(reversed(late_fee_list))
-            # cont['late_fee_sum'] = sum(late_fee_list)  # 가산금 합계
+            cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total # 미납액 = 약정액 - 납부액
+
+            cont['late_fee_list'] = list(reversed(late_fee_list))
+            cont['late_fee_sum'] = sum(late_fee_list)  # 가산금 합계
             # --------------------------------------------------------------
 
             # ■ 계좌번호 안내--------------------------------------------------
