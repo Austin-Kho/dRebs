@@ -110,9 +110,12 @@ class PdfExportBill(View):
             def_pay_list = []  # 회차별 지연금액 리스트
             delay_day_list = []  # 회차별 지연일수
             late_fee_list = [] # 연체료 리스트
+            past_late_fee_list = []
+            current_late_fee_list = []
 
             first_paid_date = None  # 최초 계약금 완납일
 
+            # --------------------------------------------------------------
             for to in installment_payment_order:
                 pay_amount = 0                          # 약정금액
                 if to.pay_sort == '1':
@@ -191,11 +194,17 @@ class PdfExportBill(View):
                     delay_dates = delay.days  # 지연일수
 
                 late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                if to.pay_code <= paid_pay_code + 1:
+                    past_late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+                else:
+                    current_late_fee_list.append(self.get_late_fee(unpaid, delay_dates))
+
+
                 delay_day_list.append(delay_dates)  # 회차별 지연일수
 
                 if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
-
+            # --------------------------------------------------------------
 
             # ■ 계약 내용------------------------------------------------------
             cont['price'] = this_price  # 이 건 분양가격
@@ -208,7 +217,7 @@ class PdfExportBill(View):
             cont['pay_amount'] = 0
             cont['pay_amount_sum'] = 0
             summary_late_fee_list = []
-            for uo in cont['unpaid_orders']:
+            for i, uo in enumerate(cont['unpaid_orders']):
                 if uo.pay_sort == '1':
                     cont['pay_amount'] = down
                 elif uo.pay_sort == '2':
@@ -216,7 +225,10 @@ class PdfExportBill(View):
                 else:
                     cont['pay_amount'] = balance
                 cont['pay_amount_sum'] += cont['pay_amount']
-                summary_late_fee_list.append(1)
+                if i == 0:
+                    summary_late_fee_list.append(sum(past_late_fee_list))
+                else:
+                    summary_late_fee_list.append(current_late_fee_list[i-1])
             cont['cal_unpaid'] = pay_amount_paid - paid_sum_total
             cont['cal_unpaid_sum'] = pay_amount_total - paid_sum_total # 미납액 = 약정액 - 납부액
             cont['summary_late_fee_list'] = list(reversed(summary_late_fee_list))
