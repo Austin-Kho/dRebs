@@ -375,14 +375,10 @@ class SiteManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'rebs_project/site_manage.html', {'form': form})
 
 
-def siteDelete(request, *args, **kwargs):
-    site = Site.objects.get(pk=kwargs['pk'])
-    site.delete()
-    query_str = '?'
-    if request.GET.get('page'):
-        query_str += 'page=' + request.GET.get('page')
-    if request.GET.get('project'):
-        query_str += 'project=' + request.GET.get('project')
+def siteDelete(*args, **kwargs):
+    instance = Site.objects.get(pk=kwargs['pk'])
+    instance.delete()
+    query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''
     return redirect(reverse_lazy('rebs:project:site') + query_str)
 
 
@@ -470,14 +466,10 @@ def siteRelationshipUpdate(request):
     return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
 
 
-def siteRelationshipDelete(request, *args, **kwargs):
+def siteRelationshipDelete(*args, **kwargs):
     instance = SiteOwnshipRelationship.objects.get(pk=kwargs['pk'])
     instance.delete()
-    query_str = '?'
-    if request.GET.get('page'):
-        query_str += 'page=' + request.GET.get('page')
-    if request.GET.get('project'):
-        query_str += 'project=' + request.GET.get('project')
+    query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''
     return redirect(reverse_lazy('rebs:project:site-owner') + query_str)
 
 
@@ -569,12 +561,8 @@ class SiteContractManage(LoginRequiredMixin, ListView, FormView):
         return render(request, 'rebs_project/site_contract_manage.html', {'form': form})
 
 
-def siteContractDelete(request, *args, **kwargs):
+def siteContractDelete(*args, **kwargs):
     instance = SiteContract.objects.get(pk=kwargs['pk'])
     instance.delete()
-    query_str = '?'
-    if request.GET.get('page'):
-        query_str += 'page=' + request.GET.get('page')
-    if request.GET.get('project'):
-        query_str += 'project=' + request.GET.get('project')
+    query_str = '?' + str(args[0]).split('?')[1].split('\'')[0] if len(str(args[0]).split('?')) > 1 else ''
     return redirect(reverse_lazy('rebs:project:site-contract') + query_str)

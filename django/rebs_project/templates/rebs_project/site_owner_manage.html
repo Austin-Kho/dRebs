@@ -265,8 +265,18 @@
       }
 
       function relationshipDelete(id) {
+        del_url = "/rebs/project/site-relation-delete/" + id + '?'
+        {% if request.GET.page %}
+          del_url += 'page={{ request.GET.page }}'
+        {% endif %}
+        {% if request.GET.page and request.GET.project %}
+          del_url += '&'
+        {% endif %}
+        {% if request.GET.project %}
+          del_url += 'project={{ request.GET.project }}'
+        {% endif %}
         if (confirm('삭제 후 되돌릴 수 없습니다. 해당 소유권 관련 정보를 삭제하시겠습니까?')) {
-          location.href = "/rebs/project/site-relation-delete/" + id
+          location.href = del_url
         } else {
           return
         }

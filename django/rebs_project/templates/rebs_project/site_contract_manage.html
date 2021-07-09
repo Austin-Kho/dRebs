@@ -282,8 +282,19 @@
       }
 
       function site_cont_del(obj, id) {
+        del_url = "/rebs/project/site-contract-delete/" + id + '?'
+        {% if request.GET.page %}
+          del_url += 'page={{ request.GET.page }}'
+        {% endif %}
+        {% if request.GET.page and request.GET.project %}
+          del_url += '&'
+        {% endif %}
+        {% if request.GET.project %}
+          del_url += 'project={{ request.GET.project }}'
+        {% endif %}
+
         if (confirm('[' + obj + ']\n\n삭제 후 복구할 수 없습니다. 해당 계약 건을 삭제하시겠습니까?')) {
-          location.href = "/rebs/project/site-contract-delete/" + id
+          location.href = del_url
         } else {
           return
         }
