@@ -102,6 +102,7 @@ class PdfExportBill(View):
             pay_amount_paid = 0  # 완납 회차까지 약정액 합계
             paid_pay_code = 0  # 완납회차
             pm_cost_sum = 0  # pm 용역비 누계
+            apply_pay = 0 # 가산금 적용액
 
             payment_list = []  # 회차별 납부금액
             paid_date_list = []  # 회차별 최종 수납일자
@@ -116,54 +117,56 @@ class PdfExportBill(View):
             first_paid_date = None  # 최초 계약금 완납일
 
             # --------------------------------------------------------------
-            for to in installment_payment_order:
+            for ipo in installment_payment_order:
                 pay_amount = 0                          # 약정금액
-                if to.pay_sort == '1':
+                if ipo.pay_sort == '1':
                     pay_amount = down
-                if to.pay_sort == '2':
+                if ipo.pay_sort == '2':
                     pay_amount = medium
-                if to.pay_sort == '3':
+                if ipo.pay_sort == '3':
                     pay_amount = balance
 
                 pay_amount_total += pay_amount          # 약정금액 누계
 
                 if paid_sum_total >= pay_amount_total:  # 기 납부총액이 약정액보다 같거나 큰지 검사
-                    paid_pay_code = to.pay_code         # 완납회차 추출
+                    paid_pay_code = ipo.pay_code         # 완납회차 추출
                     pay_amount_paid += pay_amount       # 완납회차까지 약정액 누계
 
-                if to.is_pm_cost:
+                if ipo.is_pm_cost:
                     pm_cost_sum += pay_amount  # pm 용역비 누계
 
                 # 회차별 납부 해야할 금액 ----------------------------------------------------------
-                now_payment = paid_list.filter(installment_order=to) # 현재 회차 납부 데이터
+                now_payment = paid_list.filter(installment_order=ipo) # 현재 회차 납부 데이터
                 paid_date = now_payment.latest('deal_date').deal_date if now_payment else None # 현재회차 최종 납부일
                 now_paied_sum = now_payment.aggregate(Sum('income'))['income__sum'] # 현재 회차 납부액 합계
                 paid_amount = now_paied_sum if now_paied_sum else 0
 
-                if to.pay_code == 1:
+                if ipo.pay_code == 1:
                     first_paid_date = paid_date # 계약금 납부일
                 payment_list.append(paid_amount)  # 회차별 납부금액
                 paid_date_list.append(paid_date)  # 회차별 최종 수납일자
 
                 # 계약일과 최초 계약금 납부일 중 늦은 날을 기점으로 30일
                 reference_date = first_paid_date if first_paid_date and (first_paid_date > contract.contractor.contract_date) else contract.contractor.contract_date
-                extra_date = reference_date if reference_date > datetime.strptime("2019-07-30", "%Y-%m-%d").date() else datetime.strptime("2019-07-30", "%Y-%m-%d").date()
 
-                if to.pay_time == 1 or to.pay_code == 1:  # 최초 계약금일 때
+                if ipo.pay_time == 1 or ipo.pay_code == 1:  # 최초 계약금일 때
                     due_date = contract.contractor.contract_date  # 납부기한
 
-                elif to.pay_time == 2 or to.pay_code == 2:  # 2차 계약금일 때
+                elif ipo.pay_time == 2 or ipo.pay_code == 2:  # 2차 계약금일 때
                     due_date = reference_date + timedelta(days=30)  # 납부기한 = 기준일 30일 후
-                    extra_date = datetime.strptime("2019-07-30", "%Y-%m-%d").date()
-                    if to.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
-                        due_date = due_date if due_date > to.pay_due_date else to.pay_due_date  # 납부기한
+                    if ipo.pay_due_date:  # 당회차 납부기한이 설정되어 있을 때 -> 계약후 30일 후와 설정일 중 늦은 날을 납부기한으로 한다.
+                        due_date = due_date if due_date > ipo.pay_due_date else ipo.pay_due_date  # 납부기한
 
                 else:  # 3회차 이후 납부회차인 경우
-                    if to.pay_due_date:
-                        due_date = to.pay_due_date if to.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
+                    if ipo.pay_due_date:
+                        due_date = ipo.pay_due_date if ipo.pay_due_date > reference_date + timedelta(days=30) else reference_date + timedelta(days=30)  # 납부기한
                     else:
                         due_date = None
-                    extra_date = due_date
+
+                # extra_date 이전의 연체일수를 계산하지 않는다. 즉 extra_date 이후의 연체 발생 건부터 적용한다.
+                extra_date = ipo.extra_due_date
+                if extra_date and extra_date > due_date:
+                    due_date = extra_date # extra_date 가 설정되어 있고 납부기한보다 늦으면 extra_date를 납부기한으로 한다.
 
                 due_date_list.append(due_date)  # 회차별 납부일자
 
@@ -177,14 +180,14 @@ class PdfExportBill(View):
                 early_days = 0
 
                 if unpaid >= 0:
-                    delay_paid = paid_list.filter(installment_order__gt=to)
+                    delay_paid = paid_list.filter(installment_order__gt=ipo)
                     for dp in delay_paid:
                         delay_paid_sum += dp.income
                         if delay_paid_sum > unpaid:
                             delay_paid_date = dp.deal_date  # 지연금 완납일자
                             break
                 else: # 약정금 초과 납부(선납) 시
-                    next_order = installment_payment_order.filter(pay_code__gt=to.pay_code).first()
+                    next_order = installment_payment_order.filter(pay_code__gt=ipo.pay_code).first()
                     if next_order.pay_due_date:
                         early = next_order.pay_due_date - paid_date
                         early_days = early.days if early.days > 0 else 0
@@ -195,18 +198,19 @@ class PdfExportBill(View):
                     delay = delay_paid_date - extra_date  # 미수 완납일 - 미수 발생일
                     delay_days = delay.days  # 지연일수
 
-                late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
-                if to.pay_code <= paid_pay_code + 1:
-                    past_late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
+                apply_pay += unpaid
+                late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
+                if ipo.pay_code <= paid_pay_code + 1:
+                    past_late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
                 else:
-                    current_late_fee_list.append(self.get_late_fee(unpaid, delay_days, early_days))
+                    current_late_fee_list.append(self.get_late_fee(apply_pay, delay_days, early_days))
 
                 if unpaid >= 0:
                     delay_day_list.append(delay_days)  # 회차별 지연일수
                 else:
                     delay_day_list.append(early_days)  # 회차별 선납일수
 
-                if to.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
+                if ipo.pay_code == now_due_order:  # 순회 회차가 지정회차와 같으면 순회중단
                     break
             # --------------------------------------------------------------
 
