@@ -92,16 +92,16 @@
                 <td style="padding: 3px 0px; border:1px solid black; text-align:center;">{{ un_order }}</td>
                 <!--납부 기한-->
                 <td style="padding: 3px 0px; border:1px solid black; text-align:center;">
-                    {{ un_order.pay_due_date|default:data.second_date }}
+                    {{ un_order.extra_due_date|default:un_order.pay_due_date }}
                 </td>
                 <!--약정 금액-->
-                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount|intcomma }}</td>
+                <td style="padding: 3px 10px; border:1px solid black; text-align:right;">{{ data.pay_amount|default:"-"|intcomma }}</td>
                 <!--미납 금액-->
                 <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                     {% if forloop.first %}
-                        {{ data.pay_amount|add:data.cal_unpaid|intcomma }}
+                        {{ data.pay_amount|add:data.cal_unpaid|default:"-"|intcomma }}
                     {% else %}
-                        {{ data.pay_amount|intcomma }}
+                        {{ data.pay_amount|default:"-"|intcomma }}
                     {% endif %}
                 </td>
                 <!--연체가산금-->
@@ -111,9 +111,9 @@
                 <!--납부 금액-->
                 <td style="padding: 3px 10px; border:1px solid black; text-align:right;">
                     {% if forloop.first %}
-                        {{ data.pay_amount|add:data.cal_unpaid|add:summary_late_fee|intcomma }}
+                        {{ data.pay_amount|add:data.cal_unpaid|add:summary_late_fee|default:"-"|intcomma }}
                     {% else %}
-                        {{ data.pay_amount|add:summary_late_fee|intcomma }}
+                        {{ data.pay_amount|add:summary_late_fee|default:"-"|intcomma }}
                     {% endif %}
                 </td>
             </tr>
