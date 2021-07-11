@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 # --------------------------------------------------------
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -281,6 +281,7 @@ class PdfExportBill(View):
             # --------------------------------------------------------------
 
             context['data_list'].append(cont)
+
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
 
         html_string = render_to_string('pdf/bill_control.html', context)
@@ -336,6 +337,7 @@ class PdfExportPayments(View):
         if unit:
             floor = contract.contractunit.unitnumber.floor_type
             this_price = prices.get(unit_floor_type=floor).price
+
         context['unit'] = unit
         context['this_price'] = this_price
         # --------------------------------------------------------------
@@ -383,12 +385,13 @@ class PdfExportPayments(View):
             if di.pay_sort == '3':
                 pay_amount = context['balance']
             pay_amount_total += pay_amount  # 지정회차까지 약정액 합계 (+)
-        context['due_payments'] = pay_amount_total
 
+        context['due_payments'] = pay_amount_total
         context['paid_orders'] = paid_orders = installment_payment_order.filter(pay_code__lte=now_due_order)  # 지정회차까지 회차
         paid_date_list = []  # 회차별 최종 수납일자
         payments = []  # 회차별 납부금액
         adj_days = []  # 회차별 지연일수
+
         for po in paid_orders:
             if po.pay_time == 1 or po.pay_code == 1:
                 due_date = cont_date
