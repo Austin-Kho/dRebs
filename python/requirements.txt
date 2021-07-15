@@ -13,3 +13,9 @@ django-storages
 django-mathfilters
 xlsxwriter
 WeasyPrint
+djangorestframework
+httpie
+django-filter
+django-crispy-forms
+coverage
+django-nose
