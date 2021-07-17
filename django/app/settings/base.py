@@ -64,11 +64,11 @@ INSTALLED_APPS += [  # plugin
 ]
 
 INSTALLED_APPS += [  # app
+    'api.apps.ApiConfig',
     'account.apps.AccountConfig',
     'home.apps.HomeConfig',
     'board.apps.BoardConfig',
-    # 'books.apps.BooksConfig',
-    'books',
+    'books.apps.BooksConfig',
     'excel.apps.ExcelConfig',
     'rebs.apps.RebsConfig',
     'rebs_company.apps.RebsCompanyConfig',
