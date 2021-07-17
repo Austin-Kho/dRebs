@@ -262,5 +262,9 @@ MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
-    'PAGE_SIZE': 5
+    'PAGE_SIZE': 5,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
 }
