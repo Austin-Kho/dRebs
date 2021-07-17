@@ -1,11 +1,8 @@
 from django.db import models
 from django.urls import reverse
-from account.models import User
 
-# Create your models here.
 
 class Company(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField('회사명', max_length=100)
     tax_number = models.CharField('사업자등록번호', max_length=12)
     ceo = models.CharField('대표자명', max_length=30)
@@ -46,7 +43,6 @@ class Department(models.Model):
 
 
 class Staff(models.Model):
-    company = models.ForeignKey('Company', on_delete=models.PROTECT, verbose_name='회사 정보')
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, verbose_name='부서 정보')
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일')
