@@ -22,6 +22,8 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
 
     path('api/', include('api.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+
     path('', include('home.urls')),
     path('book/', include('books.urls')),
     path('rebs/', include('rebs.urls')),

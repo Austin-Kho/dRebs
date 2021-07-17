@@ -21,6 +21,9 @@ from . views import *
 app_name = 'api'
 
 urlpatterns = [
+    path('', ApiIndex.as_view(), name=ApiIndex.name),
+    path('users/', UserList.as_view(), name=UserList.name),
+    path('users/<int:pk>/', UserDetail.as_view(), name=UserDetail.name),
     path('books/', BookList.as_view(), name=BookList.name),
     path('books/<int:pk>/', BookDetail.as_view(), name=BookDetail.name),
     path('subjects/', SubjectList.as_view(), name=SubjectList.name),

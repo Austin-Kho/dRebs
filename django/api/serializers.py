@@ -1,3 +1,4 @@
+from account.models import User
 from rest_framework import serializers
 
 from books.models import Book, Subject
@@ -16,21 +17,42 @@ from rebs_notice.models import SalesBillIssue
 from board.models import Group, Board, Category, LawsuitCase, Post, Image, Link, Comment, Tag
 
 
-class BookSerializer(serializers.ModelSerializer):
-    subjects = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='api:subject-detail')
-    url = serializers.HyperlinkedIdentityField(view_name="api:book-detail")
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Book
-        fields = ('url', 'pk', 'title', 'subjects', 'disclosure', 'author', 'translator', 'publisher', 'pub_date', 'description', 'created_at', 'updated_at')
-        # fields = ('url', 'pk', 'title', 'disclosure', 'author', 'translator', 'publisher', 'pub_date', 'description', 'created_at', 'updated_at')
+        model = User
+        fields = ('email', 'username', 'is_active', 'date_joined', 'is_staff')
 
 
-class SubjectSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:subject-detail")
-    # We want to display the subject book's name instead of the id
-    book = serializers.SlugRelatedField(queryset=Book.objects.all(), slug_field='title')
+class BookSubjectSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:subject-detail')
 
     class Meta:
         model = Subject
-        fields = ('url', 'book', 'seq', 'title', 'level', 'content', 'created_at', 'updated_at')
+        fields = ('url', 'title')
+
+
+class BookSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="api:book-detail")
+    user = serializers.ReadOnlyField(source='user.username', required=False)
+
+    class Meta:
+        model = Book
+        fields = ('url', 'pk', 'user', 'title', 'disclosure', 'author', 'translator', 'publisher', 'pub_date', 'description', 'created_at', 'updated_at')
+
+
+class SubjectBookSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:book-detail')
+
+    class Meta:
+        model = Book
+        fields = ('title', 'url')
+
+class SubjectSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="api:subject-detail")
+    user = serializers.ReadOnlyField(source='user.username', required=False)
+    book = SubjectBookSerializer()
+
+    class Meta:
+        model = Subject
+        fields = ('url', 'user', 'book', 'seq', 'title', 'level', 'content', 'created_at', 'updated_at')
