@@ -32,7 +32,7 @@ class Book(models.Model):
 
 class Subject(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='subjects')
     seq = models.PositiveSmallIntegerField('순서')
     title = models.CharField('단원 명칭', max_length=100)
 
@@ -74,6 +74,6 @@ def get_image_filename(instance, filename):
     hash_value = hashlib.md5().hexdigest()
     return f"editor/{today}_{hash_value}_{filename}"
 
-class Images(models.Model):
+class Image(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=None)
     image = models.ImageField(upload_to=get_image_filename, verbose_name='Image')

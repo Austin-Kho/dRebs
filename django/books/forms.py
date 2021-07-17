@@ -1,5 +1,5 @@
 from django import forms
-from .models import Subject, Images
+from .models import Subject, Image
 
 
 class SubjectForm(forms.ModelForm):
@@ -12,8 +12,8 @@ class SubjectForm(forms.ModelForm):
 class ImageForm(forms.ModelForm):
 
     class Meta:
-        model = Images
+        model = Image
         fields = ('image', )
 
 
-ImageFormSet = forms.models.inlineformset_factory(Subject, Images, form=ImageForm, extra=1)
+ImageFormSet = forms.models.inlineformset_factory(Subject, Image, form=ImageForm, extra=1)

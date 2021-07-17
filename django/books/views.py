@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from . forms import ImageForm, ImageFormSet
-from . models import Book, Subject, Images
+from . models import Book, Subject, Image
 
 
 class BooksListView(LoginRequiredMixin, ListView):

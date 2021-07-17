@@ -21,6 +21,7 @@ urlpatterns = [
     path('mdeditor/', include('mdeditor.urls')),
     path('tinymce/', include('tinymce.urls')),
 
+    path('api/', include('api.urls')),
     path('', include('home.urls')),
     path('book/', include('books.urls')),
     path('rebs/', include('rebs.urls')),
