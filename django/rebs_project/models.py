@@ -164,7 +164,7 @@ class SiteOwner(models.Model):
     own_sort = models.CharField('소유구분', max_length=1, choices=OWN_CHOICES)
     sites = models.ManyToManyField(Site, through='SiteOwnshipRelationship', through_fields=('site_owner', 'site'), verbose_name='소유부지')
     counsel_record = models.TextField('상담기록', null=True, blank=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
 
@@ -217,7 +217,7 @@ class SiteContract(models.Model):
     acc_number = models.CharField('계좌번호', max_length=20)
     acc_owner = models.CharField('예금주', max_length=20)
     note = models.TextField('특이사항', blank=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
 

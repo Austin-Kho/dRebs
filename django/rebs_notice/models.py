@@ -21,5 +21,5 @@ class SalesBillIssue(models.Model):
     address3 = models.CharField('참고항목', max_length=30, blank=True, default='')
     title = models.CharField('고지서 제목', max_length=255)
     content = models.TextField('고지서 내용')
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     updated_at = models.DateTimeField('최종 변경일', auto_now=True)

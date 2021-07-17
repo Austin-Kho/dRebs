@@ -9,7 +9,7 @@ from . serializers import *
 from books.models import Book, Subject
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
-from rebs_company.models import Company, Department
+from rebs_company.models import Company, Department, Staff
 from rebs_project.models import (Project, UnitType, UnitFloorType,
                                  ContractUnit, UnitNumber, ProjectBudget,
                                  Site, SiteOwner, SiteOwnshipRelationship, SiteContract)

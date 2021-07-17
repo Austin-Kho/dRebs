@@ -25,7 +25,7 @@ class Contract(models.Model):
     activation = models.BooleanField('계약 활성 여부', default=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
         return f'[{self.project.id}] {self.serial_number}'
@@ -50,7 +50,7 @@ class Contractor(models.Model):
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
         return f'{self.name}({self.contract.serial_number})'
@@ -72,7 +72,7 @@ class ContractorAddress(models.Model):
     dm_address3 = models.CharField('참고항목', max_length=30, blank=True, default='')
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
         return f'[주소] - {self.contractor}'
@@ -90,7 +90,7 @@ class ContractorContact(models.Model):
     email = models.EmailField('이메일', null=True, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
         return f'[연락처] - {self.contractor}'
@@ -112,7 +112,7 @@ class ContractorRelease(models.Model):
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
         return f'{self.contractor}'

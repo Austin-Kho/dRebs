@@ -49,7 +49,7 @@ class CashBook(models.Model):
     evidence = models.CharField('증빙 자료', max_length=1, choices=EVIDENCE_CHOICES, default='0', blank=True)
     note = models.CharField('비고', max_length=255, blank=True, default='')
     deal_date = models.DateField('거래일자')
-    recoder = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일시', auto_now_add=True)
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 
@@ -103,7 +103,7 @@ class ProjectCashBook(models.Model):
     evidence = models.CharField('증빙 자료', max_length=1, choices=EVIDENCE_CHOICES, default='0')
     note = models.TextField('비고', blank=True, default='')
     deal_date = models.DateField('거래일자')
-    recoder = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일시', auto_now_add=True)
     updated_at = models.DateTimeField('수정일시', auto_now=True)
 

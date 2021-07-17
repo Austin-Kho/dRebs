@@ -287,7 +287,7 @@ class LawsuitCase(models.Model):
     related_debtor = models.CharField('제3채무자', max_length=20, null=True, blank=True)
     case_start_date = models.DateField('사건개시일', null=True, blank=True)
     summary = models.TextField('개요 및 경과', null=True, blank=True)
-    register = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
     created = models.DateTimeField('등록일시', auto_now_add=True)
     updated = models.DateTimeField('수정일시', auto_now=True)
 

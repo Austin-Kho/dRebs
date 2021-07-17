@@ -12,7 +12,7 @@ class ContractorInline(admin.StackedInline):
     extra = 0
 
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'serial_number', 'order_group', 'register', 'activation')
+    list_display = ('id', 'project', 'serial_number', 'order_group', 'user', 'activation')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('activation',)
     search_fields = ('serial_number',)
