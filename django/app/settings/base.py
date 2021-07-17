@@ -259,3 +259,8 @@ STATICFILES_DIRS = ('/static',)
 
 MEDIA_URL = 'https://%s/media/' % (AWS_S3_CUSTOM_DOMAIN) # 각 media 파일에 관한 URL prefix
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitOffsetPaginationWithMaxLimit',
+    'PAGE_SIZE': 5
+}
