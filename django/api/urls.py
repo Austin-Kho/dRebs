@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.urls import path
 
-from books.views import *
+from . views import *
 
 
 app_name = 'api'
 
-urlpatterns = []
+urlpatterns = [
+    path('books/', BookList.as_view(), name=BookList.name),
+    path('books/<int:pk>/', BookDetail.as_view(), name=BookDetail.name),
+    path('subjects/', SubjectList.as_view(), name=SubjectList.name),
+    path('subjects/<int:pk>/', SubjectDetail.as_view(), name=SubjectDetail.name),
+]
