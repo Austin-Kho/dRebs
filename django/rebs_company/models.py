@@ -29,7 +29,7 @@ class Company(models.Model):
 
 
 class Department(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='departments')
     name = models.CharField('부서명', max_length=20)
     task = models.CharField('주요 업무', max_length=100)
 
@@ -43,7 +43,8 @@ class Department(models.Model):
 
 
 class Staff(models.Model):
-    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, verbose_name='부서 정보')
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, verbose_name='부서 정보', related_name='staffs')
+    position = models.CharField('직함', max_length=50, null=True, blank=True)
     name = models.CharField('직원 성명', max_length=10)
     birth_date = models.DateField('생년월일')
     GENDER_CHOICES = (('M', '남성'), ('F', '여성'))
