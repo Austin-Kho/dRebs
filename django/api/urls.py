@@ -22,6 +22,12 @@ app_name = 'api'
 
 urlpatterns = [
     path('', ApiIndex.as_view(), name=ApiIndex.name),
+    path('company/', CompanyList.as_view(), name=CompanyList.name),
+    path('company/<int:pk>/', CompanyDetail.as_view(), name=CompanyDetail.name),
+    path('departments/', DepartmentList.as_view(), name=DepartmentList.name),
+    path('departments/<int:pk>/', DepartmentDetail.as_view(), name=DepartmentDetail.name),
+    path('staff/', StaffList.as_view(), name=StaffList.name),
+    path('staff/<int:pk>/', StaffDetail.as_view(), name=StaffDetail.name),
     path('users/', UserList.as_view(), name=UserList.name),
     path('users/<int:pk>/', UserDetail.as_view(), name=UserDetail.name),
     path('books/', BookList.as_view(), name=BookList.name),

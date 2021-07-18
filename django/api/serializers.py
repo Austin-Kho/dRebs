@@ -2,9 +2,9 @@ from account.models import User
 from rest_framework import serializers
 
 from books.models import Book, Subject
+from rebs_company.models import Company, Department, Staff
 from rebs.models import (AccountSubD1, AccountSubD2, AccountSubD3,
                          ProjectAccountD1, ProjectAccountD2, WiseSaying)
-from rebs_company.models import Company, Department, Staff
 from rebs_project.models import (Project, UnitType, UnitFloorType,
                                  ContractUnit, UnitNumber, ProjectBudget,
                                  Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
@@ -22,6 +22,56 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username', 'is_active', 'date_joined', 'is_staff')
+
+
+class CompanyInDepartsSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:depart-detail')
+
+    class Meta:
+        model = Department
+        fields = ('url', 'name')
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:company-detail')
+    departments = CompanyInDepartsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Company
+        fields = ('pk', 'url', 'name', 'ceo', 'tax_number', 'org_number',
+                  'business_cond', 'business_even', 'es_date', 'op_date', 'zipcode',
+                  'address1', 'address2', 'address3', 'departments')
+
+
+class StaffInDepartmentSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:staff-detail')
+
+    class Meta:
+        model = Staff
+        fields = ('url', 'position', 'name')
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:depart-detail')
+    company = serializers.SlugRelatedField(queryset=Company.objects.all(), slug_field='name')
+    staffs = StaffInDepartmentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Department
+        fields = ('pk', 'url', 'company', 'name', 'task', 'staffs')
+
+
+class StaffSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='api:staff-detail')
+    department = serializers.SlugRelatedField(queryset=Department.objects.all(), slug_field='name')
+    gender = serializers.ChoiceField(choices=Staff.GENDER_CHOICES)
+    gender_desc = serializers.CharField(source='get_gender_display', read_only=True)
+    status = serializers.ChoiceField(choices=Staff.STATUS_CHOICES)
+    status_desc = serializers.CharField(source='get_status_display', read_only=True)
+
+    class Meta:
+        model = Staff
+        fields = ('pk', 'url', 'department', 'position', 'name', 'birth_date', 'gender', 'gender_desc',
+                  'entered_date', 'personal_phone', 'email', 'status', 'status_desc')
 
 
 class BookSubjectSerializer(serializers.ModelSerializer):
@@ -47,6 +97,7 @@ class SubjectBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ('title', 'url')
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="api:subject-detail")
